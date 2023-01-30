@@ -1,0 +1,93 @@
+body{
+    /* background-color: #f4f4f4; */
+    background-color: #cfe2f3;
+}
+
+#navbar{
+    /* position: absolute; */
+    top: 0;
+    margin:0;
+    max-width: unset;
+    padding: 0;
+    /* padding: 5px; */
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 900;
+}
+
+.navbar-brand{
+    font-size:30px;
+}
+
+.container{
+    margin-top: 35px;
+}
+
+a{
+    text-decoration: none;
+}
+
+.fc .fc-toolbar-title {
+    font-size: 16px;
+}
+
+.fc-view{
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    color:bisque;
+}
+
+.fc-event-time{
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+}
+
+/* 取消背景格線 */
+.fc td, .fc th {
+    border-style: none !important;
+  }
+
+.fc .fc-scrollgrid-liquid{
+    border: 0;
+}
+
+/* 日期置中 */
+.fc .fc-daygrid-day-top{
+    justify-content: center;
+}
+
+/* 調整日期網格高度 */
+.fc .fc-daygrid-body-unbalanced .fc-daygrid-day-events{
+    min-height: 0;
+}
+
+/* 每個日期游標變pointer */
+.fc-day{
+    cursor: pointer;
+
+}
+
+/* 更改行事曆背景顏色*/
+.fc-scrollgrid{
+    background-color:#d0d0d0;
+    border-radius: 25px;
+    padding: 10px;
+}
+
+/* 更改日期顏色 */
+.fc .fc-daygrid-day-number, .fc .fc-col-header-cell-cushion{
+    font-family: 'Noto Sans TC', sans-serif;
+    color: black;
+}
+
+/* 星期的padding */
+.fc .fc-col-header-cell-cushion{
+    padding-top: 5px;
+}
+
+@media(max-width:360px){
+    .navbar-brand{
+        font-size: 20px;
+    }
+}

@@ -1,0 +1,65 @@
+body{
+    /* background-color: #f4f4f4; */
+    background-color: #cfe2f3;
+}
+
+.container{
+    margin-top: 30px;
+    background-color: white;
+    border-radius: 15px;
+    width: 400px;
+    height: 500px;
+}
+
+.webName{
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 800;
+    font-size: 30px;
+    text-align: center;
+    padding-top: 5px;
+}
+
+.formName{
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    text-align: center;
+    padding-top: 5px;
+}
+
+.row{
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    padding-top: 15px;
+}
+
+.userStatus{
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+#login{
+    display: none;
+}
+
+#buttonContainer{
+    margin-top: 15px;
+}
+
+.msg{
+    padding-left: 5px;
+}
+
+.background{
+    display: none;
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    z-index: 1;
+}
