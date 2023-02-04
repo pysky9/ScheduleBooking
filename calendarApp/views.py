@@ -1,9 +1,12 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 import json
 
 from membersApp.models import Members
 from calendarApp.models import Time_setting, Time_pricing, Pay_deposit, Order_audit_cancel
+
+from datetime import date, datetime
 
 # Create your views here.
 def calendar(request):
@@ -47,3 +50,283 @@ def calendar_setting(request):
         order_audit_cancel.save()
 
     return JsonResponse({"ok": True})
+
+@csrf_exempt
+def response_time_period(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        request_date_split = data['date'].split('-')
+        request_date_year = int(request_date_split[0])
+        request_date_month = int(request_date_split[1])
+        request_date_day = int(request_date_split[2])
+        request_date = datetime(request_date_year, request_date_month, request_date_day)
+
+        today = datetime.today()
+
+        today_hours = today.hour
+        today_minutes = today.minute 
+        # 商家設定日期
+        query = Time_setting.objects.filter(id=7) 
+
+        # 時段邏輯
+        begin_time = query[0].begin_time
+        end_time = query[0].end_time
+        time_slice = int(query[0].time_slice)
+        time_slice_unit = query[0].time_slice_unit
+        time_slice_list = generate_time_slice(begin_time, end_time, time_slice, time_slice_unit, request_date)
+        whole_time_slice_list = time_slice_list["time_slice_list"]
+        today_time_slice_list = time_slice_list["time_slice_for_today"]
+        morning = time_slice_list["morning"]
+        afternoon = time_slice_list["afternoon"]
+        night = time_slice_list["night"]
+        morning_today = time_slice_list["morning_for_today"]
+        afternoon_today = time_slice_list["afternoon_for_today"]
+        night_today = time_slice_list["night_for_today"]
+
+        if query[0].time_interval_category == "特定時間範圍，每日幾點到幾點":
+            db_begin_date_split = query[0].begin_date.split('-')
+            db_begin_date_year = int(db_begin_date_split[0])
+            db_begin_date_month = int(db_begin_date_split[1])
+            db_begin_date_day = int(db_begin_date_split[2])
+            db_begin_date = datetime(db_begin_date_year, db_begin_date_month, db_begin_date_day)
+
+            db_end_date_split = query[0].end_date.split('-')
+            db_end_date_year = int(db_end_date_split[0])
+            db_end_date_month = int(db_end_date_split[1])
+            db_end_date_day = int(db_end_date_split[2])
+            db_end_date = datetime(db_end_date_year, db_end_date_month, db_end_date_day)
+            
+            if request_date.date() == today.date():   
+                response_data = {
+                    "OK": True,
+                    "category": query[0].time_interval_category,
+                    "interval":{
+                        "begin_date": db_begin_date,
+                        "end_date": db_end_date,
+                        "begin_time": begin_time,
+                        "end_time": end_time
+                    },
+                    "available_time": today_time_slice_list,
+                    "morning": morning,
+                    "afternoon": afternoon,
+                    "night": night,
+                    "today":{
+                        "morning_today": morning_today,
+                        "afternoon_today": afternoon_today,
+                        "night_today": night_today
+                    }
+                    }
+                return JsonResponse(response_data)
+            if today.date() < request_date.date() <= db_end_date.date():
+                response_data = {
+                    "OK": True, 
+                    "category": query[0].time_interval_category,
+                    "interval":{
+                        "begin_date": db_begin_date,
+                        "end_date": db_end_date,
+                        "begin_time": begin_time,
+                        "end_time": end_time
+                    },
+                    "available_time": whole_time_slice_list,
+                    "morning": morning,
+                    "afternoon": afternoon,
+                    "night": night,
+                    "today":{
+                        "morning_today": morning_today,
+                        "afternoon_today": afternoon_today,
+                        "night_today": night_today
+                    }
+                    }
+                return JsonResponse(response_data)
+            if request_date.date() > db_end_date.date() or request_date.date() < today.date():
+                response_data = {
+                    "OK": True, 
+                    "category": query[0].time_interval_category,
+                    "interval":{
+                        "begin_date": db_begin_date,
+                        "end_date": db_end_date,
+                        "begin_time": begin_time,
+                        "end_time": end_time
+                    },
+                    "available_time": None,
+                    "morning": morning,
+                    "afternoon": afternoon,
+                    "night": night,
+                    "today":{
+                        "morning_today": morning_today,
+                        "afternoon_today": afternoon_today,
+                        "night_today": night_today
+                    }
+                    }
+                return JsonResponse(response_data)
+
+        else:
+            if request_date.date() == today.date():   
+                response_data = {
+                    "OK": True, 
+                    "category": query[0].time_interval_category,
+                    "interval":{
+                        "begin_time": begin_time,
+                        "end_time": end_time
+                    },
+                    "available_time": today_time_slice_list,
+                    "morning": morning,
+                    "afternoon": afternoon,
+                    "night": night,
+                    "today":{
+                        "morning_today": morning_today,
+                        "afternoon_today": afternoon_today,
+                        "night_today": night_today
+                    }
+                    }
+                return JsonResponse(response_data)
+            if request_date.date() > today.date():
+                response_data = {
+                    "OK": True, 
+                    "category": query[0].time_interval_category,
+                    "interval":{
+                        "begin_time": begin_time,
+                        "end_time": end_time
+                    },
+                    "available_time": whole_time_slice_list,
+                    "morning": morning,
+                    "afternoon": afternoon,
+                    "night": night,
+                    "today":{
+                        "morning_today": morning_today,
+                        "afternoon_today": afternoon_today,
+                        "night_today": night_today
+                    }
+                    }
+                return JsonResponse(response_data)
+            if request_date.date() < today.date():
+                response_data = {
+                    "OK": True, 
+                    "category": query[0].time_interval_category,
+                    "interval":{
+                        "begin_time": begin_time,
+                        "end_time": end_time
+                    },
+                    "available_time": None,
+                    "morning": morning,
+                    "afternoon": afternoon,
+                    "night": night,
+                    "today":{
+                        "morning_today": morning_today,
+                        "afternoon_today": afternoon_today,
+                        "night_today": night_today
+                    }
+                    }
+                return JsonResponse(response_data)
+
+
+def generate_time_slice(begin_time, end_time, time_slice, time_slice_unit,  request_date):
+    begin_time_hours = begin_time.split(":")[0]
+    begin_time_minutes = begin_time.split(":")[1]
+    end_time_hours = end_time.split(":")[0]
+    end_time_minutes = end_time.split(":")[1]
+
+    today = datetime.today()
+    today_hours = today.hour
+    today_minutes = today.minute 
+
+    time_slice_for_today = []
+    time_slice_list = [begin_time]
+    morning = [begin_time]
+    afternoon = []
+    night = []
+    morning_for_today = []
+    afternoon_for_today = []
+    night_for_today = []
+    if time_slice_unit == "小時":
+        begin_time_hours = int(begin_time_hours)
+        begin_time_minutes = int(begin_time_minutes)
+        while begin_time_hours < int(end_time_hours):
+            begin_time_hours += time_slice
+            time = time_slice_format(begin_time_hours, begin_time_minutes)
+            time_slice_list.append(time)
+
+            # 將時段分為早上、中午、晚上
+            if begin_time_hours < 12:
+                morning.append(time)
+            elif 12 <= begin_time_hours < 18:
+                afternoon.append(time)
+            else:
+                night.append(time)
+            
+            # 依照使用者目前所在時間提供時段
+            if request_date.date() == today.date() and begin_time_hours > today_hours:
+                today_time = time_slice_format(begin_time_hours, begin_time_minutes)
+                time_slice_for_today.append(today_time)
+                if begin_time_hours < 12:
+                    morning_for_today.append(today_time)
+                elif 12 <= begin_time_hours < 18:
+                    afternoon_for_today.append(today_time)
+                else:
+                    night_for_today.append(today_time)
+
+    elif time_slice_unit == "分":
+        begin_time_hours = int(begin_time_hours)
+        begin_time_minutes = int(begin_time_minutes)
+        end_time_hours = int(end_time_hours)
+        end_time_minutes = int(end_time_minutes)
+
+        while True:
+            begin_time_minutes += time_slice
+            if begin_time_minutes >= 60:
+                begin_time_hours += begin_time_minutes // 60
+                begin_time_minutes = begin_time_minutes % 60
+
+            time = time_slice_format(begin_time_hours, begin_time_minutes)
+
+            if begin_time_hours < 12:
+                morning.append(time)
+            elif 12 <= begin_time_hours < 18:
+                afternoon.append(time)
+            else:
+                night.append(time)
+
+            if request_date.date() == today.date() and (begin_time_hours > today_hours or (begin_time_hours > today_hours and begin_time_minutes > today_minutes)):
+                time_today = time_slice_format(begin_time_hours, begin_time_minutes)
+                time_slice_for_today.append(time_today)
+                
+                if begin_time_hours < 12:
+                    morning_for_today.append(time_today)
+                elif 12 <= begin_time_hours < 18:
+                    afternoon_for_today.append(time_today)
+                else:
+                    night_for_today.append(time_today)
+            
+            # while 何時結束
+            if begin_time_hours > end_time_hours or (begin_time_hours == end_time_hours and begin_time_minutes > end_time_minutes):
+                break
+
+            time_slice_list.append(time)
+    else:
+        time_slice_list.append(begin_time)
+
+    return {
+        "time_slice_list":time_slice_list, 
+        "time_slice_for_today":time_slice_for_today, 
+        "morning": morning, 
+        "afternoon": afternoon, 
+        "night": night,
+        "morning_for_today": morning_for_today,
+        "afternoon_for_today": afternoon_for_today,
+        "night_for_today": night_for_today
+        }
+
+def time_slice_format(begin_time_hours, begin_time_minutes):
+    if begin_time_minutes < 10 :
+        begin_time_hours_string = begin_time_hours
+        begin_time_minutes_string = f"0{begin_time_minutes}"
+    elif begin_time_hours < 10 :
+        begin_time_hours_string = f"0{begin_time_hours}"
+        begin_time_minutes_string = begin_time_minutes
+    else:
+        begin_time_hours_string = begin_time_hours
+        begin_time_minutes_string = begin_time_minutes
+    return f"{begin_time_hours_string}:{begin_time_minutes_string}"
+
+
+    

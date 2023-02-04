@@ -86,7 +86,66 @@ a{
     padding-top: 5px;
 }
 
-@media(max-width:360px){
+/* 時段 */
+/* #time-slicing{
+    margin-top: 10px;
+}
+
+#time-slicing-period{
+    text-align: center;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+} */
+
+#time{
+    display:flex;
+    justify-content: center;
+
+    
+}
+
+.time-category{
+    flex: auto;
+    width: 100px;
+    margin-left: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.time-category-slice{
+    flex: auto;
+    width: 100px;
+}
+
+#time-slice{
+    cursor: pointer;
+}
+
+/* 費用 */
+#exspense{
+    margin-top: 10px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+}
+
+/* 預約按鈕 */
+.bookingBtn{
+    width: 100px;
+    border: 1px;
+    border-radius: 25px;
+    background-color: #f24d07;
+    text-align: center;
+    color: white;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+}
+
+@media(max-width:450px){
     .navbar-brand{
         font-size: 20px;
     }
