@@ -66,7 +66,7 @@ def response_time_period(request):
         today_hours = today.hour
         today_minutes = today.minute 
         # 商家設定日期
-        query = Time_setting.objects.filter(id=7) 
+        query = Time_setting.objects.filter(id=2) 
 
         # 時段邏輯
         begin_time = query[0].begin_time
@@ -114,7 +114,9 @@ def response_time_period(request):
                         "morning_today": morning_today,
                         "afternoon_today": afternoon_today,
                         "night_today": night_today
-                    }
+                    },
+                    "time_slice": query[0].time_slice,
+                    "time_slice_unit": query[0].time_slice_unit
                     }
                 return JsonResponse(response_data)
             if today.date() < request_date.date() <= db_end_date.date():
@@ -135,7 +137,9 @@ def response_time_period(request):
                         "morning_today": morning_today,
                         "afternoon_today": afternoon_today,
                         "night_today": night_today
-                    }
+                    },
+                    "time_slice": query[0].time_slice,
+                    "time_slice_unit": query[0].time_slice_unit
                     }
                 return JsonResponse(response_data)
             if request_date.date() > db_end_date.date() or request_date.date() < today.date():
@@ -156,7 +160,9 @@ def response_time_period(request):
                         "morning_today": morning_today,
                         "afternoon_today": afternoon_today,
                         "night_today": night_today
-                    }
+                    },
+                    "time_slice": query[0].time_slice,
+                    "time_slice_unit": query[0].time_slice_unit
                     }
                 return JsonResponse(response_data)
 
@@ -177,7 +183,9 @@ def response_time_period(request):
                         "morning_today": morning_today,
                         "afternoon_today": afternoon_today,
                         "night_today": night_today
-                    }
+                    },
+                    "time_slice": query[0].time_slice,
+                    "time_slice_unit": query[0].time_slice_unit
                     }
                 return JsonResponse(response_data)
             if request_date.date() > today.date():
@@ -196,7 +204,9 @@ def response_time_period(request):
                         "morning_today": morning_today,
                         "afternoon_today": afternoon_today,
                         "night_today": night_today
-                    }
+                    },
+                    "time_slice": query[0].time_slice,
+                    "time_slice_unit": query[0].time_slice_unit
                     }
                 return JsonResponse(response_data)
             if request_date.date() < today.date():
@@ -215,7 +225,9 @@ def response_time_period(request):
                         "morning_today": morning_today,
                         "afternoon_today": afternoon_today,
                         "night_today": night_today
-                    }
+                    },
+                    "time_slice": query[0].time_slice,
+                    "time_slice_unit": query[0].time_slice_unit
                     }
                 return JsonResponse(response_data)
 
@@ -286,7 +298,7 @@ def generate_time_slice(begin_time, end_time, time_slice, time_slice_unit,  requ
             else:
                 night.append(time)
 
-            if request_date.date() == today.date() and (begin_time_hours > today_hours or (begin_time_hours > today_hours and begin_time_minutes > today_minutes)):
+            if request_date.date() == today.date() and (begin_time_hours > today_hours or (begin_time_hours >= today_hours and begin_time_minutes >= today_minutes)):
                 time_today = time_slice_format(begin_time_hours, begin_time_minutes)
                 time_slice_for_today.append(time_today)
                 

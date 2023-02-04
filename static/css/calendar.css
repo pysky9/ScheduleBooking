@@ -126,14 +126,18 @@ a{
 
 /* 費用 */
 #exspense{
-    margin-top: 10px;
+    margin-top: 20px;
     font-family: 'Noto Sans TC', sans-serif;
     font-weight: 400;
     font-size: 18px;
 }
 
+.exspense-unit{
+    margin-left: 30px;
+}
+
 /* 預約按鈕 */
-.bookingBtn{
+/* .bookingBtn{
     width: 100px;
     border: 1px;
     border-radius: 25px;
@@ -143,7 +147,13 @@ a{
     font-family: 'Noto Sans TC', sans-serif;
     font-weight: 400;
     font-size: 20px;
+} */
+.btn{
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 400;
+    margin-bottom: 25px;
 }
+
 
 @media(max-width:450px){
     .navbar-brand{
