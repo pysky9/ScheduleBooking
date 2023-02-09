@@ -1,6 +1,6 @@
+let membersData;
 
 // 選項呈現對應的有效範圍
-// let selectElement = document.querySelector(".time-setting");
 let selectElement = document.querySelectorAll(".time-setting");
 let timeSelect1 = document.querySelector(".time-select-1");
 let timeSelect2 = document.querySelectorAll(".time-select-2");
@@ -10,34 +10,15 @@ selectElement.forEach(function(select){
     if (event.target.value === "每日幾點到幾點"){
       event.target.closest("tr").querySelector(".time-select-1").style.display = "table-cell";
       event.target.closest("tr").querySelectorAll(".time-select-2")[0].style.display = "none";
-      // event.target.closest("tr").querySelectorAll(".time-select-2")[1].style.display = "none";
       timeSettingValue = event.target.value;
     }else {
       event.target.closest("tr").querySelector(".time-select-1").style.display = "none";
       event.target.closest("tr").querySelectorAll(".time-select-2")[0].style.display = "table-cell";
-      // event.target.closest("tr").querySelectorAll(".time-select-2")[1].style.display = "table-cell";
       timeSettingValue = event.target.value;
     }
   })
 })
-// selectElement.addEventListener("change", event => {
-//     console.log(selectElement)
-//     if(event.target.value === "每日幾點到幾點"){
-//         timeSelect1.style.display = "block";
-//         // timeSelect2[0].style.display = "none";
-//         // timeSelect2[1].style.display = "none";
-//         timeSelect2.forEach(element => {
-//             element.style.display = "none";
-//         })
-//     }else{
-//         timeSelect1.style.display = "none";
-//         // timeSelect2[0].style.display = "block";
-//         // timeSelect2[1].style.display = "block";
-//         timeSelect2.forEach(element =>{
-//             element.style.display = "block";
-//         })
-//     }
-// })
+
 
 // 點"新增時段" -> HTML插入選單
 const timeSetElement = document.querySelector(".time-set");
@@ -60,38 +41,6 @@ addTimePeriod.addEventListener("click", event => {
   selectElement = document.querySelectorAll(".time-setting");
 })
 
-
-// 點"新增時段" -> HTML插入選單
-// const addTimePeriod = document.querySelector(".create-time-period");
-// addTimePeriod.addEventListener("click", event => {
-//     html = `
-//     <table class="table">
-//     <thead>
-//       <tr>
-//         <th scope="col">時段種類</th>
-//         <th scope="col">有效範圍</th>
-//       </tr>
-//     </thead>
-//     <tbody>
-//       <tr>
-//         <td>
-//           <select class="time-setting">                          
-//             <option value="每日幾點到幾點">每日幾點到幾點</option>
-//             <option value="特定時間範圍，每日幾點到幾點">特定時間範圍，每日幾點到幾點</option>
-//           </select>
-//         </td>
-//         <td class="time-select-1"><input type="time"> <input type="time"></td>
-//         <td class="time-select-2"><input type="date"> <input type="date"></td>
-//         <td class="time-select-2"><input type="time"> <input type="time"></td>
-//       </tr>
-
-//     </tbody>
-//   </table>
-//     `
-//     addTimePeriod.insertAdjacentHTML("beforebegin", html);
-//     selectElement = document.querySelectorAll(".time-setting");
-// })
-
 // 訂金選項顯示&隱藏
 
 const deposit = document.querySelector(".deposit");
@@ -112,6 +61,7 @@ depositChoose.addEventListener("change", event => {
 const update = document.querySelector(".update");
 const timeSliceElement = document.querySelector(".time-select-slice");
 let timeSliceValue;
+
 timeSliceElement.addEventListener("change", event => {
   timeSliceValue = event.target.value;
 })
@@ -204,9 +154,10 @@ update.addEventListener("click", event => {
     timeSettingEnddate: timeSelectEndDate,
     depositChooses: depositChooseValue,
     depositItems: depositItem,
-    totalDeposits: totalDeposit
+    totalDeposits: totalDeposit,
+    membersData: membersData
   };
-  console.log(updateAllData);
+
   const token = csrfElement[0].defaultValue;
   
   fetch("/calendar/setting/", {
@@ -217,7 +168,58 @@ update.addEventListener("click", event => {
     body: JSON.stringify(updateAllData)
   }).then(resp => (resp.json())).then(
     data =>{
-      console.log(data)
+      if (data.ok){
+        location.reload();
+      }
     }
   )
 })
+
+const logout = document.querySelector("#logout");
+logout.addEventListener("click", event => {
+  fetch("/members/logout/").then(
+    resp => (resp.json())
+  ).then(
+    data => {
+      if (data.ok){
+        location.href = "/" ;
+      }
+    }
+  )
+})
+
+get_members_info()
+
+function get_members_info(){
+  fetch("/members/get_members_info/").then(
+    resp => (resp.json())
+  ).then(
+    data => {
+      if (data.data){
+        membersData = data.data;
+        showCalendarUrl(membersData.url);
+      }else{
+        location.href = "/"
+      }
+    }
+  )
+}
+
+function showCalendarUrl(url){
+  const navbar = document.querySelector(".navbar");
+  const urlContainer = document.createElement("div");
+  urlContainer.className = "container";
+  urlContainer.id = "url";
+
+  const urlTitle = document.createElement("span");
+  urlTitle.className = "url-title";
+  urlTitle.textContent = "時段設定檢視/行事曆分享：";
+  urlContainer.appendChild(urlTitle);
+
+  const urlTag = document.createElement("a");
+  urlTag.href = `${url}`;
+  urlTag.textContent = `schedule-booking.com${url}`;
+  urlContainer.appendChild(urlTag);
+
+  navbar.insertAdjacentElement("afterend", urlContainer);
+}

@@ -1,22 +1,23 @@
+from datetime import date, datetime
+import json
+
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-import json
 
 from membersApp.models import Members
 from calendarApp.models import Time_setting, Time_pricing, Pay_deposit, Order_audit_cancel
 
-from datetime import date, datetime
 
-# Create your views here.
-def calendar(request):
-    return render(request, 'calendar.html')
-
-members = Members()
 time_setting = Time_setting()
 time_pricing = Time_pricing()
 pay_deposit = Pay_deposit()
 order_audit_cancel = Order_audit_cancel()
+
+
+# Create your views here.
+def calendar(request, username):
+    return render(request, 'calendar.html')
 
 def calendar_setting(request):
     if request.method == "POST":
@@ -30,23 +31,27 @@ def calendar_setting(request):
         time_setting.time_slice_unit = data['timeSliceUnit']
         time_setting.pre_ordering_numbers = data['timeBookingNums']
         time_setting.pre_ordering_unit = data['timeBookingUnit']
+        time_setting.members = Members(data['membersData']['id'])
         time_setting.save()
 
         time_pricing.origin_price = data['orignPrice']
         time_pricing.discount_price = data['discountPrice']
         time_pricing.discount_begin_date = data['discountBeginDate']
         time_pricing.discount_end_date = data['discountEndDate']
+        time_pricing.members = Members(data['membersData']['id'])
         time_pricing.save()
 
         pay_deposit.open_deposit = data['depositChooses']
         pay_deposit.deposit_category = data['depositItems']
         pay_deposit.deposit_total_amount = data['totalDeposits']
+        pay_deposit.members = Members(data['membersData']['id'])
         pay_deposit.save()
 
         order_audit_cancel.audit_choosing = data['bookingAudits']
         order_audit_cancel.cancel_choosing = data['bookingCancels']
         order_audit_cancel.cancel_number = data['cancelDayNumber']
         order_audit_cancel.cancel_unit = data['cancelTimeUnit']
+        order_audit_cancel.members = Members(data['membersData']['id'])
         order_audit_cancel.save()
 
     return JsonResponse({"ok": True})
@@ -55,6 +60,7 @@ def calendar_setting(request):
 def response_time_period(request):
     if request.method == "POST":
         data = json.loads(request.body)
+        print(data["username"])
         request_date_split = data['date'].split('-')
         request_date_year = int(request_date_split[0])
         request_date_month = int(request_date_split[1])
@@ -65,8 +71,13 @@ def response_time_period(request):
 
         today_hours = today.hour
         today_minutes = today.minute 
+
+        # 確認商家&取得members id
+        query_member = Members.objects.filter(username=data["username"])
+        id = query_member[0].id
+        
         # 商家設定日期
-        query = Time_setting.objects.filter(id=2) 
+        query = Time_setting.objects.filter(members_id=1) 
 
         # 時段邏輯
         begin_time = query[0].begin_time
@@ -329,16 +340,74 @@ def generate_time_slice(begin_time, end_time, time_slice, time_slice_unit,  requ
         }
 
 def time_slice_format(begin_time_hours, begin_time_minutes):
-    if begin_time_minutes < 10 :
-        begin_time_hours_string = begin_time_hours
-        begin_time_minutes_string = f"0{begin_time_minutes}"
-    elif begin_time_hours < 10 :
-        begin_time_hours_string = f"0{begin_time_hours}"
-        begin_time_minutes_string = begin_time_minutes
-    else:
-        begin_time_hours_string = begin_time_hours
-        begin_time_minutes_string = begin_time_minutes
+    begin_time_hours_string = str(begin_time_hours).zfill(2)
+    begin_time_minutes_string = str(begin_time_minutes).zfill(2)
     return f"{begin_time_hours_string}:{begin_time_minutes_string}"
 
+@csrf_exempt
+def response_time_price(request):
+    # 商家設定的時段價錢
+    data = json.loads(request.body)
+    print("price", data)
+    request_date = data["date"]
 
-    
+    # 確認商家&取得member id
+    query_member = Members.objects.filter(username=data["username"])
+    id = query_member[0].id
+
+
+    query = Time_pricing.objects.filter(members_id=id)
+    origin_price = query[0].origin_price
+    discount_price = query[0].discount_price
+    query_time = Time_setting.objects.filter(members_id=id)
+    time_slice = query_time[0].time_slice
+    time_slice_unit = query_time[0].time_slice_unit
+
+    if discount_price :
+        discount_begin_date = query[0].discount_begin_date
+        discount_end_date = query[0].discount_end_date
+        request_datetime = convert_to_datetime(request_date)
+        discount_begin_datetime = convert_to_datetime(discount_begin_date)
+        discount_end_datetime = convert_to_datetime(discount_end_date)
+        if discount_begin_datetime.date() <= request_datetime.date() <= discount_end_datetime.date():
+            response_data = {
+                "OK": True,
+                "isDiscount": True,
+                "origin_price": origin_price,
+                "discount_price": discount_price,
+                "discount_begin_date": discount_begin_date,
+                "discount_end_date": discount_end_date,
+                "time_slice": time_slice,
+                "time_slice_unit": time_slice_unit
+            }
+        else:
+            response_data = {
+                "OK": True,
+                "isDiscount": False,
+                "origin_price": origin_price,
+                "discount_price": discount_price,
+                "discount_begin_date": discount_begin_date,
+                "discount_end_date": discount_end_date,
+                "time_slice": time_slice,
+                "time_slice_unit": time_slice_unit
+            }
+        return JsonResponse(response_data)
+
+    response_data = {
+        "OK": True,
+        "isDiscount": False,
+        "origin_price": origin_price,
+        "discount_price": discount_price,
+        "discount_begin_date": None,
+        "discount_end_date": None,
+        "time_slice": time_slice,
+        "time_slice_unit": time_slice_unit
+    }
+    return JsonResponse(response_data)
+
+def convert_to_datetime(date):
+    date_split = date.split("-")
+    year = int(date_split[0])
+    month = int(date_split[1])
+    day = int(date_split[2])
+    return datetime(year, month, day)

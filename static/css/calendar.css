@@ -1,15 +1,12 @@
 body{
-    /* background-color: #f4f4f4; */
     background-color: #cfe2f3;
 }
 
 #navbar{
-    /* position: absolute; */
     top: 0;
     margin:0;
     max-width: unset;
     padding: 0;
-    /* padding: 5px; */
     font-family: 'Noto Sans TC', sans-serif;
     font-weight: 900;
 }
@@ -87,22 +84,9 @@ a{
 }
 
 /* 時段 */
-/* #time-slicing{
-    margin-top: 10px;
-}
-
-#time-slicing-period{
-    text-align: center;
-    font-family: 'Noto Sans TC', sans-serif;
-    font-weight: 700;
-    font-size: 18px;
-} */
-
 #time{
     display:flex;
     justify-content: center;
-
-    
 }
 
 .time-category{
@@ -137,17 +121,6 @@ a{
 }
 
 /* 預約按鈕 */
-/* .bookingBtn{
-    width: 100px;
-    border: 1px;
-    border-radius: 25px;
-    background-color: #f24d07;
-    text-align: center;
-    color: white;
-    font-family: 'Noto Sans TC', sans-serif;
-    font-weight: 400;
-    font-size: 20px;
-} */
 .btn{
     font-family: 'Noto Sans TC', sans-serif;
     font-weight: 400;

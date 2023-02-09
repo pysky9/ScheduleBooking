@@ -3,7 +3,7 @@ const changeToSignup = document.querySelector("#changeToSignup");
 const loginElement = document.querySelector("#login");
 const signupElemnt = document.querySelector("#signup");
 const csrfElement = document.getElementsByName("csrfmiddlewaretoken");
-const formName = document.querySelector(".formName");
+const formName = document.querySelectorAll(".formName");
 const username = document.querySelector(".username");
 const email = document.querySelector(".email");
 const password = document.querySelector(".password");
@@ -31,7 +31,7 @@ signupBtn.addEventListener("click", event => {
         "email": `${email.value}`,
         "password": `${password.value}`
     }
-    userDataValidation(emailValue=email.value, passwordValue=password.value, btn=signupBtn, usernameValue=username.value)
+    if(userDataNotValidation(emailValue=email.value, passwordValue=password.value, btn=signupBtn, formTitle=formName[0].textContent, usernameValue=username.value)) return;
     fetch("/members/signup/",{
         method:"POST",
         headers:{
@@ -40,8 +40,11 @@ signupBtn.addEventListener("click", event => {
         body:JSON.stringify(requestData)
     }).then(response => (response.json())).then(
         data => {
+
             if (data.ok){
                 location.reload();
+            }else{
+                console.log(`${data.error}`)
             }
         }
     )
@@ -57,7 +60,7 @@ loginBtn.addEventListener("click", event => {
         "email": `${emails.value}`,
         "password": `${passwords.value}`
     }
-    userDataValidation(emailValue=emails.value, passwordValue=passwords.value, btn=loginBtn);
+    if(userDataNotValidation(emailValue=emails.value, passwordValue=passwords.value, btn=loginBtn, formTitle=formName[1].textContent)) return;
     fetch("/members/login/",{
         method:"POST",
         headers:{
@@ -66,8 +69,13 @@ loginBtn.addEventListener("click", event => {
         body:JSON.stringify(requestData)
     }).then(response => (response.json())).then(
         data => {
-            // console.log(data)
-            location.href = '/members/member_page/'
+            if (data.ok){
+                location.href = '/members/member_page/';
+                
+            }else{
+                location.href = "/"
+            }
+            
         }
     )
 })
@@ -78,35 +86,34 @@ background.addEventListener("click", event => {
     background.style.display = "none";
 })
 
-function userDataValidation(emailValue, passwordValue, btn, usernameValue = false){
-    console.log(usernameValue)
+function userDataNotValidation(emailValue, passwordValue, btn, formTitle, usernameValue = false){
     const msg = document.createElement("span");
     msg.className = "msg";
-    if (usernameValue){
+    if (formTitle === "商家註冊"){
         let usernameRegrex = /^[a-zA-Z0-9._]{3,20}$/;
         let usernameIsValid = usernameRegrex.test(usernameValue);
         if(! usernameIsValid){
             msg.textContent = "請輸入usename";
             btn.insertAdjacentElement("afterend", msg);
             background.style.display = "block";
-        }
+            return true;}
     }
 
     let emailRegrex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     let emailIsValid = emailRegrex.test(emailValue);
-    console.log(emailIsValid)
+
     let passwordRegrex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     let passwordIsValid = passwordRegrex.test(passwordValue);
-    console.log(passwordIsValid)
+
     if (! emailIsValid){
         msg.textContent = "請輸入email";
         btn.insertAdjacentElement("afterend", msg);
         background.style.display = "block";
+        return true;
     }else if (! passwordIsValid){
         msg.textContent = "請輸入密碼";
         btn.insertAdjacentElement("afterend", msg);
         background.style.display = "block";
+        return true;
     }
-
-    return;
 }

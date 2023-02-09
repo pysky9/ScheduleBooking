@@ -1,3 +1,11 @@
+const bookingBtn = document.querySelector(".btn")
+let bookingDate;
+let bookingTime;
+let bookingTotalTime;
+let bookingPrice;
+let pathname = window.location.pathname;
+let queryName = pathname.split("/")[3]
+
 document.addEventListener('DOMContentLoaded', function() {
     const calendarEl = document.getElementById('calendar')
     const calendar = new FullCalendar.Calendar(calendarEl, {
@@ -25,16 +33,29 @@ document.addEventListener('DOMContentLoaded', function() {
     calendar.on("dateClick", info=>{
       date = info.dateStr;
       const isTimeSlice = document.querySelector("#time");
-      if (isTimeSlice){ isTimeSlice.remove();};
+      const isExspenseUnit = document.querySelector("#exspense");
+      if (isTimeSlice){ isTimeSlice.remove(); };
+      if (isExspenseUnit){ isExspenseUnit.remove(); };
       get_time_slice_data(date);
     })
     
   })
 
+bookingBtn.addEventListener("click", event => {
+  request_data = {
+    "bookingDate": bookingDate,
+    "bookingTime": bookingTime,
+    "bookingTotalTime": bookingTotalTime,
+    "bookingPrice": bookingPrice
+  };
+  
+  console.log(request_data)
+})
+
 function get_time_slice_data(date){
   fetch('/calendar/response_period/', {
     method: "POST",
-    body:JSON.stringify({date: date})
+    body:JSON.stringify({date: date, username: queryName})
   }).then(response => (response.json())).then(
     data => {
       const now = new Date();
@@ -49,13 +70,16 @@ function get_time_slice_data(date){
           let afternoon = today_data.afternoon_today;
           let night = today_data.night_today;
           render_time_slice(morning, afternoon, night, date);
+          get_time_price(date);
         }else if (date != today && data.available_time){
           let morning = data.morning;
           let afternoon = data.afternoon;
           let night = data.night;
           render_time_slice(morning, afternoon, night, date);
+          get_time_price(date);
         }else{
           render_time_slice();
+          get_time_price(date);
         }
       }
 
@@ -83,7 +107,9 @@ function render_time_slice(morning=[], afternoon=[], night=[], date=""){
     timeElement.id = "time-slice";
     timeElement.textContent = `${element}`;
     timeElement.addEventListener("click", event =>{
-      console.log("YES", `${date} ${element}`)
+      bookingDate = `${date}`;
+      bookingTime = `${element}`;
+      console.log("YES", bookingDate, bookingTime);
     });
     morningElement.appendChild(timeElement);
   });
@@ -93,7 +119,7 @@ function render_time_slice(morning=[], afternoon=[], night=[], date=""){
   afternoonElement.className = "time-category";
   const afternoonTitle = document.createElement("div");
   afternoonTitle.className = "time-category-slice";
-  afternoonTitle.textContent = "中午";
+  afternoonTitle.textContent = "下午";
   afternoonElement.appendChild(afternoonTitle);
   afternoon.forEach(element => {
     const timeElement = document.createElement("div");
@@ -101,7 +127,9 @@ function render_time_slice(morning=[], afternoon=[], night=[], date=""){
     timeElement.id = "time-slice";
     timeElement.textContent = `${element}`;
     timeElement.addEventListener("click", event =>{
-      console.log("YES", `${date} ${element}`)
+      bookingDate = `${date}`;
+      bookingTime = `${element}`;
+      console.log("YES", bookingDate, bookingTime);
     })
     afternoonElement.appendChild(timeElement);
   });
@@ -119,10 +147,74 @@ function render_time_slice(morning=[], afternoon=[], night=[], date=""){
     timeElement.id = "time-slice";
     timeElement.textContent = `${element}`;
     timeElement.addEventListener("click", event =>{
-      console.log("YES", `${date} ${element}`)
+      bookingDate = `${date}`;
+      bookingTime = `${element}`;
+      console.log("YES", bookingDate, bookingTime);
     })
     nightElement.appendChild(timeElement);
   });
   containerElement.appendChild(nightElement);
   calendarElement.insertAdjacentElement("afterend", containerElement);
+}
+
+function get_time_price(date){
+  fetch('/calendar/response_time_price/',{
+    method:"POST",
+    body: JSON.stringify({date: date, username: queryName})
+  }).then(
+    response => (response.json())
+  ).then(
+    data => {
+      console.log(data);
+      const timeElement = document.querySelector("#time");
+      bookingTotalTime = `${data.time_slice}${data.time_slice_unit}`;
+      if (data.isDiscount){
+        // const timeElement = document.querySelector("#time");
+        bookingPrice = `${data.discount_price}`;
+        const exspenseElement = document.createElement("div");
+        exspenseElement.className = "container";
+        exspenseElement.id = "exspense";
+        const exspenseTitle = document.createElement("span");
+        exspenseTitle.className = "exspense-title";
+        exspenseTitle.textContent = "費用: ";
+        exspenseElement.appendChild(exspenseTitle);
+        const discountElement = document.createElement("span");
+        discountElement.textContent = `NT$${data.discount_price}`;
+        discountElement.className = "price";
+        exspenseElement.appendChild(discountElement);
+        const priceElement = document.createElement("span");
+        priceElement.textContent = `NT$${data.origin_price}`;
+        priceElement.style.textDecorationLine = "line-through";
+        priceElement.style.color = "grey";
+        priceElement.style.marginLeft = "10px";
+        priceElement.className = "price";
+        exspenseElement.appendChild(priceElement);
+        const exspenseUnit = document.createElement("span");
+        exspenseUnit.className = "exspense-unit";
+        exspenseUnit.textContent = `- 每 ${data.time_slice} ${data.time_slice_unit}`;
+        exspenseElement.appendChild(exspenseUnit);
+        timeElement.insertAdjacentElement("afterend", exspenseElement);
+
+      }else{
+        bookingPrice = `${data.origin_price}`;
+        const timeElement = document.querySelector("#time");
+        const exspenseElement = document.createElement("div");
+        exspenseElement.className = "container";
+        exspenseElement.id = "exspense";
+        const exspenseTitle = document.createElement("span");
+        exspenseTitle.className = "exspense-title";
+        exspenseTitle.textContent = "費用: ";
+        exspenseElement.appendChild(exspenseTitle);
+        const priceElement = document.createElement("span");
+        priceElement.textContent = `NT$${data.origin_price}`;
+        priceElement.className = "price";
+        exspenseElement.appendChild(priceElement);
+        const exspenseUnit = document.createElement("span");
+        exspenseUnit.className = "exspense-unit";
+        exspenseUnit.textContent = `- 每 ${data.time_slice} ${data.time_slice_unit}`;
+        exspenseElement.appendChild(exspenseUnit);
+        timeElement.insertAdjacentElement("afterend", exspenseElement);
+      }
+    }
+  )
 }

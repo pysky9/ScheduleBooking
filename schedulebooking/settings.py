@@ -83,10 +83,10 @@ WSGI_APPLICATION = 'schedulebooking.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'scheduleBooking', # DB Name
-        'USER': 'root',
+        'NAME': 'schedulebooking', # DB Name
+        'USER': 'admin',
         'PASSWORD': os.getenv('mysqlpw'),
-        'HOST': 'localhost',
+        'HOST': 'schedulebooking.cmyeqhfauonl.us-west-2.rds.amazonaws.com',
         'PORT': '3306',
 
     }
@@ -137,4 +137,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # 設定靜態資料夾路徑
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR/'static']
-

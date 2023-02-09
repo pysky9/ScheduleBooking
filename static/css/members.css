@@ -1,5 +1,4 @@
 body{
-    /* background-color: #f4f4f4 */
     background-color: #cfe2f3;
 }
 
@@ -17,12 +16,24 @@ body{
     font-size: 20px;
 }
 
+#logout{
+    cursor: pointer;
+}
+
+#url{
+    margin-top: 20px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 500;
+}
+
+
 #schedule-side-bar{
     margin-top: 20px;
 }
 
 #v-pills-tab{
     background-color: #fafafa;
+    border-radius: 10px;
 }
 
 .price{
