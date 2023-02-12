@@ -1,0 +1,26 @@
+body{
+    /* background-color: #f4f4f4 */
+    background-color: #cfe2f3;
+}
+
+.navbar-brand{
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 900;
+    padding-top: 5px;
+    font-size: 30px;
+}
+
+.navbar{
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 500;
+    padding-top: 5px;
+    font-size: 20px;
+}
+
+#line-setting{
+    margin-top: 20px;
+}
+
+#logout{
+    cursor: pointer;
+}

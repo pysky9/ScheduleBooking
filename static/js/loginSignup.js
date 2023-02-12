@@ -43,8 +43,6 @@ signupBtn.addEventListener("click", event => {
 
             if (data.ok){
                 location.reload();
-            }else{
-                console.log(`${data.error}`)
             }
         }
     )
@@ -70,7 +68,7 @@ loginBtn.addEventListener("click", event => {
     }).then(response => (response.json())).then(
         data => {
             if (data.ok){
-                location.href = '/members/member_page/';
+                location.href = `/members/member_page/${data.username}`;
                 
             }else{
                 location.href = "/"

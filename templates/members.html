@@ -7,6 +7,7 @@
         <title>吉時約</title>
         {% load static %}
         <link href="{% static 'css/members.css' %}" rel="stylesheet" type="text/css" />
+        <!-- <link href="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/css/members.css" rel="stylesheet" type="text/css" /> -->
     </head>
     <body>
 
@@ -19,23 +20,25 @@
               <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/members/member_page/">時段管理</a>
+                    <a class="nav-link active" aria-current="page" href="/members/member_page/{{name}}">時段管理</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/line/channel_setting/{{name}}">連動Line Officail Account</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" id="logout">登出</a>
                   </li>
-                  <!-- 
-                  <li class="nav-item">
-                    <a class="nav-link" href="#">訂單管理</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="#">報表管理</a>
-                  </li> -->
                 </ul>
               </div>
             </div>
           </nav>
-
+          <div class="container" id="url">
+            <span class="url-title">時段設定檢視：</span>
+            <a target="_blank" href="/calendar/views/{{name}}">schedule-booking.com/calendar/views/{{name}}</a>
+            <br/>
+            <span class="url-title">Line圖文表單連結：</span>
+            <a target="_blank" href="/line/linelogin/{{name}}">schedule-booking.com/line/linelogin/{{name}}</a>
+          </div>
           <form>
             {% csrf_token %}
             <div class="container" id="schedule-side-bar">
@@ -155,5 +158,6 @@
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofN4zfuZxLkoj1gXtW8ANNCe9d5Y3eG5eD" crossorigin="anonymous"></script>
         <script src="{%static 'js/members.js'%}"></script>
+        <!-- <script src="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/js/members.js"></script> -->
     </body>
 </html>

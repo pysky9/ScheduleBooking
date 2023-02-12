@@ -40,9 +40,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
+    'storages',
     'schedule',
     'membersApp',
     'calendarApp',
+    'cartApp',
+    'lineApp',
 ]
 
 MIDDLEWARE = [
@@ -53,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'schedulebooking.urls'
@@ -134,6 +139,30 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# 設定靜態資料夾路徑
+# # 設定靜態資料夾路徑
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR/'static']
+STATICFILES_DIRS = [BASE_DIR / 'static']
+
+
+# #Amazon S3 Configuration
+# AWS_ACCESS_KEY_ID = os.getenv('access_key_id')  #存取金鑰ID
+# AWS_SECRET_ACCESS_KEY = os.getenv('secret_access_key')  #私密存取金鑰
+# AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')  #Amazon S3儲存體名稱
+
+# #Django Storages Configuration
+# AWS_S3_FILE_OVERWRITE = False  #同名檔案是否要覆寫
+# AWS_DEFAULT_ACL = None
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage' #上傳的媒體檔案
+
+# STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
+
+# # CSRF Token
+CSRF_COOKIE_DOMAIN = '.schedule-booking.com'
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.schedule-booking.com'
+]
+
+# CORS
+CORS_ALLOW_ALL_ORIGINS = True

@@ -17,6 +17,7 @@ body{
 
 .container{
     margin-top: 35px;
+    width: 600px;
 }
 
 a{
@@ -127,6 +128,52 @@ a{
     margin-bottom: 25px;
 }
 
+#booking-button{
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+/* 購物車 */
+#cartContainer{
+    position: relative;
+    border-left: 1px solid grey;
+}
+
+.btn-close{
+    position: absolute;
+    left: 0;
+}
+
+.cart{
+    padding-top: 25px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 400;
+}
+
+#pay{
+    display: none;
+}
+
+.total-expense{
+    margin-bottom: 10px;
+}
+
+.background{
+    display: none;
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    z-index: 1;
+}
+
+@media(max-width:600px){
+    .container{
+        width: 360px;
+    }
+}
 
 @media(max-width:450px){
     .navbar-brand{

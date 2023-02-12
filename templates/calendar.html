@@ -9,10 +9,11 @@
         <script src="https://cdn.jsdelivr.net/npm/fullcalendar/index.global.min.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/fullcalendar/main.min.css" rel="stylesheet"></link>
         <link href="{% static 'css/calendar.css' %}" rel="stylesheet" type="text/css" />
+        <!-- <link href="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/css/calendar.css" rel="stylesheet" type="text/css" /> -->
 
     </head>
     <body>
-        <div class="container" id="navbar">
+        <div id="navbar">
             <nav class="navbar navbar-light bg-light">
                 <div class="container-fluid">
                   <a class="navbar-brand" href="#">吉時約 Schedule Booking</a>
@@ -24,13 +25,20 @@
             <div id='calendar'></div>
         </div>
 
-        <div class="container">
+        <div class="container" id="booking-button">
             <button type="button" class="btn btn-primary btn-lg">立即預約</button>
+        </div>
+        <div class="background"></div>
+
+        <div class="container" id="pay">
+            <div class="total-expense">總費用為</div>
+            <button type="button" class="btn btn-primary btn-lg">結帳GO</button>
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofN4zfuZxLkoj1gXtW8ANNCe9d5Y3eG5eD" crossorigin="anonymous"></script>
         <script src="{% static 'js/calendar.js' %}"></script>
+        <!-- <script src="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/js/calendar.js"></script> -->
     </body>
 </html>

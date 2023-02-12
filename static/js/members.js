@@ -197,7 +197,7 @@ function get_members_info(){
     data => {
       if (data.data){
         membersData = data.data;
-        showCalendarUrl(membersData.url);
+        // showCalendarUrl(membersData.url);
       }else{
         location.href = "/"
       }
@@ -205,21 +205,22 @@ function get_members_info(){
   )
 }
 
-function showCalendarUrl(url){
-  const navbar = document.querySelector(".navbar");
-  const urlContainer = document.createElement("div");
-  urlContainer.className = "container";
-  urlContainer.id = "url";
+// function showCalendarUrl(url){
+//   const navbar = document.querySelector(".navbar");
+//   const urlContainer = document.createElement("div");
+//   urlContainer.className = "container";
+//   urlContainer.id = "url";
 
-  const urlTitle = document.createElement("span");
-  urlTitle.className = "url-title";
-  urlTitle.textContent = "時段設定檢視/行事曆分享：";
-  urlContainer.appendChild(urlTitle);
+//   const urlTitle = document.createElement("span");
+//   urlTitle.className = "url-title";
+//   urlTitle.textContent = "時段設定檢視/行事曆分享：";
+//   urlContainer.appendChild(urlTitle);
 
-  const urlTag = document.createElement("a");
-  urlTag.href = `${url}`;
-  urlTag.textContent = `schedule-booking.com${url}`;
-  urlContainer.appendChild(urlTag);
+//   const urlTag = document.createElement("a");
+//   urlTag.href = `${url}`;
+//   urlTag.target = "_blank";
+//   urlTag.textContent = `schedule-booking.com${url}`;
+//   urlContainer.appendChild(urlTag);
 
-  navbar.insertAdjacentElement("afterend", urlContainer);
-}
+//   navbar.insertAdjacentElement("afterend", urlContainer);
+// }

@@ -8,7 +8,6 @@ from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest, Http
 from django.contrib.auth.hashers import make_password, check_password
 from django.views.decorators.csrf import csrf_exempt
 
-
 from dotenv import load_dotenv
 
 from membersApp.models import Members
@@ -23,8 +22,9 @@ def homepage(request):
 def login_signup(request):
     return render(request, "loginSignup.html")
 
-def member_page(request):
-    return render(request, "members.html")
+def member_page(request, username):
+    name = username
+    return render(request, "members.html", locals())
 
 def line_setting_page(request):
     return render(request, "lineSetting.html")
@@ -64,7 +64,7 @@ def login(request):
                 "exp": expiration_time
             }
             jwt_encode = jwt.encode(payload, jwt_key, algorithm = "HS256")
-            response = JsonResponse({"ok": True})
+            response = JsonResponse({"ok": True, "username": username})
             response.set_cookie(key="jwt_token", value=jwt_encode, expires=expiration_time)
             return response
         

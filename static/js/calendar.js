@@ -1,10 +1,15 @@
-const bookingBtn = document.querySelector(".btn")
+const bookingBtn = document.querySelector(".btn");
+const payElement = document.querySelector("#pay");
+const totalExpense = document.querySelector(".total-expense");
+const background = document.querySelector(".background");
+
 let bookingDate;
 let bookingTime;
 let bookingTotalTime;
 let bookingPrice;
 let pathname = window.location.pathname;
-let queryName = pathname.split("/")[3]
+let queryName = pathname.split("/")[3];
+
 
 document.addEventListener('DOMContentLoaded', function() {
     const calendarEl = document.getElementById('calendar')
@@ -19,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
           right: 'today prev,next',
       },
     })
+
     calendar.render();
 
     // 載入畫面渲染當日可用時段
@@ -31,7 +37,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // 使用者點擊日期顯示可用時段
     let date;
     calendar.on("dateClick", info=>{
+      dateBlockElement = info.dayEl
+
       date = info.dateStr;
+
+      info.dayEl.style.backgroundColor = "#0d6efd";
       const isTimeSlice = document.querySelector("#time");
       const isExspenseUnit = document.querySelector("#exspense");
       if (isTimeSlice){ isTimeSlice.remove(); };
@@ -41,15 +51,55 @@ document.addEventListener('DOMContentLoaded', function() {
     
   })
 
+
+let totalPrice = 0;
+
 bookingBtn.addEventListener("click", event => {
-  request_data = {
+  if (! (bookingDate && bookingTime)){
+    const errorMessages = document.createElement("h5");
+    errorMessages.className = "error-messages"
+    errorMessages.textContent = "請選擇預約日期與時段，謝謝。";
+    errorMessages.style.color = "grey";
+    errorMessages.style.marginLeft = "10px";
+    bookingBtn.insertAdjacentElement("afterEnd", errorMessages);
+    background.style.display = " block";
+    return;
+  }
+  let request_data = {
     "bookingDate": bookingDate,
     "bookingTime": bookingTime,
     "bookingTotalTime": bookingTotalTime,
-    "bookingPrice": bookingPrice
+    "bookingPrice": bookingPrice,
+    "bookingStatus": "booked",
+    "storeName": queryName
   };
   
-  console.log(request_data)
+
+  fetch('/cart/', {
+    method: "POST",
+    body: JSON.stringify({data: request_data})
+  }).then(
+    resp => (resp.json())
+  ).then(
+    data => {
+
+      let price = Number(bookingPrice);
+      totalPrice += price;
+
+      render_cart(bookingDate, bookingTime, bookingTotalTime, bookingPrice);
+      payElement.style.display = "block";
+      totalExpense.textContent = `總費用：${totalPrice}`;
+    }
+  )
+
+})
+
+// 點空白處 錯誤訊息消失
+background.addEventListener("click", event => {
+  const errorMessages = document.querySelector(".error-messages");
+  background.style.display = "none";
+  errorMessages.remove();
+
 })
 
 function get_time_slice_data(date){
@@ -94,6 +144,7 @@ function render_time_slice(morning=[], afternoon=[], night=[], date=""){
   const containerElement = document.createElement("div");
   containerElement.className = "container";
   containerElement.id = "time";
+
   // morning
   const morningElement = document.createElement("div");
   morningElement.className = "time-category";
@@ -109,7 +160,8 @@ function render_time_slice(morning=[], afternoon=[], night=[], date=""){
     timeElement.addEventListener("click", event =>{
       bookingDate = `${date}`;
       bookingTime = `${element}`;
-      console.log("YES", bookingDate, bookingTime);
+      timeElement.style.color = "red";
+
     });
     morningElement.appendChild(timeElement);
   });
@@ -129,7 +181,8 @@ function render_time_slice(morning=[], afternoon=[], night=[], date=""){
     timeElement.addEventListener("click", event =>{
       bookingDate = `${date}`;
       bookingTime = `${element}`;
-      console.log("YES", bookingDate, bookingTime);
+      timeElement.style.color = "red";
+
     })
     afternoonElement.appendChild(timeElement);
   });
@@ -149,12 +202,15 @@ function render_time_slice(morning=[], afternoon=[], night=[], date=""){
     timeElement.addEventListener("click", event =>{
       bookingDate = `${date}`;
       bookingTime = `${element}`;
-      console.log("YES", bookingDate, bookingTime);
+      timeElement.style.color = "red";
+
     })
     nightElement.appendChild(timeElement);
   });
   containerElement.appendChild(nightElement);
   calendarElement.insertAdjacentElement("afterend", containerElement);
+
+
 }
 
 function get_time_price(date){
@@ -165,11 +221,11 @@ function get_time_price(date){
     response => (response.json())
   ).then(
     data => {
-      console.log(data);
+   
       const timeElement = document.querySelector("#time");
       bookingTotalTime = `${data.time_slice}${data.time_slice_unit}`;
       if (data.isDiscount){
-        // const timeElement = document.querySelector("#time");
+
         bookingPrice = `${data.discount_price}`;
         const exspenseElement = document.createElement("div");
         exspenseElement.className = "container";
@@ -217,4 +273,54 @@ function get_time_price(date){
       }
     }
   )
+}
+
+function render_cart(date, time, totalTime, price){
+  const cartContainer = document.createElement("div");
+  cartContainer.className = "container";
+  cartContainer.id = "cartContainer";
+  
+  // close button
+  const closeButton = document.createElement("button");
+  closeButton.type = "button";
+  closeButton.className = "btn-close";
+  closeButton.ariaLabel = "Close";
+  cartContainer.appendChild(closeButton);
+
+  const cartElement = document.createElement("div");
+  cartElement.className = "cart";
+  const dateElement = document.createElement("div");
+  dateElement.textContent = `預約日期：${date}`;
+  cartElement.appendChild(dateElement);
+  const timeElement = document.createElement("div");
+  timeElement.textContent = `預約時段：${time}`;
+  cartElement.appendChild(timeElement);
+  const totalTimeElement = document.createElement("div");
+  totalTimeElement.textContent = `時間總長：${totalTime}`;
+  cartElement.appendChild(totalTimeElement);
+  const priceElement = document.createElement("div");
+  priceElement.textContent = `預約費用：${price}`;
+  cartElement.appendChild(priceElement);
+
+  cartContainer.appendChild(cartElement);
+
+  payElement.insertAdjacentElement("beforeBegin", cartContainer);
+
+  // 刪除購物清單
+  closeButton.addEventListener("click", event => {
+    
+    totalPrice -= price;
+    cartContainer.remove();
+    totalExpense.textContent = `總費用：${totalPrice}`;
+
+    // 購物清單刪除後 如果購物車沒有預約單 移除總費用與結帳GO
+    setTimeout(function(){
+      const cartContainers = document.querySelectorAll("#cartContainer");
+      if (cartContainers.length === 0){
+        payElement.remove();
+        location.reload();
+      }
+    }, 3)
+  })
+
 }

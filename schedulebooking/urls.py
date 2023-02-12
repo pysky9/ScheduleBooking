@@ -23,4 +23,6 @@ urlpatterns = [
     path('', login_signup),
     path('members/', include('membersApp.urls')), # 專案urls.py統一管理
     path('calendar/', include('calendarApp.urls')),
+    path('cart/', include('cartApp.urls')),
+    path('line/', include('lineApp.urls')),
 ]

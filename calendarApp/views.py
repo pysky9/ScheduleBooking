@@ -1,8 +1,10 @@
 from datetime import date, datetime
 import json
+import requests
+
 
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 
 from membersApp.models import Members
@@ -60,7 +62,6 @@ def calendar_setting(request):
 def response_time_period(request):
     if request.method == "POST":
         data = json.loads(request.body)
-        print(data["username"])
         request_date_split = data['date'].split('-')
         request_date_year = int(request_date_split[0])
         request_date_month = int(request_date_split[1])
@@ -77,7 +78,9 @@ def response_time_period(request):
         id = query_member[0].id
         
         # 商家設定日期
-        query = Time_setting.objects.filter(members_id=1) 
+        query = Time_setting.objects.filter(members_id=id) 
+        if not query:
+            return JsonResponse({"ok": False, "data": None}) 
 
         # 時段邏輯
         begin_time = query[0].begin_time
@@ -348,11 +351,12 @@ def time_slice_format(begin_time_hours, begin_time_minutes):
 def response_time_price(request):
     # 商家設定的時段價錢
     data = json.loads(request.body)
-    print("price", data)
     request_date = data["date"]
 
     # 確認商家&取得member id
     query_member = Members.objects.filter(username=data["username"])
+    if not query_member:
+        return JsonResponse({"ok": False, "data": None}) 
     id = query_member[0].id
 
 
@@ -411,3 +415,5 @@ def convert_to_datetime(date):
     month = int(date_split[1])
     day = int(date_split[2])
     return datetime(year, month, day)
+
+
