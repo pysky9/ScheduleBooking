@@ -4,6 +4,7 @@ import jwt
 import random
 import string
 import os
+from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
 from django.shortcuts import render, HttpResponseRedirect
@@ -11,7 +12,7 @@ from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 
 from membersApp.models import Members
-from lineApp.models import Channel_data
+from lineApp.models import Channel_data, Customers
 
 load_dotenv()
 
@@ -22,10 +23,10 @@ def generate_random_string(length):
     letters_and_digits = string.ascii_letters + string.digits
     result = ''.join(random.choice(letters_and_digits) for i in range(length))
     return result
-random_state = generate_random_string(10)
+random_state = generate_random_string(6)
+# random_state = "389hxy"
 
 
-# Create your views here.
 def line_login(request, username):
     return render(request, 'linelogin.html')
 
@@ -67,16 +68,19 @@ def get_channel_data(request):
 # 由後端提供機敏資料
 def get_line_data(request, username):
     db_data = Channel_data.objects.filter(username=username)
-
     data = {
         "clientID": db_data[0].channel_id,#從DB拿
-        "redirect_uri": "http://localhost:8000/line/recieve/",
+        # "redirect_uri": "http://localhost:8000/line/recieve/",#開發測試使用
+        "redirect_uri": "https://www.schedule-booking.com/line/recieve/",
         "state": random_state
     }
 
     return JsonResponse(data)
 
+# 接收line登入 取得個人資訊
+@csrf_exempt
 def recieve(request, username):
+    # global random_state
     db_data = Channel_data.objects.filter(username=username)
     code = request.GET.get("code")
     state = request.GET.get("state")
@@ -90,7 +94,8 @@ def recieve(request, username):
         data={
             "grant_type": "authorization_code",
             "code": code,
-            "redirect_uri": f"http://localhost:8000/line/recieve/{username}",
+            # "redirect_uri": f"http://localhost:8000/line/recieve/{username}",#測試開發
+            "redirect_uri":f"https://www.schedule-booking.com/line/recieve/{username}",
             "client_id": db_data[0].channel_id,
             "client_secret": db_data[0].channel_secret,
         },
@@ -106,8 +111,6 @@ def recieve(request, username):
     }
     response = requests.get("https://api.line.me/v2/profile", headers=headers)
     
-    profile = response.json()
-
     # # id_token
     url = "https://api.line.me/oauth2/v2.1/verify"
 
@@ -117,8 +120,42 @@ def recieve(request, username):
     }
 
     response = requests.post(url, data=data)
+    profile = response.json()
+    name = profile["name"]
+    picture = profile["picture"]
+    email = profile["email"]
+    # 廠商members id
+    query_store = Members.objects.filter(username=username)
+    
+    # DB無消費者資料 存入DB
+    query_db = Customers.objects.filter(email= profile["email"], members_id=query_store[0].id)
+    if not query_db:
+        customer = Customers()
+        customer.members = Members(query_store[0].id)
+        customer.username = name
+        customer.email = email
+        customer.picture = picture
+        customer.save()
 
-    return HttpResponseRedirect(f"http://localhost:8000/calendar/views/{username}")
+    # 登入後 消費者資訊存入JWT
+    expiration_time = datetime.utcnow() + timedelta(weeks=1)
+    payload = {
+        "store_id": f"{query_store[0].id}",
+        "name": f"{name}",
+        "email": f"{email}",
+        "exp": expiration_time
+    }
+    jwt_encode = jwt.encode(payload, jwt_key, algorithm = "HS256")
+    # response = render(request, "customer.html", locals())
+    # response = HttpResponseRedirect(f"http://localhost:8000/calendar/views/{username}")#測試開發
+    response = HttpResponseRedirect(f"https://www.schedule-booking.com/calendar/views/{username}")
+    response.set_cookie(key="customer_token", value=jwt_encode, expires=expiration_time)
+    return response
+
+    # return render(request, "customer.html", locals())
+    # return HttpResponseRedirect(f"http://localhost:8000/calendar/views/{username}")
+
+
 
 
 

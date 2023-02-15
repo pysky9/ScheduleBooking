@@ -1,7 +1,8 @@
-const bookingBtn = document.querySelector(".btn");
+const bookingBtn = document.querySelector("#booking-btn");
 const payElement = document.querySelector("#pay");
 const totalExpense = document.querySelector(".total-expense");
 const background = document.querySelector(".background");
+const navbarBrand = document.querySelector(".navbar-brand")
 
 let bookingDate;
 let bookingTime;
@@ -51,49 +52,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
   })
 
-
-let totalPrice = 0;
-
-bookingBtn.addEventListener("click", event => {
-  if (! (bookingDate && bookingTime)){
-    const errorMessages = document.createElement("h5");
-    errorMessages.className = "error-messages"
-    errorMessages.textContent = "請選擇預約日期與時段，謝謝。";
-    errorMessages.style.color = "grey";
-    errorMessages.style.marginLeft = "10px";
-    bookingBtn.insertAdjacentElement("afterEnd", errorMessages);
-    background.style.display = " block";
-    return;
-  }
-  let request_data = {
-    "bookingDate": bookingDate,
-    "bookingTime": bookingTime,
-    "bookingTotalTime": bookingTotalTime,
-    "bookingPrice": bookingPrice,
-    "bookingStatus": "booked",
-    "storeName": queryName
-  };
-  
-
-  fetch('/cart/', {
-    method: "POST",
-    body: JSON.stringify({data: request_data})
-  }).then(
-    resp => (resp.json())
-  ).then(
-    data => {
-
-      let price = Number(bookingPrice);
-      totalPrice += price;
-
-      render_cart(bookingDate, bookingTime, bookingTotalTime, bookingPrice);
-      payElement.style.display = "block";
-      totalExpense.textContent = `總費用：${totalPrice}`;
-    }
-  )
-
-})
-
 // 點空白處 錯誤訊息消失
 background.addEventListener("click", event => {
   const errorMessages = document.querySelector(".error-messages");
@@ -121,15 +79,18 @@ function get_time_slice_data(date){
           let night = today_data.night_today;
           render_time_slice(morning, afternoon, night, date);
           get_time_price(date);
+          bookingBtn.style.display = "block";
         }else if (date != today && data.available_time){
           let morning = data.morning;
           let afternoon = data.afternoon;
           let night = data.night;
           render_time_slice(morning, afternoon, night, date);
           get_time_price(date);
+          bookingBtn.style.display = "block";
         }else{
           render_time_slice();
           get_time_price(date);
+          bookingBtn.style.display = "none";
         }
       }
 
@@ -209,8 +170,6 @@ function render_time_slice(morning=[], afternoon=[], night=[], date=""){
   });
   containerElement.appendChild(nightElement);
   calendarElement.insertAdjacentElement("afterend", containerElement);
-
-
 }
 
 function get_time_price(date){
@@ -275,52 +234,6 @@ function get_time_price(date){
   )
 }
 
-function render_cart(date, time, totalTime, price){
-  const cartContainer = document.createElement("div");
-  cartContainer.className = "container";
-  cartContainer.id = "cartContainer";
-  
-  // close button
-  const closeButton = document.createElement("button");
-  closeButton.type = "button";
-  closeButton.className = "btn-close";
-  closeButton.ariaLabel = "Close";
-  cartContainer.appendChild(closeButton);
-
-  const cartElement = document.createElement("div");
-  cartElement.className = "cart";
-  const dateElement = document.createElement("div");
-  dateElement.textContent = `預約日期：${date}`;
-  cartElement.appendChild(dateElement);
-  const timeElement = document.createElement("div");
-  timeElement.textContent = `預約時段：${time}`;
-  cartElement.appendChild(timeElement);
-  const totalTimeElement = document.createElement("div");
-  totalTimeElement.textContent = `時間總長：${totalTime}`;
-  cartElement.appendChild(totalTimeElement);
-  const priceElement = document.createElement("div");
-  priceElement.textContent = `預約費用：${price}`;
-  cartElement.appendChild(priceElement);
-
-  cartContainer.appendChild(cartElement);
-
-  payElement.insertAdjacentElement("beforeBegin", cartContainer);
-
-  // 刪除購物清單
-  closeButton.addEventListener("click", event => {
-    
-    totalPrice -= price;
-    cartContainer.remove();
-    totalExpense.textContent = `總費用：${totalPrice}`;
-
-    // 購物清單刪除後 如果購物車沒有預約單 移除總費用與結帳GO
-    setTimeout(function(){
-      const cartContainers = document.querySelectorAll("#cartContainer");
-      if (cartContainers.length === 0){
-        payElement.remove();
-        location.reload();
-      }
-    }, 3)
-  })
-
-}
+navbarBrand.addEventListener("click", event => {
+  location.href = `/members/member_page/${queryName}`;
+})

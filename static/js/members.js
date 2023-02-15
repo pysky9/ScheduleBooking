@@ -21,25 +21,25 @@ selectElement.forEach(function(select){
 
 
 // 點"新增時段" -> HTML插入選單
-const timeSetElement = document.querySelector(".time-set");
-const addTimePeriod = document.querySelector(".create-time-period");
-addTimePeriod.addEventListener("click", event => {
-  const newTr = document.createElement("tr");
-  newTr.innerHTML = `
-  <td>
-    <select class="time-setting" title="time-setting-category">
-      <option>請選擇</option>                          
-      <option value="每日幾點到幾點">每日幾點到幾點</option>
-      <option value="特定時間範圍，每日幾點到幾點">特定時間範圍，每日幾點到幾點</option>
-    </select>
-  </td>
-  <td class="time-select-1"><input type="time"> <input type="time"></td>
-  <td class="time-select-2"><input type="date"> <input type="date"></td>
-  <td class="time-select-2"><input type="time"> <input type="time"></td>
-  `
-  timeSetElement.appendChild(newTr);
-  selectElement = document.querySelectorAll(".time-setting");
-})
+// const timeSetElement = document.querySelector(".time-set");
+// const addTimePeriod = document.querySelector(".create-time-period");
+// addTimePeriod.addEventListener("click", event => {
+//   const newTr = document.createElement("tr");
+//   newTr.innerHTML = `
+//   <td>
+//     <select class="time-setting" title="time-setting-category">
+//       <option>請選擇</option>                          
+//       <option value="每日幾點到幾點">每日幾點到幾點</option>
+//       <option value="特定時間範圍，每日幾點到幾點">特定時間範圍，每日幾點到幾點</option>
+//     </select>
+//   </td>
+//   <td class="time-select-1"><input type="time"> <input type="time"></td>
+//   <td class="time-select-2"><input type="date"> <input type="date"></td>
+//   <td class="time-select-2"><input type="time"> <input type="time"></td>
+//   `
+//   timeSetElement.appendChild(newTr);
+//   selectElement = document.querySelectorAll(".time-setting");
+// })
 
 // 訂金選項顯示&隱藏
 

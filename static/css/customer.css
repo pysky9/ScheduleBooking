@@ -1,0 +1,36 @@
+body{
+    background-color: #cfe2f3;
+}
+
+.navbar-brand{
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 900;
+    padding-top: 5px;
+    font-size: 30px;
+}
+
+#customer{
+    display: flex;
+    flex-wrap: wrap;
+    width: 360px;
+    margin-top: 30px;
+    justify-content: center;
+    text-align: center;
+}
+
+.customer-picture{
+    width: 100px;
+    border-radius: 50px;
+}
+
+.customer-info{
+    width: 360px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 400;
+    padding-top: 5px;
+    font-size: 20px;
+}
+
+#customer-btn{
+    margin-top: 25px;
+}
