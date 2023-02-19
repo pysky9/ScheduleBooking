@@ -42,7 +42,16 @@ signupBtn.addEventListener("click", event => {
         data => {
 
             if (data.ok){
-                location.reload();
+                const msg = document.createElement("span");
+                msg.className = "msg";
+                msg.textContent = "註冊成功";
+                signupBtn.insertAdjacentElement("afterend", msg);
+                background.style.display = "block";
+                // location.reload();
+                setTimeout(() => {
+                    loginElement.style.display = "block";
+                    signupElemnt.style.display = "none";
+                }, 1000);
             }
         }
     )
@@ -68,7 +77,15 @@ loginBtn.addEventListener("click", event => {
     }).then(response => (response.json())).then(
         data => {
             if (data.ok){
-                location.href = `/members/member_page/${data.username}`;
+                const msg = document.createElement("span");
+                msg.className = "msg";
+                msg.textContent = "登入成功";
+                loginBtn.insertAdjacentElement("afterend", msg);
+                background.style.display = "block";
+                setTimeout(() => {
+                    location.href = `/members/member_page/${data.username}`;
+                }, 1000);
+                
                 
             }else{
                 location.href = "/"
@@ -100,7 +117,7 @@ function userDataNotValidation(emailValue, passwordValue, btn, formTitle, userna
     let emailRegrex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     let emailIsValid = emailRegrex.test(emailValue);
 
-    let passwordRegrex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    let passwordRegrex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
     let passwordIsValid = passwordRegrex.test(passwordValue);
 
     if (! emailIsValid){

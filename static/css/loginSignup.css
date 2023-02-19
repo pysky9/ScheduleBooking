@@ -41,9 +41,13 @@ body{
     margin-top: 10px;
 }
 
-#login{
+#signup{
     display: none;
 }
+
+/* #login{
+    display: none;
+} */
 
 #buttonContainer{
     margin-top: 15px;

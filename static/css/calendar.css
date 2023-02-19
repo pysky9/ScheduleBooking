@@ -15,6 +15,20 @@ body{
     font-size:30px;
 }
 
+#content{
+    position: relative;
+}
+
+#loading{
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background-color: #cfe2f3;
+    z-index: 10;
+}
+
 .container{
     margin-top: 35px;
     width: 600px;
@@ -85,6 +99,13 @@ a{
 }
 
 /* 時段 */
+.description{
+    width: 600px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 300;
+    color: grey;
+}
+
 #time{
     display:flex;
     justify-content: center;
@@ -170,7 +191,7 @@ a{
 }
 
 @media(max-width:600px){
-    .container{
+    .container, .description{
         width: 360px;
     }
 }

@@ -90,3 +90,5 @@ def get_members_info(request):
         return JsonResponse({"data": data})
     except:
         return JsonResponse({"data": None})
+
+

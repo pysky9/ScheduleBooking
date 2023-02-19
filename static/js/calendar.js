@@ -11,6 +11,20 @@ let bookingPrice;
 let pathname = window.location.pathname;
 let queryName = pathname.split("/")[3];
 
+// 網頁laoding
+window.addEventListener('load', function() {
+  const loading = document.querySelector("#loading");
+  let percent = 0;
+  let interval = setInterval(function() {
+  //   percent += Math.floor(Math.random() * 30);
+      percent += 20;
+   
+    if (percent >= 100) {
+      clearInterval(interval);
+      loading.style.display = 'none';
+    }
+  }, 800);
+});
 
 document.addEventListener('DOMContentLoaded', function() {
     const calendarEl = document.getElementById('calendar')
@@ -52,6 +66,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
   })
 
+
+
 // 點空白處 錯誤訊息消失
 background.addEventListener("click", event => {
   const errorMessages = document.querySelector(".error-messages");
@@ -72,12 +88,13 @@ function get_time_slice_data(date){
       const day = now.getDate();
       let today = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
       if (data.OK){
+
         if (date === today){
           const today_data = data.today;
           let morning = today_data.morning_today;
           let afternoon = today_data.afternoon_today;
           let night = today_data.night_today;
-          render_time_slice(morning, afternoon, night, date);
+          render_time_slice(morning, afternoon, night ,date);
           get_time_price(date);
           bookingBtn.style.display = "block";
         }else if (date != today && data.available_time){
@@ -105,6 +122,7 @@ function render_time_slice(morning=[], afternoon=[], night=[], date=""){
   const containerElement = document.createElement("div");
   containerElement.className = "container";
   containerElement.id = "time";
+
 
   // morning
   const morningElement = document.createElement("div");
@@ -233,7 +251,3 @@ function get_time_price(date){
     }
   )
 }
-
-navbarBrand.addEventListener("click", event => {
-  location.href = `/members/member_page/${queryName}`;
-})

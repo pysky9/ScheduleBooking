@@ -1,4 +1,4 @@
-
+const orderButton = document.querySelector("#button-order")
 let totalPrice = 0;
 let bookingId;
 let customerName;
@@ -52,7 +52,7 @@ bookingBtn.addEventListener("click", event => {
   
   })
 
-  function render_cart(date, time, totalTime, price, bookingId){
+function render_cart(date, time, totalTime, price, bookingId){
     totalPrice += Number(price);
     const cartContainer = document.createElement("div");
     cartContainer.className = "container";
@@ -68,18 +68,23 @@ bookingBtn.addEventListener("click", event => {
     const cartElement = document.createElement("div");
     cartElement.className = "cart";
     const bookingIdElement = document.createElement("div");
+    bookingIdElement.className = "booking-id";
     bookingIdElement.textContent = `預約編號：${bookingId}`;
     cartElement.appendChild(bookingIdElement);
     const dateElement = document.createElement("div");
+    dateElement.className = "booking-date";
     dateElement.textContent = `預約日期：${date}`;
     cartElement.appendChild(dateElement);
     const timeElement = document.createElement("div");
+    timeElement.className = "booking-time";
     timeElement.textContent = `預約時段：${time}`;
     cartElement.appendChild(timeElement);
     const totalTimeElement = document.createElement("div");
+    totalTimeElement.className = "booking-total-time";
     totalTimeElement.textContent = `時間總長：${totalTime}`;
     cartElement.appendChild(totalTimeElement);
     const priceElement = document.createElement("div");
+    priceElement.className = "booking-price"
     priceElement.textContent = `預約費用：${price}`;
     cartElement.appendChild(priceElement);
   
@@ -122,7 +127,10 @@ bookingBtn.addEventListener("click", event => {
   }
 
 function getCartRecord(){
-    fetch("/cart/record/").then(
+    fetch("/cart/record/", {
+      method: "POST",
+      body: JSON.stringify({"storeName": queryName})
+    }).then(
         resp => (resp.json())
     ).then(
         data => {
@@ -143,3 +151,41 @@ function getCartRecord(){
         }
     )
 }
+
+orderButton.addEventListener("click", event => {
+    const bookingID = document.querySelectorAll(".booking-id");
+    const bookingDate = document.querySelectorAll(".booking-date");
+    const bookingTime = document.querySelectorAll(".booking-time");
+    const bookingTotalTime = document.querySelectorAll(".booking-total-time");
+    const bookingPrice = document.querySelectorAll(".booking-price");
+    let orderData = [];
+    for (let i = 0; i < bookingID.length; i++){
+        let data = {
+          "booking_id": bookingID[i].textContent.split("：")[1],
+          "booking_date": bookingDate[i].textContent.split("：")[1],
+          "booking_time": bookingTime[i].textContent.split("：")[1],
+          "booking_total_time": bookingTotalTime[i].textContent.split("：")[1],
+          "booking_price": bookingPrice[i].textContent.split("：")[1],
+          "order_status": "ordering"
+        }
+        orderData.push(data);
+    }
+    responseData = {
+        "orderData": orderData
+    }
+
+    fetch("/order/recieve_order/", {
+        method: "POST",
+        body: JSON.stringify(responseData)
+    }).then(
+        response => (response.json())
+    ).then(
+        data => {
+            if (data.ok){
+              location.href = `/order/check_order/${data.orderId}`;
+            }else{
+              console.log(data.msg)
+            }
+        }
+    )
+  })

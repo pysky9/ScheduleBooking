@@ -59,13 +59,18 @@ def cancel_booking(request): #取消預約更改bookingStatus
     except Exception as err:
         return JsonResponse({"ok": False, "message": f"{err}"})
 
+@csrf_exempt
 def record(request):
     get_cookie = request.COOKIES.get("customer_token")
     try:
         payloads = jwt.decode(get_cookie, jwt_key, algorithms = "HS256")
-        customer_query = Customers.objects.filter(email=payloads["email"])
+        customer_query = Customers.objects.filter(email = payloads["email"])
         customer_id = customer_query[0].id
-        record_query = Booking.objects.filter(customer_id_id = customer_id, booking_status = "booked")
+
+        data = json.loads(request.body)
+        store_id = Members.objects.filter(username = data["storeName"])[0].id
+
+        record_query = Booking.objects.filter(customer_id_id = customer_id, members_id_id = store_id, booking_status = "booked")
         response_data = []
         if record_query:
             for book in record_query:
@@ -77,7 +82,8 @@ def record(request):
                     "booking_price": book.booking_price
                 }
                 response_data.append(data)
-        return JsonResponse({"ok": True, "data": response_data})
+            return JsonResponse({"ok": True, "data": response_data})
+        return JsonResponse({"ok": False, "message": "無預訂單資料"})
     except Exception as err:
         return JsonResponse({"ok": False, "message": f"{err}"})
         

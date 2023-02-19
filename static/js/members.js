@@ -19,28 +19,6 @@ selectElement.forEach(function(select){
   })
 })
 
-
-// 點"新增時段" -> HTML插入選單
-// const timeSetElement = document.querySelector(".time-set");
-// const addTimePeriod = document.querySelector(".create-time-period");
-// addTimePeriod.addEventListener("click", event => {
-//   const newTr = document.createElement("tr");
-//   newTr.innerHTML = `
-//   <td>
-//     <select class="time-setting" title="time-setting-category">
-//       <option>請選擇</option>                          
-//       <option value="每日幾點到幾點">每日幾點到幾點</option>
-//       <option value="特定時間範圍，每日幾點到幾點">特定時間範圍，每日幾點到幾點</option>
-//     </select>
-//   </td>
-//   <td class="time-select-1"><input type="time"> <input type="time"></td>
-//   <td class="time-select-2"><input type="date"> <input type="date"></td>
-//   <td class="time-select-2"><input type="time"> <input type="time"></td>
-//   `
-//   timeSetElement.appendChild(newTr);
-//   selectElement = document.querySelectorAll(".time-setting");
-// })
-
 // 訂金選項顯示&隱藏
 
 const deposit = document.querySelector(".deposit");
@@ -197,30 +175,10 @@ function get_members_info(){
     data => {
       if (data.data){
         membersData = data.data;
-        // showCalendarUrl(membersData.url);
+
       }else{
         location.href = "/"
       }
     }
   )
 }
-
-// function showCalendarUrl(url){
-//   const navbar = document.querySelector(".navbar");
-//   const urlContainer = document.createElement("div");
-//   urlContainer.className = "container";
-//   urlContainer.id = "url";
-
-//   const urlTitle = document.createElement("span");
-//   urlTitle.className = "url-title";
-//   urlTitle.textContent = "時段設定檢視/行事曆分享：";
-//   urlContainer.appendChild(urlTitle);
-
-//   const urlTag = document.createElement("a");
-//   urlTag.href = `${url}`;
-//   urlTag.target = "_blank";
-//   urlTag.textContent = `schedule-booking.com${url}`;
-//   urlContainer.appendChild(urlTag);
-
-//   navbar.insertAdjacentElement("afterend", urlContainer);
-// }

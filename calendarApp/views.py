@@ -2,7 +2,6 @@ from datetime import date, datetime
 import json
 import requests
 
-
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
@@ -56,7 +55,9 @@ def calendar_setting(request):
         order_audit_cancel.members = Members(data['membersData']['id'])
         order_audit_cancel.save()
 
-    return JsonResponse({"ok": True})
+        return JsonResponse({"ok": True})
+    
+    return JsonResponse({"ok": False})
 
 @csrf_exempt
 def response_time_period(request):
@@ -81,7 +82,7 @@ def response_time_period(request):
         query = Time_setting.objects.filter(members_id=id) 
         if not query:
             return JsonResponse({"ok": False, "data": None}) 
-
+        preordering_time = f"{query[0].pre_ordering_numbers}{query[0].pre_ordering_unit}"
         # 時段邏輯
         begin_time = query[0].begin_time
         end_time = query[0].end_time
@@ -130,7 +131,8 @@ def response_time_period(request):
                         "night_today": night_today
                     },
                     "time_slice": query[0].time_slice,
-                    "time_slice_unit": query[0].time_slice_unit
+                    "time_slice_unit": query[0].time_slice_unit,
+                    "preordering_time": preordering_time
                     }
                 return JsonResponse(response_data)
             if today.date() < request_date.date() <= db_end_date.date():
@@ -153,7 +155,8 @@ def response_time_period(request):
                         "night_today": night_today
                     },
                     "time_slice": query[0].time_slice,
-                    "time_slice_unit": query[0].time_slice_unit
+                    "time_slice_unit": query[0].time_slice_unit,
+                    "preordering_time": preordering_time
                     }
                 return JsonResponse(response_data)
             if request_date.date() > db_end_date.date() or request_date.date() < today.date():
@@ -176,7 +179,8 @@ def response_time_period(request):
                         "night_today": night_today
                     },
                     "time_slice": query[0].time_slice,
-                    "time_slice_unit": query[0].time_slice_unit
+                    "time_slice_unit": query[0].time_slice_unit,
+                    "preordering_time": preordering_time
                     }
                 return JsonResponse(response_data)
 
@@ -199,7 +203,8 @@ def response_time_period(request):
                         "night_today": night_today
                     },
                     "time_slice": query[0].time_slice,
-                    "time_slice_unit": query[0].time_slice_unit
+                    "time_slice_unit": query[0].time_slice_unit,
+                    "preordering_time": preordering_time
                     }
                 return JsonResponse(response_data)
             if request_date.date() > today.date():
@@ -220,7 +225,8 @@ def response_time_period(request):
                         "night_today": night_today
                     },
                     "time_slice": query[0].time_slice,
-                    "time_slice_unit": query[0].time_slice_unit
+                    "time_slice_unit": query[0].time_slice_unit,
+                    "preordering_time": preordering_time
                     }
                 return JsonResponse(response_data)
             if request_date.date() < today.date():
@@ -241,10 +247,11 @@ def response_time_period(request):
                         "night_today": night_today
                     },
                     "time_slice": query[0].time_slice,
-                    "time_slice_unit": query[0].time_slice_unit
+                    "time_slice_unit": query[0].time_slice_unit,
+                    "preordering_time": preordering_time
                     }
                 return JsonResponse(response_data)
-
+    return JsonResponse({"ok": False})
 
 def generate_time_slice(begin_time, end_time, time_slice, time_slice_unit,  request_date):
     begin_time_hours = begin_time.split(":")[0]
