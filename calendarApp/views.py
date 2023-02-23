@@ -1,6 +1,10 @@
 from datetime import date, datetime
 import json
+import jwt
 import requests
+import os
+
+from dotenv import load_dotenv
 
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseBadRequest
@@ -8,7 +12,11 @@ from django.views.decorators.csrf import csrf_exempt
 
 from membersApp.models import Members
 from calendarApp.models import Time_setting, Time_pricing, Pay_deposit, Order_audit_cancel
+from cartApp.models import Booking
+from orderApp.models import Order
 
+load_dotenv()
+jwt_key = os.getenv("jwt_key")
 
 time_setting = Time_setting()
 time_pricing = Time_pricing()
@@ -422,8 +430,46 @@ def response_time_price(request):
     }
     return JsonResponse(response_data)
 
-
-
+@csrf_exempt
+def get_reservation_time(request):
+    if request.method == "POST":
+        get_cookie = request.COOKIES.get("customer_token")
+        try:
+            payloads = jwt.decode(get_cookie, jwt_key, algorithms = "HS256")
+            date = json.loads(request.body)["date"]
+            try:
+                booking_in_cart = Booking.objects.filter(members_id_id=payloads["store_id"], booking_date=date, booking_status="booked")
+                order_unpaid = Order.objects.filter(members_id=payloads["store_id"], order_date=date, order_status="ordering")
+                order_paid = Order.objects.filter(members_id=payloads["store_id"], order_date=date, order_status="payed")
+                reservation_time_list = []
+                if booking_in_cart:
+                    for booking in booking_in_cart:
+                        reservation_time_data = {
+                            "reservation_date": booking.booking_date,
+                            "reservation_time": booking.booking_time
+                        }
+                        reservation_time_list.append(reservation_time_data)
+                if order_unpaid:
+                    for ordering in order_unpaid:
+                        reservation_time_data = {
+                            "reservation_date": ordering.order_date,
+                            "reservation_time": ordering.order_time
+                        }
+                        reservation_time_list.append(reservation_time_data)
+                if order_paid:
+                    for ordered in order_paid:
+                        reservation_time_data = {
+                            "reservation_date": ordered.order_date,
+                            "reservation_time": ordered.order_time
+                        }
+                        reservation_time_list.append(reservation_time_data)
+                return JsonResponse({"ok": True, "reservation_time_list": reservation_time_list})
+            except Exception as err:
+                print(err)
+                return JsonResponse({"ok": False, "msg": "server went wrong"})
+        except:
+            return JsonResponse({"ok": False, "message": "請先登入"})
+    return JsonResponse({"ok": False, "msg": "wrong HTTP Method"})
 
 def convert_to_datetime(date):
     date_split = date.split("-")

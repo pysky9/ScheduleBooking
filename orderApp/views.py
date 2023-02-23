@@ -177,11 +177,13 @@ def get_unpaid_order(request):
         payloads = jwt.decode(get_cookie, jwt_key, algorithms = "HS256")
         try:
             orders = Order.objects.filter(customers=payloads["customer_id"], order_status="ordering")
-            orderIds = set()
-            for order in orders:
-                orderIds.add(order.order_id)
-            orderId = [id for id in orderIds]
-            return JsonResponse({"ok": True, "orderId": orderId})
+            if order:
+                orderIds = set()
+                for order in orders:
+                    orderIds.add(order.order_id)
+                orderId = [id for id in orderIds]
+                return JsonResponse({"ok": True, "orderId": orderId})
+            return JsonResponse({"ok": True, "orderId": None})
         except:
             return JsonResponse({"ok": False, "msg": "server went wrong"})
     except:

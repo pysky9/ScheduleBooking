@@ -9,7 +9,8 @@ urlpatterns = [
     path('response_period/', views.response_time_period),
     path('response_time_price/', views.response_time_price),
     path('booked_calendar/<storename>', views.booked_calendar),
-    path('time_setting_records/<storename>', views.time_setting_records)
+    path('time_setting_records/<storename>', views.time_setting_records),
+    path('get_reservation_time/', views.get_reservation_time)
     # path('recieve/<username>', views.recieve),
     
 ]

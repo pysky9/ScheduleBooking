@@ -44,7 +44,7 @@ bookingBtn.addEventListener("click", event => {
             render_cart(bookingDate, bookingTime, bookingTotalTime, bookingPrice, bookingId);
             payElement.style.display = "block";
             totalExpense.textContent = `總費用：${totalPrice}`;
-
+            location.reload();
 
 
         }
@@ -196,10 +196,12 @@ function unpaid(){
         response => (response.json())
     ).then(
         data => {
-            if (data.ok){
+            if (data.ok && data.orderId){
                 let unpaidOrderId = data.orderId[0];
                 location.href = `/order/check_order/${unpaidOrderId}`;
-            } 
+            }else if (data.ok && !data.orderId){
+                location.href = `/calendar/views/${queryName}`;
+            }
         }
     )
 }

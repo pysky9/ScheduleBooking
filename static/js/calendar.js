@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const month = now.getMonth() + 1;
     const day = now.getDate();
     get_time_slice_data(`${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`);
-
+    // setTimeout(getReservationTime(`${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`), 2000);
     // 使用者點擊日期顯示可用時段
     let date;
     // let selectedDate = null;
@@ -68,6 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (isTimeSlice){ isTimeSlice.remove(); };
       if (isExspenseUnit){ isExspenseUnit.remove(); };
       get_time_slice_data(date);
+      // setTimeout(getReservationTime(date), 2000);
     })
     
   })
@@ -102,21 +103,48 @@ function get_time_slice_data(date){
           let night = today_data.night_today;
           render_time_slice(morning, afternoon, night ,date);
           get_time_price(date);
+          getReservationTime(date);
           bookingBtn.style.display = "block";
         }else if (date != today && data.available_time){
           let morning = data.morning;
           let afternoon = data.afternoon;
           let night = data.night;
           render_time_slice(morning, afternoon, night, date);
+          getReservationTime(date);
           get_time_price(date);
           bookingBtn.style.display = "block";
         }else{
           render_time_slice();
           get_time_price(date);
+          getReservationTime(date);
           bookingBtn.style.display = "none";
         }
       }
 
+    }
+  )
+}
+
+//get_reservation_time, avoid reservation duplicate
+function getReservationTime(date){
+  fetch("/calendar/get_reservation_time/", {
+    method: "POST",
+    body: JSON.stringify({date: date})
+  }).then(
+    response => (response.json())
+  ).then(
+    data => {
+      if (data.ok){
+        const reservations = data.reservation_time_list;
+        reservations.forEach(reservation => {
+          const {reservation_date, reservation_time} = reservation;
+          const date_time = `${reservation_date}-${reservation_time}`;
+          const timeDiv = document.getElementsByName(`${date_time}`);
+          if (!timeDiv.length) return;
+          timeDiv[0].style.color = "#E0E0E0";
+          timeDiv[0].style.pointerEvents = "none";
+        })
+      }
     }
   )
 }
@@ -160,6 +188,7 @@ function render_time_slice(morning=[], afternoon=[], night=[], date=""){
     const timeElement = document.createElement("div");
     timeElement.className = "time-category-slice";
     timeElement.id = "time-slice";
+    timeElement.setAttribute("name", `${date}-${element}`);
     timeElement.textContent = `${element}`;
     timeElement.addEventListener("click", event =>{
       bookingDate = `${date}`;
@@ -194,6 +223,7 @@ function render_time_slice(morning=[], afternoon=[], night=[], date=""){
     const timeElement = document.createElement("div");
     timeElement.className = "time-category-slice";
     timeElement.id = "time-slice";
+    timeElement.setAttribute("name", `${date}-${element}`);
     timeElement.textContent = `${element}`;
     timeElement.addEventListener("click", event =>{
       bookingDate = `${date}`;
@@ -226,6 +256,7 @@ function render_time_slice(morning=[], afternoon=[], night=[], date=""){
     const timeElement = document.createElement("div");
     timeElement.className = "time-category-slice";
     timeElement.id = "time-slice";
+    timeElement.setAttribute("name", `${date}-${element}`);
     timeElement.textContent = `${element}`;
     timeElement.addEventListener("click", event =>{
       bookingDate = `${date}`;
