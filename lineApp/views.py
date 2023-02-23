@@ -141,6 +141,7 @@ def recieve(request, username):
     expiration_time = datetime.utcnow() + timedelta(weeks=1)
     payload = {
         "store_id": f"{query_store[0].id}",
+        "store_name": f"{username}",
         "customer_id": f"{customer_id}",
         "name": f"{name}",
         "email": f"{email}",
@@ -163,4 +164,6 @@ def get_liffId(request):
 
 
 
-
+# 版面做完刪除
+def customer_page(request):
+    return render(request, "customer.html")

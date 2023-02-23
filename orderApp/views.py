@@ -140,8 +140,31 @@ def get_order_history(request):
     try:
         payloads = jwt.decode(get_cookie, jwt_key, algorithms = "HS256")
         try:
-            orders = Order.objects.filter
-            return JsonResponse({"ok": True})
+            orders_payed = Order.objects.filter(customers_id = payloads["customer_id"], order_status = "payed")
+            orders_canceled = Order.objects.filter(customers_id = payloads["customer_id"], order_status = "canceled")
+            history_order_list = []
+            if orders_payed:
+                for order in orders_payed:
+                    data = {
+                        "order_id": order.order_id,
+                        "order_date": order.order_date,
+                        "order_time": order.order_time,
+                        "order_total_time": order.order_total_time,
+                        "order_price": order.order_price,
+                        "order_status": order.order_status
+                    }
+                    history_order_list.append(data)
+            if orders_canceled:
+                for order in orders_canceled:
+                    data = {
+                        "order_id": order.order_id,
+                        "order_date": order.order_date,
+                        "order_time": order.order_time,
+                        "order_total_time": order.order_total_time,
+                        "order_price": order.order_price,
+                        "order_status": order.order_status
+                    }
+            return JsonResponse({"ok": True, "order_data": history_order_list})
         except:
             return JsonResponse({"ok": False, "msg": "server went wrong"})
     except:
@@ -153,8 +176,7 @@ def get_unpaid_order(request):
     try:
         payloads = jwt.decode(get_cookie, jwt_key, algorithms = "HS256")
         try:
-            customer = Customers.objects.get(email=payloads["email"], members_id=payloads["store_id"])
-            orders = Order.objects.filter(customers=customer.id)
+            orders = Order.objects.filter(customers=payloads["customer_id"], order_status="ordering")
             orderIds = set()
             for order in orders:
                 orderIds.add(order.order_id)
@@ -233,12 +255,12 @@ def tappay_payment(request):
                 }
 
                 # 更改booking/order status
-                # orders = Order.objects.filter(order_id=orderId)
-                # for order in orders:
-                #     order.order_status = "payed"
-                #     order.bookings.booking_status = "payed"
-                #     order.save()
-                #     order.bookings.save()
+                orders = Order.objects.filter(order_id=orderId)
+                for order in orders:
+                    order.order_status = "payed"
+                    order.bookings.booking_status = "payed"
+                    order.save()
+                    order.bookings.save()
 
 
                 return JsonResponse({"ok": True, "data": response_data})

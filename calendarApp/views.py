@@ -17,7 +17,7 @@ order_audit_cancel = Order_audit_cancel()
 
 
 # Create your views here.
-def calendar(request, username):
+def calendar(request, storename):
     return render(request, 'calendar.html')
 
 def booked_calendar(request, storename):
@@ -421,6 +421,9 @@ def response_time_price(request):
         "time_slice_unit": time_slice_unit
     }
     return JsonResponse(response_data)
+
+
+
 
 def convert_to_datetime(date):
     date_split = date.split("-")

@@ -1,4 +1,5 @@
 const historyTitle = document.querySelector("#history-title");
+const webPageLoading = document.querySelector("#loading");
 
 get_history_order();
 
@@ -7,7 +8,13 @@ function get_history_order(){
         response => (response.json())
     ).then(
         data => {
-            console.log(data);
+            if (data.ok){
+                let historyOrders = data.order_data;
+                historyOrders.forEach(order => {
+                    render_order_record(order.order_id, order.order_date, order.order_time, order.order_total_time, order.order_price, order.order_status);
+                })
+                webPageLoading.style.display = "none";
+            }
         }
     )
 }
@@ -44,12 +51,8 @@ function render_order_record(orderid, date, time, total_time, price, orderStatus
 
     const orderStatusElement = document.createElement("div");
     orderStatusElement.className = "order-info";
-    orderStatusElement.textContent = `${orderStatus}`;
+    orderStatusElement.textContent = `訂單狀態：${orderStatus}`;
     orderHistoryContainer.appendChild(orderStatusElement);
 
     historyTitle.appendChild(orderHistoryContainer);
 }
-
-queryHistoryBtn.addEventListener("click", event => {
-    location.href = "/order/history_order/";
-})

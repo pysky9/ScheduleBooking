@@ -25,7 +25,6 @@ body{
     bottom: 0px;
     left: 0px;
     right: 0px;
-    /* background-color: #cfe2f3; */
     background-color: #f7f1f0;
     z-index: 10;
 }
@@ -43,6 +42,7 @@ body{
     border: 0 solid black;
     border-radius: 5px;
     background-color: #FFBB98;
+    box-shadow: 4px 4px 15px rgb(0,0,0,0.2);
 }
 
 .order-info{

@@ -120,6 +120,8 @@ function get_time_slice_data(date){
     }
   )
 }
+
+// 點擊時間/日期 改變被點擊區塊被景色
 let selectedTimeSlot = null;
 const container = document.querySelector('.container');
 const timeSlice = document.querySelectorAll("#time-slice");
@@ -162,6 +164,7 @@ function render_time_slice(morning=[], afternoon=[], night=[], date=""){
     timeElement.addEventListener("click", event =>{
       bookingDate = `${date}`;
       bookingTime = `${element}`;
+      // 判斷時段是否被點擊 被點擊->改背景色
       if (selectedTimeSlot === timeElement){
           selectedTimeSlot.style.color = "black";
           selectedTimeSlot.style.backgroundColor = "#f7f1f0";

@@ -11,5 +11,6 @@ urlpatterns = [
     path("data/<username>", views.get_line_data),
     path("recieve/<username>", views.recieve),
     path("get_liffId/", views.get_liffId),
+    path("customer_page/", views.customer_page),# 版面做完刪除
 ]
 

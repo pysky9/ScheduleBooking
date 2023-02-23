@@ -39,6 +39,7 @@ body{
 
 /* 消費紀錄 */
 .customer-booked-record{
+    position: relative;
     width: 360px;
     display: flex;
     flex-wrap: wrap;
@@ -47,15 +48,31 @@ body{
     border-radius: 10px;
 }
 
+#loading{
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background-color: #E0E0E0;
+    z-index: 10;
+}
+
 .booked-total-price, .booked-total-times{
     display: flex;
     flex-wrap: wrap;
     width: 160px;
     justify-content: center;
+    margin-top: 15px;
 }
 
 .total-price, .total-times{
     width: 160px;
+}
+
+#cash-icon, #order-icon{
+    width: 30px;
+    cursor: pointer;
 }
 
 @media(max-width:420px){
