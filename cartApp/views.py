@@ -23,7 +23,7 @@ def booking(request): #預約資料寫入資料庫
         payloads = jwt.decode(get_cookie, jwt_key, algorithms = "HS256")
 
 
-        customer_query = Customers.objects.filter(email=payloads["email"])
+        customer_query = Customers.objects.filter(email=payloads["email"], members_id=payloads["store_id"])
         customer_id = customer_query[0].id
 
         data = json.loads(request.body)["data"]
@@ -64,7 +64,7 @@ def record(request):
     get_cookie = request.COOKIES.get("customer_token")
     try:
         payloads = jwt.decode(get_cookie, jwt_key, algorithms = "HS256")
-        customer_query = Customers.objects.filter(email = payloads["email"])
+        customer_query = Customers.objects.filter(email = payloads["email"],  members_id=payloads["store_id"])
         customer_id = customer_query[0].id
 
         data = json.loads(request.body)

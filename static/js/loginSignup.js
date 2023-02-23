@@ -10,6 +10,8 @@ const password = document.querySelector(".password");
 const signupBtn = document.querySelector(".signup");
 const loginBtn = document.querySelector(".login");
 const background = document.querySelector(".background");
+const signupLoading = document.querySelector("#signup-loading");
+const loginLoading = document.querySelector("#login-loading");
 
 changeToLogin.addEventListener("click", event =>{
     loginElement.style.display = "block";
@@ -32,6 +34,8 @@ signupBtn.addEventListener("click", event => {
         "password": `${password.value}`
     }
     if(userDataNotValidation(emailValue=email.value, passwordValue=password.value, btn=signupBtn, formTitle=formName[0].textContent, usernameValue=username.value)) return;
+    signupBtn.style.display = "none";
+    signupLoading.style.display = "block";
     fetch("/members/signup/",{
         method:"POST",
         headers:{
@@ -47,6 +51,10 @@ signupBtn.addEventListener("click", event => {
                 msg.textContent = "註冊成功";
                 signupBtn.insertAdjacentElement("afterend", msg);
                 background.style.display = "block";
+                // close loading
+                signupBtn.style.display = "block";
+                signupBtn.setAttribute("disabled", "disabled");
+                signupLoading.style.display = "none";
                 // location.reload();
                 setTimeout(() => {
                     loginElement.style.display = "block";
@@ -68,6 +76,10 @@ loginBtn.addEventListener("click", event => {
         "password": `${passwords.value}`
     }
     if(userDataNotValidation(emailValue=emails.value, passwordValue=passwords.value, btn=loginBtn, formTitle=formName[1].textContent)) return;
+    
+    loginBtn.style.display = "none";
+    loginLoading.style.display = "block";
+
     fetch("/members/login/",{
         method:"POST",
         headers:{
@@ -82,8 +94,12 @@ loginBtn.addEventListener("click", event => {
                 msg.textContent = "登入成功";
                 loginBtn.insertAdjacentElement("afterend", msg);
                 background.style.display = "block";
+                loginBtn.style.display = "block";
+                loginBtn.setAttribute("disabled", "disabled");
+                loginLoading.style.display = "none";
                 setTimeout(() => {
-                    location.href = `/members/member_page/${data.username}`;
+                    // location.href = `/members/member_page/${data.username}`;
+                    location.href = `/members/sitemap/${data.username}`
                 }, 1000);
                 
                 

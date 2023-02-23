@@ -1,0 +1,55 @@
+body{
+    background-color: #f7f1f0;
+}
+
+.navbar-brand{
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 900;
+    padding-top: 5px;
+    font-size: 30px;
+}
+
+.navbar{
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 500;
+    padding-top: 5px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+#site-map{
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 300;
+    margin-top: 45px;
+}
+
+.card{
+    width: 35rem;
+    margin-left: 10px;
+    /* background-color: #c3a6a0; */
+    background-color: #FFA998;
+    box-shadow: 4px 4px 15px rgb(0,0,0,0.2);
+}
+
+.card:hover{
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    transform: translate(0, -5px);
+    transition: all 0.3s ease;
+}
+
+h6{
+    font-size: 20px;
+}
+
+.about-line, .about-time-setting{
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+#redirect-store-setting, #link-to-line, #store-time-setting{
+    cursor: pointer;
+    text-decoration: underline;
+}

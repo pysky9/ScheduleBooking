@@ -32,6 +32,10 @@
         </form>
           <div class="col-12" id="buttonContainer">
             <button  class="btn btn-primary signup ">Sign up</button>
+            <button class="btn btn-primary" type="button" disabled id="signup-loading">
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              Sign up
+            </button>
           </div>
           <div class="userStatus" id="changeToLogin">已經有帳戶?點此登入</div>
       </div>
@@ -53,6 +57,10 @@
             </form>
               <div class="col-12" id="buttonContainer">
                 <button  class="btn btn-primary login">login</button>
+                <button class="btn btn-primary" type="button" disabled id="login-loading">
+                  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  login
+                </button>
               </div>
               <div class="userStatus" id="changeToSignup">還沒有帳戶?點此註冊</div>
         </div>

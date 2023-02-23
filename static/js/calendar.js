@@ -2,7 +2,7 @@ const bookingBtn = document.querySelector("#booking-btn");
 const payElement = document.querySelector("#pay");
 const totalExpense = document.querySelector(".total-expense");
 const background = document.querySelector(".background");
-const navbarBrand = document.querySelector(".navbar-brand")
+const navbarBrand = document.querySelector(".navbar-brand");
 
 let bookingDate;
 let bookingTime;
@@ -27,17 +27,26 @@ window.addEventListener('load', function() {
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-    const calendarEl = document.getElementById('calendar')
+    const calendarEl = document.getElementById('calendar');
+    let lastClickedDayEl = null;
     const calendar = new FullCalendar.Calendar(calendarEl, {
       themeSystem: 'bootstrap5',
       initialView: 'dayGridMonth',
-      // locale: 'zh-tw',
+      timeZone: 'Asia/Taipei',
       height: 335,
       fixedWeekCount: false,
       showNonCurrentDates: false,
       headerToolbar: {
           right: 'today prev,next',
       },
+      dateClick: function(info){
+        // 改變被點擊的日期的字體色/背景色
+        if (lastClickedDayEl){
+          lastClickedDayEl.style.backgroundColor = "#d0d0d0";
+        }
+        info.dayEl.style.backgroundColor = '#4EB3D3';
+        lastClickedDayEl = info.dayEl;
+      }
     })
 
     calendar.render();
@@ -51,12 +60,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 使用者點擊日期顯示可用時段
     let date;
+    // let selectedDate = null;
     calendar.on("dateClick", info=>{
-      dateBlockElement = info.dayEl
-
       date = info.dateStr;
-
-      info.dayEl.style.backgroundColor = "#0d6efd";
       const isTimeSlice = document.querySelector("#time");
       const isExspenseUnit = document.querySelector("#exspense");
       if (isTimeSlice){ isTimeSlice.remove(); };
@@ -77,6 +83,7 @@ background.addEventListener("click", event => {
 })
 
 function get_time_slice_data(date){
+
   fetch('/calendar/response_period/', {
     method: "POST",
     body:JSON.stringify({date: date, username: queryName})
@@ -88,7 +95,6 @@ function get_time_slice_data(date){
       const day = now.getDate();
       let today = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
       if (data.OK){
-
         if (date === today){
           const today_data = data.today;
           let morning = today_data.morning_today;
@@ -114,10 +120,27 @@ function get_time_slice_data(date){
     }
   )
 }
+let selectedTimeSlot = null;
+const container = document.querySelector('.container');
+const timeSlice = document.querySelectorAll("#time-slice");
+
+container.addEventListener("click", event => {
+  const isClickInsideTimeSlice = event.target.classList.contains("time-slice");
+  const isClickInsideContainer = event.target.classList.contains("container");
+  if(! isClickInsideTimeSlice && isClickInsideContainer){
+    if (selectedTimeSlot) {
+      selectedTimeSlot.style.color = "black";
+      selectedTimeSlot.style.backgroundColor = "#f7f1f0";
+      selectedTimeSlot = null;
+    }
+  }
+})
 
 function render_time_slice(morning=[], afternoon=[], night=[], date=""){
   
   const calendarElement = document.querySelector("#calendar");
+  
+
   // 大容器
   const containerElement = document.createElement("div");
   containerElement.className = "container";
@@ -139,9 +162,21 @@ function render_time_slice(morning=[], afternoon=[], night=[], date=""){
     timeElement.addEventListener("click", event =>{
       bookingDate = `${date}`;
       bookingTime = `${element}`;
-      timeElement.style.color = "red";
-
+      if (selectedTimeSlot === timeElement){
+          selectedTimeSlot.style.color = "black";
+          selectedTimeSlot.style.backgroundColor = "#f7f1f0";
+          selectedTimeSlot = null;
+      }else{
+          if (selectedTimeSlot) {
+            selectedTimeSlot.style.color = "black";
+            selectedTimeSlot.style.backgroundColor = "#f7f1f0";
+          }
+          timeElement.style.color = "white";
+          timeElement.style.backgroundColor = "#79031D"
+          selectedTimeSlot = timeElement;
+      }
     });
+    
     morningElement.appendChild(timeElement);
   });
   containerElement.appendChild(morningElement);
@@ -160,8 +195,19 @@ function render_time_slice(morning=[], afternoon=[], night=[], date=""){
     timeElement.addEventListener("click", event =>{
       bookingDate = `${date}`;
       bookingTime = `${element}`;
-      timeElement.style.color = "red";
-
+      if (selectedTimeSlot === timeElement){
+        selectedTimeSlot.style.color = "black";
+        selectedTimeSlot.style.backgroundColor = "#f7f1f0";
+        selectedTimeSlot = null;
+      }else{
+        if (selectedTimeSlot) {
+          selectedTimeSlot.style.color = "black";
+          selectedTimeSlot.style.backgroundColor = "#f7f1f0";
+        }
+        timeElement.style.color = "white";
+        timeElement.style.backgroundColor = "#79031D"
+        selectedTimeSlot = timeElement;
+    }
     })
     afternoonElement.appendChild(timeElement);
   });
@@ -181,8 +227,19 @@ function render_time_slice(morning=[], afternoon=[], night=[], date=""){
     timeElement.addEventListener("click", event =>{
       bookingDate = `${date}`;
       bookingTime = `${element}`;
-      timeElement.style.color = "red";
-
+      if (selectedTimeSlot === timeElement){
+        selectedTimeSlot.style.color = "black";
+        selectedTimeSlot.style.backgroundColor = "#f7f1f0";
+        selectedTimeSlot = null;
+      }else{
+        if (selectedTimeSlot) {
+          selectedTimeSlot.style.color = "black";
+          selectedTimeSlot.style.backgroundColor = "#f7f1f0";
+        }
+        timeElement.style.color = "white";
+        timeElement.style.backgroundColor = "#79031D"
+        selectedTimeSlot = timeElement;
+    }
     })
     nightElement.appendChild(timeElement);
   });

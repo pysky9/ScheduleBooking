@@ -25,7 +25,7 @@ def generate_random_string(length):
     return result
 random_state = generate_random_string(6)
 # random_state = "389hxy"
-
+ 
 
 def line_login(request, username):
     return render(request, 'linelogin.html')
@@ -136,18 +136,19 @@ def recieve(request, username):
         customer.email = email
         customer.picture = picture
         customer.save()
-
+    customer_id = query_db[0].id
     # 登入後 消費者資訊存入JWT
     expiration_time = datetime.utcnow() + timedelta(weeks=1)
     payload = {
         "store_id": f"{query_store[0].id}",
+        "customer_id": f"{customer_id}",
         "name": f"{name}",
         "email": f"{email}",
         "exp": expiration_time
     }
     jwt_encode = jwt.encode(payload, jwt_key, algorithm = "HS256")
-    # response = render(request, "customer.html", locals())
-    response = HttpResponseRedirect(f"http://localhost:8000/calendar/views/{username}")#測試開發
+    response = render(request, "customer.html", locals()) # 導向顧客會員頁
+    # response = HttpResponseRedirect(f"http://localhost:8000/calendar/views/{username}")#測試開發
     # response = HttpResponseRedirect(f"https://www.schedule-booking.com/calendar/views/{username}")# 上線
     response.set_cookie(key="customer_token", value=jwt_encode, expires=expiration_time, httponly=True)
     return response

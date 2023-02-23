@@ -169,8 +169,9 @@ function get_members_info(){
         membersData = data.data;
 
       }else{
-        location.href = "/"
+        location.href = "/";
       }
     }
   )
 }
+

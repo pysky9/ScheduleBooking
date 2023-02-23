@@ -26,7 +26,7 @@ load_dotenv()
 SECRET_KEY = os.getenv('django_secret_key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -133,7 +133,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+# STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -145,7 +145,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 
-# #Amazon S3 Configuration
+# # Amazon S3 Configuration
 # AWS_ACCESS_KEY_ID = os.getenv('access_key_id')  #存取金鑰ID
 # AWS_SECRET_ACCESS_KEY = os.getenv('secret_access_key')  #私密存取金鑰
 # AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')  #Amazon S3儲存體名稱

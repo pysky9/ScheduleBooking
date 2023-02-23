@@ -1,0 +1,29 @@
+body{
+    background-color: #f7f1f0;
+}
+
+.navbar-brand{
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 900;
+    padding-top: 5px;
+    font-size: 30px;
+}
+
+.navbar{
+    display: flex;
+    flex-wrap: wrap;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 500;
+    padding-top: 5px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+#main-navbar{
+    border-bottom: 1px solid gray;
+}
+
+#sub-navbar{
+    font-size: 16px;
+    height: 25px;
+}

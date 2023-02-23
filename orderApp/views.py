@@ -19,8 +19,10 @@ from orderApp.models import Order
 load_dotenv()
 jwt_key = os.getenv("jwt_key")
 
+def order_record_page(request, storename):
+    return render(request, "orderRecord.html")
 
-def check_order(request, orderId):
+def render_check_order(request, orderId):
     get_cookie = request.COOKIES.get("customer_token")
     try:
         payloads = jwt.decode(get_cookie, jwt_key, algorithms = "HS256")
@@ -30,6 +32,11 @@ def check_order(request, orderId):
     except:
         return JsonResponse({"ok": False, "msg": "請先登入"})
 
+def complete_order_payment(request, orderId):
+    return render(request, "orderSuccess.html")
+
+def render_history_order(request):
+    return render(request, "historyOrder.html")
 
 @csrf_exempt
 def recieve_order(request):
@@ -69,37 +76,95 @@ def recieve_order(request):
             return JsonResponse({"ok": False, "msg": f"{err}"})
     return JsonResponse({"ok": False, "msg": "wrong HTTP Method"})
 
-def get_order_record(request, orderId):
-    order_query = Order.objects.filter(order_id=orderId, order_status="ordering")
-    if order_query:
-        order_data = []
-        for data in order_query:
-            order = {
-                "order_date": data.order_date,
-                "order_time": data.order_time,
-                "order_total_time": data.order_total_time,
-                "order_price": data.order_price,
-                "order_status": data.order_status,
-                "bookings_id": data.bookings_id
+def get_ordering_record(request, orderId):
+    get_cookie = request.COOKIES.get("customer_token")
+    try:
+        payloads = jwt.decode(get_cookie, jwt_key, algorithms = "HS256")
+        order_query = Order.objects.filter(order_id=orderId, order_status="ordering")
+        if order_query:
+            order_data = []
+            for data in order_query:
+                order = {
+                    "order_date": data.order_date,
+                    "order_time": data.order_time,
+                    "order_total_time": data.order_total_time,
+                    "order_price": data.order_price,
+                    "order_status": data.order_status,
+                    "bookings_id": data.bookings_id
+                }
+                order_data.append(order)
+            response_data = {
+                "ok":True,
+                "order_id": orderId,
+                "order_data": order_data
             }
-            order_data.append(order)
-        response_data = {
-            "ok":True,
-            "order_id": orderId,
-            "order_data": order_data
-        }
+            
+            return JsonResponse(response_data)
         
+        response_data = {
+            "ok":False,
+            "order_id": orderId,
+            "order_data": None
+        }
         return JsonResponse(response_data)
-    
-    response_data = {
-        "ok":False,
-        "order_id": orderId,
-        "order_data": None
-    }
-    return JsonResponse(response_data)
+    except:
+        return JsonResponse({"ok": False, "msg": "請先登入"})
 
-# def get_order_history(request):
-#     pass
+@csrf_exempt  
+def get_paid_record(request):
+    get_cookie = request.COOKIES.get("customer_token")
+    try:
+        payloads = jwt.decode(get_cookie, jwt_key, algorithms = "HS256")
+        request_data = json.loads(request.body)
+        orderId = request_data["orderId"]
+        try:
+            orders = Order.objects.filter(order_id = orderId, order_status = "payed")
+            order_list = []
+            for order in orders:
+                data = {
+                    "order_date": order.order_date,
+                    "order_time": order.order_time,
+                    "order_total_time": order.order_total_time,
+                    "order_price": order.order_price
+                }
+                order_list.append(data)
+            return JsonResponse({"ok": True, "data": order_list})
+        except:
+            return JsonResponse({"ok": False, "msg": "server went wrong"})
+    except:
+        return JsonResponse({"ok": False, "msg": "請先登入"})
+ 
+@csrf_exempt
+def get_order_history(request):
+    get_cookie = request.COOKIES.get("customer_token")
+    try:
+        payloads = jwt.decode(get_cookie, jwt_key, algorithms = "HS256")
+        try:
+            orders = Order.objects.filter
+            return JsonResponse({"ok": True})
+        except:
+            return JsonResponse({"ok": False, "msg": "server went wrong"})
+    except:
+        return JsonResponse({"ok": False, "msg": "請先登入"})
+
+@csrf_exempt
+def get_unpaid_order(request):
+    get_cookie = request.COOKIES.get("customer_token")
+    try:
+        payloads = jwt.decode(get_cookie, jwt_key, algorithms = "HS256")
+        try:
+            customer = Customers.objects.get(email=payloads["email"], members_id=payloads["store_id"])
+            orders = Order.objects.filter(customers=customer.id)
+            orderIds = set()
+            for order in orders:
+                orderIds.add(order.order_id)
+            orderId = [id for id in orderIds]
+            return JsonResponse({"ok": True, "orderId": orderId})
+        except:
+            return JsonResponse({"ok": False, "msg": "server went wrong"})
+    except:
+        return JsonResponse({"ok": False, "msg": "請先登入"})
+
 
 
 # 金流
@@ -153,6 +218,7 @@ def tappay_payment(request):
             }
             send_tappay = requests.post(url, headers = header_content, json = data,)
             pay_result = send_tappay.json()
+            print(pay_result)
 
             if pay_result["status"] == 0:
 
@@ -167,12 +233,12 @@ def tappay_payment(request):
                 }
 
                 # 更改booking/order status
-                orders = Order.objects.filter(order_id=orderId)
-                for order in orders:
-                    order.order_status = "payed"
-                    order.bookings.booking_status = "payed"
-                    order.save()
-                    order.bookings.save()
+                # orders = Order.objects.filter(order_id=orderId)
+                # for order in orders:
+                #     order.order_status = "payed"
+                #     order.bookings.booking_status = "payed"
+                #     order.save()
+                #     order.bookings.save()
 
 
                 return JsonResponse({"ok": True, "data": response_data})

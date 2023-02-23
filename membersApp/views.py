@@ -26,8 +26,15 @@ def member_page(request, username):
     name = username
     return render(request, "members.html", locals())
 
-def line_setting_page(request):
-    return render(request, "lineSetting.html")
+def site_map(request, username):
+    return render(request, "sitemap.html")
+
+def customer_management(request, storename):
+    return render(request, "customermanagement.html")
+
+def store_setting(request, storename):
+    name = storename
+    return render(request, "stroesetting.html", locals())
 
 def signup(request):
     if request.method == "POST":

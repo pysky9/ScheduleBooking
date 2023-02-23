@@ -1,26 +1,27 @@
 const loginChannelId = document.querySelector("#login-channel-id")
 const loginChannelSecret = document.querySelector("#login-channel-secret")
 const button = document.querySelector(".btn")
-const logout = document.querySelector("#logout");
+// const logout = document.querySelector("#logout");
 const csrfElement = document.getElementsByName("csrfmiddlewaretoken");
 const token = csrfElement[0].defaultValue;
-let pathname = window.location.pathname;
+const loading = document.querySelector("#loading");
+// let pathname = window.location.pathname;
 let queryName = pathname.split("/")[3];
 
 get_members_info();
 showChannelData();
 
-logout.addEventListener("click", event => {
-  fetch("/members/logout/").then(
-    resp => (resp.json())
-  ).then(
-    data => {
-      if (data.ok){
-        location.href = "/" ;
-      }
-    }
-  )
-})
+// logout.addEventListener("click", event => {
+//   fetch("/members/logout/").then(
+//     resp => (resp.json())
+//   ).then(
+//     data => {
+//       if (data.ok){
+//         location.href = "/" ;
+//       }
+//     }
+//   )
+// })
 
 
 function get_members_info(){
@@ -83,6 +84,9 @@ function showChannelData(){
                 loginChannelSecret.setAttribute("disabled", "disabled");
                 button.textContent = "已連動";
                 button.setAttribute("disabled", "disabled");
+                loading.style.display = "none";
+            }else{
+                loading.style.display = "none";
             }
         })
 }

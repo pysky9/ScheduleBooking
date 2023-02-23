@@ -1,9 +1,11 @@
 const navBatElement = document.querySelector("#navbar");
 const contentElement = document.querySelector("#content");
 const customerInformation = document.querySelector("#customer-infomation");
-const payButton = document.querySelector("#pay");
+const payButton = document.querySelector(".pay");
 const background = document.querySelector(".background");
 const cardBody = document.querySelector("#credit-card-info");
+const loading = document.querySelector("#loading");
+const payLoading = document.querySelector("#pay-loading");
 let totalPrice = 0;
 let pathname = window.location.pathname;
 let orderId = pathname.split("/")[3];
@@ -17,24 +19,12 @@ function get_order(){
         data =>{
             if (data.ok){
                 render_order_record(orderId, data.order_data);
+                loading.style.display = "none";
             }
 
         }
     )
 }
-
-window.addEventListener("load", function() {
-    const loading = document.querySelector("#loading");
-    let percent = 0;
-    let interval = setInterval(function() {
-        percent += 20;
-     
-      if (percent >= 100) {
-        clearInterval(interval);
-        loading.style.display = 'none';
-      }
-    }, 600);
-  });
 
 function render_order_record(orderId, orderData){
     const titleContainer = document.createElement("div");
@@ -245,23 +235,26 @@ function sentToServer(parameter){
             "phone": phone
         }
     }
+    payLoading.style.display = "block";
+    payButton.style.display = "none";
     fetch("/order/tappay_payment/",{
         method: "POST",
         body: JSON.stringify(requestData)
     }).then((response) => (response.json())).then(
         (responseData) => {
-            let paymentData = responseData.data;
-            let orderNumber = paymentData.number;
-            let paymentMessage = paymentData.payment.message;
-
+            let paymentMessage = responseData.data.data.payment.message;
+            payLoading.style.display = "none";
+            payButton.style.display = "block";
+            payButton.setAttribute("disabled", "disabled");
+            
             if(paymentMessage === "付款成功"){
-                location.replace(`/thankyou?number=${orderNumber}`);
+                location.replace(`/order/complete_order_payment/${responseData.data.data.number}`);
             }else{
                 errorMessageBox("付款失敗");
             }
         }
     )
-}
+} 
 
 
 function errorMessageBox(message){

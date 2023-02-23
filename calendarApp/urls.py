@@ -8,6 +8,8 @@ urlpatterns = [
     path('setting/', views.calendar_setting),
     path('response_period/', views.response_time_period),
     path('response_time_price/', views.response_time_price),
+    path('booked_calendar/<storename>', views.booked_calendar),
+    path('time_setting_records/<storename>', views.time_setting_records)
     # path('recieve/<username>', views.recieve),
     
 ]

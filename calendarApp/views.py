@@ -20,6 +20,12 @@ order_audit_cancel = Order_audit_cancel()
 def calendar(request, username):
     return render(request, 'calendar.html')
 
+def booked_calendar(request, storename):
+    return render(request, "bookedcalendar.html")
+
+def time_setting_records(request, storename):
+    return render(request, "timeSettingRecords.html")
+
 def calendar_setting(request):
     if request.method == "POST":
         data = json.loads(request.body)

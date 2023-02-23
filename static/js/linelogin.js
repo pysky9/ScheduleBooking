@@ -1,14 +1,12 @@
 let pathname = window.location.pathname;
 let queryName = pathname.split("/")[3];
-let liffId;
 
 loginWithLine();
 
 
 function loginWithLine() {
-    get_liffId();
     liff.init(
-        {liffId: liffId}
+        {liffId: "1657905932-Ly1jWqbp"}
     ).then(
         () => {
             fetch(`/line/data/${queryName}`).then(
@@ -35,12 +33,3 @@ function loginWithLine() {
     )
   }
   
-function get_liffId(){
-    fetch("/line/get_liffId/").then(
-        response => (response.json())
-    ).then(
-        data => {
-            liffId = data.data;
-        }
-    )
-}

@@ -1,0 +1,55 @@
+const historyTitle = document.querySelector("#history-title");
+
+get_history_order();
+
+function get_history_order(){
+    fetch("/order/get_order_history/").then(
+        response => (response.json())
+    ).then(
+        data => {
+            console.log(data);
+        }
+    )
+}
+
+function render_order_record(orderid, date, time, total_time, price, orderStatus){
+    const orderHistoryContainer = document.createElement("div");
+    orderHistoryContainer.className = "container";
+    orderHistoryContainer.id = "order-history";
+
+    const orderIdElement = document.createElement("div");
+    orderIdElement.className = "order-info";
+    orderIdElement.textContent = `訂單編號：${orderid}`;
+    orderHistoryContainer.appendChild(orderIdElement);
+
+    const dateElement = document.createElement("div");
+    dateElement.className = "order-info";
+    dateElement.textContent = `預約日期：${date}`;
+    orderHistoryContainer.appendChild(dateElement);
+
+    const timeElement = document.createElement("div");
+    timeElement.className = "order-info";
+    timeElement.textContent = `預約時段：${time}`;
+    orderHistoryContainer.appendChild(timeElement);
+
+    const totalTimeElement = document.createElement("div");
+    totalTimeElement.className = "order-info";
+    totalTimeElement.textContent = `預約總時長：${total_time}`;
+    orderHistoryContainer.appendChild(totalTimeElement);
+
+    const priceElement = document.createElement("div");
+    priceElement.className = "order-info";
+    priceElement.textContent = `預約費用：${price}`;
+    orderHistoryContainer.appendChild(priceElement);
+
+    const orderStatusElement = document.createElement("div");
+    orderStatusElement.className = "order-info";
+    orderStatusElement.textContent = `${orderStatus}`;
+    orderHistoryContainer.appendChild(orderStatusElement);
+
+    historyTitle.appendChild(orderHistoryContainer);
+}
+
+queryHistoryBtn.addEventListener("click", event => {
+    location.href = "/order/history_order/";
+})

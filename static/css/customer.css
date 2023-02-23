@@ -1,5 +1,6 @@
 body{
-    background-color: #cfe2f3;
+    /* background-color: #cfe2f3; */
+    background-color: #f7f1f0;
 }
 
 .navbar-brand{
@@ -33,4 +34,32 @@ body{
 
 #customer-btn{
     margin-top: 25px;
+    width: 340px;
+}
+
+/* 消費紀錄 */
+.customer-booked-record{
+    width: 360px;
+    display: flex;
+    flex-wrap: wrap;
+    background-color: #E0E0E0;
+    margin-top: 15px;
+    border-radius: 10px;
+}
+
+.booked-total-price, .booked-total-times{
+    display: flex;
+    flex-wrap: wrap;
+    width: 160px;
+    justify-content: center;
+}
+
+.total-price, .total-times{
+    width: 160px;
+}
+
+@media(max-width:420px){
+    .navbar-brand{
+        font-size: 20px;
+    }
 }

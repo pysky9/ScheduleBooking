@@ -10,6 +10,7 @@ urlpatterns = [
     path("login/", views.login),
     path('logout/', views.logout),
     path("get_members_info/", views.get_members_info),
-    # path("line_setting/", views.line_setting_page),
-    # path("callback/", views.callback), # line message API
+    path("sitemap/<username>", views.site_map),
+    path("customer_management/<storename>", views.customer_management),
+    path("store_setting/<storename>", views.store_setting),
 ]

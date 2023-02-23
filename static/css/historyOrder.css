@@ -1,0 +1,60 @@
+body{
+    background-color: #f7f1f0;
+}
+
+#navbar{
+    top: 0;
+    margin:0;
+    max-width: unset;
+    padding: 0;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 900;
+}
+
+.navbar-brand{
+    font-size:30px;
+}
+
+#content{
+    position: relative;
+}
+
+#loading{
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    /* background-color: #cfe2f3; */
+    background-color: #f7f1f0;
+    z-index: 10;
+}
+
+#history-title{
+    margin-top: 20px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 550;
+    font-size: 18px;
+}
+
+#order-history{
+    margin-top: 20px;
+    padding-bottom: 10px;
+    border: 0 solid black;
+    border-radius: 5px;
+    background-color: #FFBB98;
+}
+
+.order-info{
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 550;
+    font-size: 16px;
+    padding-top: 8px;
+}
+
+
+@media(max-width:450px){
+    .navbar-brand{
+        font-size: 20px;
+    }
+}

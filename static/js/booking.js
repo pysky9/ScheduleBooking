@@ -4,6 +4,7 @@ let bookingId;
 let customerName;
 let customerMail;
 
+unpaid();
 getCartRecord();
 
 bookingBtn.addEventListener("click", event => {
@@ -189,3 +190,16 @@ orderButton.addEventListener("click", event => {
         }
     )
   })
+
+function unpaid(){
+    fetch("/order/get_unpaid_order/").then(
+        response => (response.json())
+    ).then(
+        data => {
+            if (data.ok){
+                let unpaidOrderId = data.orderId[0];
+                location.href = `/order/check_order/${unpaidOrderId}`;
+            } 
+        }
+    )
+}
