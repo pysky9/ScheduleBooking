@@ -3,28 +3,13 @@ const payElement = document.querySelector("#pay");
 const totalExpense = document.querySelector(".total-expense");
 const background = document.querySelector(".background");
 const navbarBrand = document.querySelector(".navbar-brand");
-
+const loading = document.querySelector("#loading");
 let bookingDate;
 let bookingTime;
 let bookingTotalTime;
 let bookingPrice;
 let pathname = window.location.pathname;
 let queryName = pathname.split("/")[3];
-
-// 網頁laoding
-window.addEventListener('load', function() {
-  const loading = document.querySelector("#loading");
-  let percent = 0;
-  let interval = setInterval(function() {
-  //   percent += Math.floor(Math.random() * 30);
-      percent += 20;
-   
-    if (percent >= 100) {
-      clearInterval(interval);
-      loading.style.display = 'none';
-    }
-  }, 800);
-});
 
 document.addEventListener('DOMContentLoaded', function() {
     const calendarEl = document.getElementById('calendar');
@@ -57,10 +42,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const month = now.getMonth() + 1;
     const day = now.getDate();
     get_time_slice_data(`${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`);
-    // setTimeout(getReservationTime(`${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`), 2000);
+
     // 使用者點擊日期顯示可用時段
     let date;
-    // let selectedDate = null;
+
     calendar.on("dateClick", info=>{
       date = info.dateStr;
       const isTimeSlice = document.querySelector("#time");
@@ -68,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (isTimeSlice){ isTimeSlice.remove(); };
       if (isExspenseUnit){ isExspenseUnit.remove(); };
       get_time_slice_data(date);
-      // setTimeout(getReservationTime(date), 2000);
+   
     })
     
   })
@@ -84,7 +69,7 @@ background.addEventListener("click", event => {
 })
 
 function get_time_slice_data(date){
-
+  loading.style.display = "block";
   fetch('/calendar/response_period/', {
     method: "POST",
     body:JSON.stringify({date: date, username: queryName})
@@ -117,15 +102,18 @@ function get_time_slice_data(date){
           render_time_slice();
           get_time_price(date);
           getReservationTime(date);
-          bookingBtn.style.display = "none";
+          bookingBtn.style.display = "none";          
         }
       }
-
+      setTimeout(() => {
+        loading.style.display = "none";
+      }, 2500);
+      
     }
   )
 }
 
-//get_reservation_time, avoid reservation duplicate
+//get_reservation_time, avoid double-booking
 function getReservationTime(date){
   fetch("/calendar/get_reservation_time/", {
     method: "POST",
@@ -168,14 +156,13 @@ container.addEventListener("click", event => {
 
 function render_time_slice(morning=[], afternoon=[], night=[], date=""){
   
-  const calendarElement = document.querySelector("#calendar");
+  const loadingElement = document.querySelector("#loading")
   
-
   // 大容器
   const containerElement = document.createElement("div");
   containerElement.className = "container";
   containerElement.id = "time";
-
+  containerElement.style.position = "relative"
 
   // morning
   const morningElement = document.createElement("div");
@@ -278,7 +265,7 @@ function render_time_slice(morning=[], afternoon=[], night=[], date=""){
     nightElement.appendChild(timeElement);
   });
   containerElement.appendChild(nightElement);
-  calendarElement.insertAdjacentElement("afterend", containerElement);
+  loadingElement.insertAdjacentElement("afterend", containerElement);
 }
 
 function get_time_price(date){

@@ -36,8 +36,6 @@ bookingBtn.addEventListener("click", event => {
     ).then(
       data => {
         if (data.ok){
-            // let price = Number(bookingPrice);
-            // totalPrice += Number(bookingPrice);
             bookingId = data.data.booking_id
             customerName = data.data.customer_name;
             customerMail = data.data.customer_mail;
