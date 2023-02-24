@@ -464,12 +464,29 @@ def get_reservation_time(request):
                         }
                         reservation_time_list.append(reservation_time_data)
                 return JsonResponse({"ok": True, "reservation_time_list": reservation_time_list})
-            except Exception as err:
-                print(err)
+            except:
+                
                 return JsonResponse({"ok": False, "msg": "server went wrong"})
         except:
             return JsonResponse({"ok": False, "message": "請先登入"})
     return JsonResponse({"ok": False, "msg": "wrong HTTP Method"})
+
+def get_consumer_data(request):
+    get_cookie = request.COOKIES.get("customer_token")
+    try:
+        payloads = jwt.decode(get_cookie, jwt_key, algorithms = "HS256")
+        print(payloads)
+        response_data = {
+            "storeId": payloads["store_id"],
+            "storeName": payloads["store_name"],
+            "customerId": payloads["customer_id"],
+            "customerName": payloads["name"],
+            "customerMail": payloads["email"]
+        }
+        return JsonResponse({"ok": True, "data": response_data})
+    except:
+        return JsonResponse({"ok": False, "message": "請先登入"})
+
 
 def convert_to_datetime(date):
     date_split = date.split("-")

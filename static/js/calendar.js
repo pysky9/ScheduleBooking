@@ -125,12 +125,17 @@ function getReservationTime(date){
       if (data.ok){
         const reservations = data.reservation_time_list;
         reservations.forEach(reservation => {
+          const bookedElement = document.createElement("div")
           const {reservation_date, reservation_time} = reservation;
           const date_time = `${reservation_date}-${reservation_time}`;
           const timeDiv = document.getElementsByName(`${date_time}`);
           if (!timeDiv.length) return;
           timeDiv[0].style.color = "#E0E0E0";
           timeDiv[0].style.pointerEvents = "none";
+          timeDiv[0].style.backgroundColor = "#f7f1f0";
+          bookedElement.textContent = "(已預約)";
+          bookedElement.className = "time-booked";
+          timeDiv[0].insertAdjacentElement("afterend", bookedElement);
         })
       }
     }

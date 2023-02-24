@@ -13,6 +13,7 @@ body{
 
 .navbar-brand{
     font-size:30px;
+    cursor: pointer;
 }
 
 #content{
@@ -115,12 +116,11 @@ a{
 .time-category{
     flex: auto;
     width: 100px;
-    margin-left: 5px;
     text-align: center;
 }
 
 .time-category-slice{
-    width: 100px;
+    width: 70px;
     margin-top: 8px;
 }
 
@@ -186,6 +186,13 @@ a{
     left: 0px;
     right: 0px;
     z-index: 1;
+}
+
+.time-booked{
+    width: 70px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 10px;
+    color: #E0E0E0;
 }
 
 @media(max-width:600px){

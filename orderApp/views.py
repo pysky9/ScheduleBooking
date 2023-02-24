@@ -177,19 +177,42 @@ def get_unpaid_order(request):
         payloads = jwt.decode(get_cookie, jwt_key, algorithms = "HS256")
         try:
             orders = Order.objects.filter(customers=payloads["customer_id"], order_status="ordering")
-            if order:
+            if orders:
                 orderIds = set()
                 for order in orders:
                     orderIds.add(order.order_id)
                 orderId = [id for id in orderIds]
                 return JsonResponse({"ok": True, "orderId": orderId})
             return JsonResponse({"ok": True, "orderId": None})
-        except:
+        except Exception as err:
+            print(err)
             return JsonResponse({"ok": False, "msg": "server went wrong"})
     except:
         return JsonResponse({"ok": False, "msg": "請先登入"})
 
-
+@csrf_exempt
+def delete_order(request):
+    if request.method == "POST":
+        get_cookie = request.COOKIES.get("customer_token")
+        try:
+            payloads = jwt.decode(get_cookie, jwt_key, algorithms = "HS256")
+            request_data = json.loads(request.body)
+            order_id = request_data["orderId"]
+            try:
+                orders = Order.objects.filter(order_id = order_id)
+                for order in orders:
+                    order.order_status = "canceled"
+                    order.bookings.booking_status = "canceled"
+                    order.save()
+                    order.bookings.save()
+                return JsonResponse({"ok": True})
+            except Exception as err:
+                print(err)
+                return JsonResponse({"ok": False, "msg": "server went wrong"})
+        except:
+            return JsonResponse({"ok": False, "msg": "請先登入"})
+        
+    return JsonResponse({"ok": False, "msg": "HTTP method got wrong"})
 
 # 金流
 

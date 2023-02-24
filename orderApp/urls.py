@@ -15,4 +15,5 @@ urlpatterns = [
     path("complete_order_payment/<orderId>", views.complete_order_payment),
     path("get_paid_record/", views.get_paid_record),
     path("history_order/", views.render_history_order),
+    path("delete_order/", views.delete_order)
 ]

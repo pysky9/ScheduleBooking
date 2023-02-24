@@ -22,6 +22,10 @@ body{
     font-weight: 900;
 }
 
+.navbar-brand{
+    cursor: pointer;
+}
+
 /* 網頁載入loading */
 #content{
     position: relative;
@@ -86,6 +90,14 @@ body{
     margin-bottom: 20px;
     border: 0;
     font-family: 'Noto Sans TC', sans-serif;
+}
+
+.order-delete{
+    position: absolute;
+    top: 20px;
+    right: 5px;
+    width: 20px;
+    cursor: pointer;
 }
 
 /* 金流 */

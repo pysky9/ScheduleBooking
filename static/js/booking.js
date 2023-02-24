@@ -8,6 +8,7 @@ unpaid();
 getCartRecord();
 
 bookingBtn.addEventListener("click", event => {
+    loading.style.display = "block";
     if (! (bookingDate && bookingTime)){
       const errorMessages = document.createElement("h5");
       errorMessages.className = "error-messages"
@@ -42,8 +43,7 @@ bookingBtn.addEventListener("click", event => {
             render_cart(bookingDate, bookingTime, bookingTotalTime, bookingPrice, bookingId);
             payElement.style.display = "block";
             totalExpense.textContent = `總費用：${totalPrice}`;
-            location.reload();
-
+            location.reload();           
 
         }
       }
@@ -93,6 +93,7 @@ function render_cart(date, time, totalTime, price, bookingId){
   
     // 刪除購物清單
     closeButton.addEventListener("click", event => {
+      loading.style.display = "block";
       let request_data = {
         "bookingId": bookingId,
         "bookingStatus": "canceled"
@@ -105,11 +106,11 @@ function render_cart(date, time, totalTime, price, bookingId){
       ).then(
         data => {
             if (data.ok){
-
                 totalPrice -= price;
                 cartContainer.remove();
                 totalExpense.textContent = `總費用：${totalPrice}`;
-            
+                location.reload();
+
                 // 購物清單刪除後 如果購物車沒有預約單 移除總費用與結帳GO
                 setTimeout(function(){
                   const cartContainers = document.querySelectorAll("#cartContainer");
@@ -197,8 +198,6 @@ function unpaid(){
             if (data.ok && data.orderId){
                 let unpaidOrderId = data.orderId[0];
                 location.href = `/order/check_order/${unpaidOrderId}`;
-            }else if (data.ok && !data.orderId){
-                location.href = `/calendar/views/${queryName}`;
             }
         }
     )

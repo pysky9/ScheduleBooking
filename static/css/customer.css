@@ -1,5 +1,4 @@
 body{
-    /* background-color: #cfe2f3; */
     background-color: #f7f1f0;
 }
 
@@ -8,6 +7,7 @@ body{
     font-weight: 900;
     padding-top: 5px;
     font-size: 30px;
+    cursor: pointer;
 }
 
 #customer{
@@ -73,6 +73,15 @@ body{
 #cash-icon, #order-icon{
     width: 30px;
     cursor: pointer;
+}
+
+.modal{
+    display: none;
+    margin-top: 260px;
+}
+
+.modal-content{
+    background-color: #f7f1f0;
 }
 
 @media(max-width:420px){

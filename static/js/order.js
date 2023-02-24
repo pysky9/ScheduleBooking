@@ -6,6 +6,7 @@ const background = document.querySelector(".background");
 const cardBody = document.querySelector("#credit-card-info");
 const loading = document.querySelector("#loading");
 const payLoading = document.querySelector("#pay-loading");
+const orderDelete = document.querySelector(".order-delete");
 let totalPrice = 0;
 let pathname = window.location.pathname;
 let orderId = pathname.split("/")[3];
@@ -25,6 +26,23 @@ function get_order(){
         }
     )
 }
+
+orderDelete.addEventListener("click", event => {
+    loading.style.display = "block";
+    fetch("/order/delete_order/", {
+        method: "POST",
+        body: JSON.stringify({orderId: orderId})
+    }).then(
+        response => (response.json())
+    ).then(
+        data => {
+            if (data.ok){
+                redirectHomePage();
+                loading.style.display = "none";
+            }
+        }
+    )
+})
 
 function render_order_record(orderId, orderData){
     const titleContainer = document.createElement("div");
