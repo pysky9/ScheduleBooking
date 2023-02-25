@@ -304,3 +304,109 @@ def tappay_payment(request):
             return JsonResponse({"ok": False, "message": "請先登入"})
         
     return JsonResponse({"ok": False, "message": "HTTP連線方式錯誤"})
+
+# 商家訂單管理
+
+def customer_booked_data(request):
+    get_cookie = request.COOKIES.get("jwt_token")
+    try:
+        payloads = jwt.decode(get_cookie, jwt_key, algorithms = "HS256")
+        try:
+            orders_payed = Order.objects.filter(members_id=payloads["id"], order_status="payed")
+            orders_ordering = Order.objects.filter(members_id=payloads["id"], order_status="ordering")
+            orders_store_canceled = Order.objects.filter(members_id=payloads["id"], order_status="storecancel")
+            order_data = []
+            if orders_payed:
+                for order in orders_payed:
+                    data = {
+                        "customerId": order.customers.id,
+                        "customerName": order.customers.username,
+                        "customerMail": order.customers.email,
+                        "orderId": order.order_id,
+                        "orderDate": order.order_date,
+                        "orderTime": order.order_time,
+                        "orderTotalTime": order.order_total_time,
+                        "orderPrice": order.order_price,
+                        "orderStatus": order.order_status,
+                        "bookingId": order.bookings.booking_id
+                    }
+                    order_data.append(data)
+            if orders_ordering:
+                for order in orders_ordering:
+                    data = {
+                        "customerId": order.customers.id,
+                        "customerName": order.customers.username,
+                        "customerMail": order.customers.email,
+                        "orderId": order.order_id,
+                        "orderDate": order.order_date,
+                        "orderTime": order.order_time,
+                        "orderTotalTime": order.order_total_time,
+                        "orderPrice": order.order_price,
+                        "orderStatus": order.order_status,
+                        "bookingId": order.bookings.booking_id
+                    }
+                    order_data.append(data)
+            if orders_store_canceled:
+                for order in orders_store_canceled:
+                    data = {
+                        "customerId": order.customers.id,
+                        "customerName": order.customers.username,
+                        "customerMail": order.customers.email,
+                        "orderId": order.order_id,
+                        "orderDate": order.order_date,
+                        "orderTime": order.order_time,
+                        "orderTotalTime": order.order_total_time,
+                        "orderPrice": order.order_price,
+                        "orderStatus": order.order_status,
+                        "bookingId": order.bookings.booking_id
+                    }
+                    order_data.append(data)
+            return JsonResponse({"ok": True, "orderData": order_data})
+        except:
+            return JsonResponse({"ok": False, "msg": "server got error"})
+    except:
+        return JsonResponse({"ok": False, "msg": "請先登入"})
+    
+@csrf_exempt
+def store_cancel_order(request):
+    if request.method == "POST":
+        get_cookie = request.COOKIES.get("jwt_token")
+        try:
+            payloads = jwt.decode(get_cookie, jwt_key, algorithms = "HS256")
+            request_data = json.loads(request.body)
+            booking_id = request_data["booking_id"]
+            try:
+                order = Order.objects.get(members_id = payloads["id"], bookings_id = booking_id)
+                order.order_status = "storecancel"
+                order.bookings.booking_status = "storecancel"
+                order.bookings.save()
+                order.save()
+                return JsonResponse({"ok": True})
+            except:
+                return JsonResponse({"ok": False, "msg": "server got wrong"})
+        except:
+            return JsonResponse({"ok": False, "msg": "請先登入"})
+    return JsonResponse({"ok": False, "msg": "Wrong HTTP Method"})
+
+def get_appointment_time(request):
+    get_cookie = request.COOKIES.get("jwt_token")
+    try:
+        payloads = jwt.decode(get_cookie, jwt_key, algorithms = "HS256")
+        try:
+            orders = Order.objects.filter(members_id = payloads["id"], order_status = "payed")
+            appointment_list = []
+            if orders:
+                for order in orders:
+                    data = {
+                        "consumerName": order.customers.username,
+                        "appointmentDate": order.order_date,
+                        "appointmentTime": order.order_time,
+                        "appointmentTotalTime": order.order_total_time
+                    }
+                    appointment_list.append(data)
+                return JsonResponse({"ok": True, "appointment_time": appointment_list})
+            return JsonResponse({"ok": True, "appointment_time": None})
+        except:
+            return JsonResponse({"ok": False, "msg": "server got wrong"})
+    except:
+        return JsonResponse({"ok": False, "msg": "請先登入"})

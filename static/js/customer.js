@@ -41,7 +41,7 @@ function unpaid(){
         response => (response.json())
     ).then(
         data => {
-            if (data.ok){
+            if (data.ok && data.orderId){
                 let unpaidOrderId = data.orderId[0];
                 location.href = `/order/check_order/${unpaidOrderId}`;
             }else{
@@ -56,20 +56,27 @@ function get_history_order(){
         response => (response.json())
     ).then(
         data => {
+
             if (data.ok){
                 let historyOrders = data.order_data;
                 let totalAmount = 0;
                 let totalBookings = 0;
-                historyOrders.forEach(order => {
-                    if (order.order_status === "payed"){
-                        totalAmount += Number(order.order_price);
-                        totalBookings += 1;
-                    }
+                if (!data.order_data.length){
                     consumptionAmount.textContent = `$${totalAmount}`;
                     consumptionTimes.textContent = `${totalBookings}`;
                     loading.style.display = "none";
-                })
-                
+                    return;
+                }else{
+                    historyOrders.forEach(order => {
+                        if (order.order_status === "payed"){
+                            totalAmount += Number(order.order_price);
+                            totalBookings += 1;
+                        }
+                        consumptionAmount.textContent = `$${totalAmount}`;
+                        consumptionTimes.textContent = `${totalBookings}`;
+                        loading.style.display = "none";
+                    })
+                }
             }
         }
     )

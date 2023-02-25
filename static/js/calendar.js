@@ -133,7 +133,7 @@ function getReservationTime(date){
           timeDiv[0].style.color = "#E0E0E0";
           timeDiv[0].style.pointerEvents = "none";
           timeDiv[0].style.backgroundColor = "#f7f1f0";
-          bookedElement.textContent = "(已預約)";
+          bookedElement.textContent = "(預約已滿)";
           bookedElement.className = "time-booked";
           timeDiv[0].insertAdjacentElement("afterend", bookedElement);
         })

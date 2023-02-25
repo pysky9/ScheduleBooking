@@ -6,7 +6,7 @@ loginWithLine();
 
 function loginWithLine() {
     liff.init(
-        {liffId: "1657905932-Ly1jWqbp"}
+        {liffId: "kiff"}
     ).then(
         () => {
             fetch(`/line/data/${queryName}`).then(

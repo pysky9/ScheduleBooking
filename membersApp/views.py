@@ -11,6 +11,9 @@ from django.views.decorators.csrf import csrf_exempt
 from dotenv import load_dotenv
 
 from membersApp.models import Members
+from lineApp.models import Customers
+from cartApp.models import Booking
+from orderApp.models import Order
 
 load_dotenv()
 
@@ -51,7 +54,7 @@ def signup(request):
         members.url = f"/calendar/views/{data['username']}"
         members.save()
         return JsonResponse({"ok": True})
-
+ 
 def login(request):
     if request.method == "POST":
         data = json.loads(request.body)
