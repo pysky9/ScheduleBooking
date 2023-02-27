@@ -3,15 +3,17 @@ import json
 import jwt
 import requests
 import os
+import random
 
 from dotenv import load_dotenv
 
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
+from django.db import transaction
 
 from membersApp.models import Members
-from calendarApp.models import Time_setting, Time_pricing, Pay_deposit, Order_audit_cancel
+from calendarApp.models import Time_setting, Time_pricing
 from cartApp.models import Booking
 from orderApp.models import Order
 
@@ -20,8 +22,6 @@ jwt_key = os.getenv("jwt_key")
 
 time_setting = Time_setting()
 time_pricing = Time_pricing()
-pay_deposit = Pay_deposit()
-order_audit_cancel = Order_audit_cancel()
 
 
 # Create your views here.
@@ -34,43 +34,37 @@ def booked_calendar(request, storename):
 def time_setting_records(request, storename):
     return render(request, "timeSettingRecords.html")
 
+
 def calendar_setting(request):
     if request.method == "POST":
         data = json.loads(request.body)
-        time_setting.time_interval_category = data['timeSettingCategory']
-        time_setting.begin_time = data['timeSettingBegintime']
-        time_setting.end_time = data['timeSettingEndtime']
-        time_setting.begin_date = data['timeSettingBegindate']
-        time_setting.end_date = data['timeSettingEnddate']
-        time_setting.time_slice = data['timeNumbers']
-        time_setting.time_slice_unit = data['timeSliceUnit']
-        time_setting.pre_ordering_numbers = data['timeBookingNums']
-        time_setting.pre_ordering_unit = data['timeBookingUnit']
-        time_setting.members = Members(data['membersData']['id'])
-        time_setting.save()
+        print(data)
+        random_id = f"{data['membersData']['id']}{random.randint(100000, 999999)}"
+        try:
+            time_setting.time_interval_category = data['timeSettingCategory']
+            time_setting.begin_time = data['timeSettingBegintime']
+            time_setting.end_time = data['timeSettingEndtime']
+            time_setting.begin_date = data['timeSettingBegindate']
+            time_setting.end_date = data['timeSettingEnddate']
+            time_setting.time_slice = data['timeNumbers']
+            time_setting.time_slice_unit = data['timeSliceUnit']
+            time_setting.time_id = random_id
+            time_setting.members = Members(data['membersData']['id'])
+            time_setting.save()
 
-        time_pricing.origin_price = data['orignPrice']
-        time_pricing.discount_price = data['discountPrice']
-        time_pricing.discount_begin_date = data['discountBeginDate']
-        time_pricing.discount_end_date = data['discountEndDate']
-        time_pricing.members = Members(data['membersData']['id'])
-        time_pricing.save()
 
-        pay_deposit.open_deposit = data['depositChooses']
-        pay_deposit.deposit_category = data['depositItems']
-        pay_deposit.deposit_total_amount = data['totalDeposits']
-        pay_deposit.members = Members(data['membersData']['id'])
-        pay_deposit.save()
+            time_pricing.origin_price = data['orignPrice']
+            time_pricing.discount_price = data['discountPrice']
+            time_pricing.discount_begin_date = data['discountBeginDate']
+            time_pricing.discount_end_date = data['discountEndDate']
+            time_pricing.time_setting = Time_setting(random_id)
+            time_pricing.members = Members(data['membersData']['id'])
+            time_pricing.save()
 
-        order_audit_cancel.audit_choosing = data['bookingAudits']
-        order_audit_cancel.cancel_choosing = data['bookingCancels']
-        order_audit_cancel.cancel_number = data['cancelDayNumber']
-        order_audit_cancel.cancel_unit = data['cancelTimeUnit']
-        order_audit_cancel.members = Members(data['membersData']['id'])
-        order_audit_cancel.save()
-
-        return JsonResponse({"ok": True})
-    
+            return JsonResponse({"ok": True})
+        except Exception as err:
+            print(err)
+            return JsonResponse({"ok": False})    
     return JsonResponse({"ok": False})
 
 @csrf_exempt
@@ -495,4 +489,6 @@ def convert_to_datetime(date):
     day = int(date_split[2])
     return datetime(year, month, day)
 
-
+def fetch_merchant_time_slots(request):
+    pass
+ 

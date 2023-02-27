@@ -20,7 +20,11 @@
 
 
 #schedule-side-bar{
+    width:1200px;
     margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
 }
 
 #v-pills-tab{
@@ -35,7 +39,6 @@
 label.general {
     display: inline-block;
     width: 150px;
-    text-align: right;
     margin-right: 10px;
 }
 
@@ -49,6 +52,28 @@ input.general {
 
 #v-pills-profile{
     position: relative;
+}
+
+.time-set-container{
+    width: 1200px;
+}
+
+.time-select-item{
+    display: flex;
+    justify-content: space-between;
+    width:600px;
+    margin-bottom: 5px;
+}
+
+.time-select-begindate, .time-select-enddate, .time-select-begintime, .time-select-endtime{
+    width:220px;
+    text-align: center;
+}
+
+.service-interval, .origin-price, .discount-block{
+    width: 1200px;
+    border-bottom: 0.5px solid  #D0D0D0;
+    padding-bottom: 10px;
 }
 
 .time-select-slice, .time-select-booking, .time-cancel{
@@ -84,7 +109,7 @@ input.general {
 }
 
 .update{
-    width: 80px;
+    width: 120px;
     border: 1px;
     border-radius: 25px;
     margin-top:30px;
@@ -99,7 +124,7 @@ input.general {
 
 #updating{
     display: none;
-    width: 80px;
+    width: 120px;
     border: 1px;
     border-radius: 25px;
     margin-top:30px;
@@ -110,7 +135,14 @@ input.general {
     color: white;
     height: 32px;
     text-align: center;
+    margin-left: 100px;
 }
+
+.modal{
+    display: none;
+}
+
+
 
 @media(max-width:510px){
     .navbar-brand{

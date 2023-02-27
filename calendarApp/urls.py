@@ -12,7 +12,6 @@ urlpatterns = [
     path('time_setting_records/<storename>', views.time_setting_records),
     path('get_reservation_time/', views.get_reservation_time),
     path('get_consumer_data/', views.get_consumer_data),
-    # path('recieve/<username>', views.recieve),
-    
+    path('fetch_merchant_time_slots/', views.fetch_merchant_time_slots),
 ]
 

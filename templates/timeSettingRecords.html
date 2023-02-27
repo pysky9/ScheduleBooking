@@ -7,12 +7,11 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/fullcalendar/index.global.min.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/fullcalendar/main.min.css" rel="stylesheet"></link>
-        <!-- {% load static %}
+        {% load static %}
         <link href="{% static 'css/navbar.css' %}" rel="stylesheet" type="text/css"/>
-        <link href="{% static 'css/stroesetting.css' %}" rel="stylesheet" type="text/css"/> -->
+        <link href="{% static 'css/timeSettingRecords.css' %}" rel="stylesheet" type="text/css"/>
 
-        <link href="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/css/navbar.css" rel="stylesheet" type="text/css"/>
-        <link href="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/css/stroesetting.css" rel="stylesheet" type="text/css"/>
+        <!-- <link href="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/css/navbar.css" rel="stylesheet" type="text/css"/> -->
     </head>
     <body>
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -53,27 +52,51 @@
                   <li class="nav-item">
                     <a class="nav-link" id="link-line">連動Line Officail Account</a>
                   </li>
-
                 </ul>
               </div>
             </div>
         </nav>
-
-        <div class="container" id="url">
-          <span class="url-title">時段設定檢視：</span>
-          <a target="_blank" href="/calendar/views/{{name}}">schedule-booking.com/calendar/views/{{name}}</a>
-          <br/>
-          <span class="url-title">Line圖文表單連結：</span>
-          <a target="_blank" href="/line/linelogin/{{name}}">schedule-booking.com/line/linelogin/{{name}}</a>
+ 
+        <div class="container" id="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">時段種類</th>
+                <th scope="col">起迄日期</th>
+                <th scope="col">起迄時間</th>
+                <th scope="col">服務時長</th>
+                <th scope="col">原價</th>
+                <th scope="col">折扣價</th>
+                <th scope="col">折扣價起迄日期</th>
+                <th scope="col">商家修改</th>
+                <th scope="col">商家刪除</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>幾日到幾日</td>
+                <td>2023-02-28~2023-03-23</td>
+                <td>17:00-18:00</td>
+                <td>1小時</td>
+                <td>1000</td>
+                <td>800</td>
+                <td>2023-02-28~2023-03-23</td>
+                <td><button type="button" class="btn btn-primary">修改</button></td>
+                <td><button type="button" class="btn btn-danger">刪除</button></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofN4zfuZxLkoj1gXtW8ANNCe9d5Y3eG5eD" crossorigin="anonymous"></script>
-        <!-- <script src="{%static 'js/navbar.js'%}"></script>
-        <script src="{%static 'js/subNavbar.js'%}"></script> -->
+        <script src="{%static 'js/navbar.js'%}"></script>
+        <script src="{%static 'js/subNavbar.js'%}"></script>
+        <script src="{%static 'js/timeSettingRecords.js'%}"></script>
 
-        <script src="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/js/navbar.js"></script>
-        <script src="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/js/subNavbar.js"></script>
+        <!-- <script src="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/js/navbar.js"></script>
+        <script src="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/js/subNavbar.js"></script> -->
     </body>
 </html>

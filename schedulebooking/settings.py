@@ -163,7 +163,8 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 CSRF_COOKIE_DOMAIN = '.schedule-booking.com'
 CSRF_TRUSTED_ORIGINS = [
     'https://*.schedule-booking.com',
-    'https://access.line.me'
+    'https://access.line.me',
+    'https://api.line.me'
 ]
 
 # CORS

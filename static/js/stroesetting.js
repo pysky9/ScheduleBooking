@@ -1,38 +1,22 @@
 let membersData;
+const modalDialog = document.querySelector(".modal"); 
+const modalBody = document.querySelector(".modal-body");
+const closeIcon = document.querySelector(".btn-close");
+const btnClose = document.querySelector("#close-btn");
+const launchDiscount = document.querySelector("#launch-discount");
+const closeDiscount = document.querySelector("#close-discount");
+const discountBlock = document.querySelector(".discount");
 
-// 選項呈現對應的有效範圍
-let selectElement = document.querySelectorAll(".time-setting");
-let timeSelect1 = document.querySelector(".time-select-1");
-let timeSelect2 = document.querySelectorAll(".time-select-2");
-let timeSettingValue;
-selectElement.forEach(function(select){
-  select.addEventListener("change", function(event){
-    if (event.target.value === "每日幾點到幾點"){
-      event.target.closest("tr").querySelector(".time-select-1").style.display = "table-cell";
-      event.target.closest("tr").querySelectorAll(".time-select-2")[0].style.display = "none";
-      timeSettingValue = event.target.value;
-    }else {
-      event.target.closest("tr").querySelector(".time-select-1").style.display = "none";
-      event.target.closest("tr").querySelectorAll(".time-select-2")[0].style.display = "table-cell";
-      timeSettingValue = event.target.value;
-    }
-  })
+launchDiscount.addEventListener("click", event => {
+  discountBlock.style.display = "block";
 })
 
-// 訂金選項顯示&隱藏
-
-const deposit = document.querySelector(".deposit");
-const depositChoose = document.querySelector(".deposit-choose");
-let depositChooseValue;
-depositChoose.addEventListener("change", event => {
-    if (event.target.value === "NO-暫不啟用"){
-        deposit.style.display = "none";
-        depositChooseValue = event.target.value;
-    }else{
-        deposit.style.display = "block";
-        depositChooseValue = event.target.value;
-    }
-
+closeDiscount.addEventListener("click", event => {
+  const discountElement = document.querySelector(".price-discount");
+  if (discountElement.value){
+    discountElement.value = "";
+  }
+  discountBlock.style.display = "none";
 })
 
 // 資料更新
@@ -44,31 +28,12 @@ timeSliceElement.addEventListener("change", event => {
   timeSliceValue = event.target.value;
 })
 
-const timeSelectBooking = document.querySelector(".time-select-booking");
-let timeSelectBookingValue;
-timeSelectBooking.addEventListener("change", event => {
-  timeSelectBookingValue = event.target.value;
-});
-
-const timeCancelSelect = document.querySelector(".time-cancel");
-let timeCancelSelectValue;
-timeCancelSelect.addEventListener("change", event => {
-  timeCancelSelectValue = event.target.value;
-});
-
-const depositItemElement = document.querySelector(".deposit-item");
-let depositItem;
-depositItemElement.addEventListener("change", event => {
-  depositItem = event.target.value;
-})
-
 const csrfElement = document.getElementsByName("csrfmiddlewaretoken");
 const updating = document.querySelector("#updating")
 update.addEventListener("click", event => {
-  update.style.display = "none";
-  updating.style.display = "block";
   const priceOrginElement = document.querySelector(".price-orgin");
   let priceOrgin = priceOrginElement.value;
+
   const priceDiscountElement = document.querySelector(".price-discount");
   let priceDiscount = priceDiscountElement.value;
   const priceDiscountBeginDateElement = document.querySelector(".price-discount-begin-date");
@@ -77,43 +42,50 @@ update.addEventListener("click", event => {
   let priceDiscountEndDate = priceDiscountEndDateElement.value;
   const timeNumberElement = document.querySelector(".timeNumber");
   let timeNumber = timeNumberElement.value;
-  const timeBookingElement = document.querySelector(".timeBooking");
-  let timeBooking = timeBookingElement.value;
-  const bookingAudit = document.querySelector(".booking-audit");
-  let bookingAuditCheck;
-  if (bookingAudit.checked){
-    bookingAuditCheck = "Yes";
-  }else{
-    bookingAuditCheck = "No";
-  };
-  const bookingCancel = document.querySelector(".booking-cancel");
-  let bookingCancelCheck;
-  if (bookingCancel.checked){
-    bookingCancelCheck = "Yes";
-  }else{
-    bookingCancelCheck = "No";
-  }
-  const dayNumberElement = document.querySelector(".dayNumber");
-  let dayNumber = dayNumberElement.value;
-  const timeSelectBeginTimeElement = document.querySelector(".time-select-bigintime");
+  const timeSelectBeginTimeElement = document.querySelector(".time-select-begintime");
   const timeSelectEndTimeElement = document.querySelector(".time-select-endtime");
-  const timeSelectBeginTimeElementOption = document.querySelector(".time-select-begintime-2");
-  const timeSelectEndTimeElementOption = document.querySelector(".time-select-endtime-2");
-  let timeSelectBeginTime;
-  let timeSelectEndTime;
-  if (timeSettingValue === "每日幾點到幾點"){
-    timeSelectBeginTime = timeSelectBeginTimeElement.value;
-    timeSelectEndTime = timeSelectEndTimeElement.value;
-  } else {
-    timeSelectBeginTime = timeSelectBeginTimeElementOption.value;
-    timeSelectEndTime = timeSelectEndTimeElementOption.value;
-  };
+  let timeSelectBeginTime = timeSelectBeginTimeElement.value;
+  let timeSelectEndTime = timeSelectEndTimeElement.value;
   const timeSelectBeginDateElement = document.querySelector(".time-select-begindate");
   const timeSelectEndDateElement = document.querySelector(".time-select-enddate")
   let timeSelectBeginDate = timeSelectBeginDateElement.value;
   let timeSelectEndDate = timeSelectEndDateElement.value;
-  const totalDepositElement = document.querySelector(".total-deposit");
-  let totalDeposit = totalDepositElement.value;
+  // 必填欄位判斷
+  const alertMessage = document.createElement("span");
+  if (!priceOrgin){
+    modalDialog.style.display = "block"
+    modalBody.textContent = "請填入原價";
+    return;
+  };
+  if (!timeNumber || !timeSliceValue){
+    modalDialog.style.display = "block"
+    modalBody.textContent = "請填入單次服務時長";
+    return;
+  };
+  if (!timeSelectBeginDate || !timeSelectEndDate){
+    modalDialog.style.display = "block"
+    modalBody.textContent = "請設定開始或結束日期";
+    return;
+  };
+
+  if (!timeSelectBeginTime || !timeSelectEndTime){
+    modalDialog.style.display = "block"
+    modalBody.textContent = "請設定開始或結束時段";
+    return;
+  };
+
+  if (priceDiscount){
+    if (!priceDiscountBeginDate){
+      modalDialog.style.display = "block"
+      modalBody.textContent = "請填入折扣價起始日期";
+      return;
+    }else if (!priceDiscountEndDate){
+      modalDialog.style.display = "block"
+      modalBody.textContent = "請填入折扣價結束日期";
+      return;
+    }
+  };
+
   let updateAllData = {
     orignPrice: priceOrgin,
     discountPrice: priceDiscount,
@@ -121,25 +93,17 @@ update.addEventListener("click", event => {
     discountEndDate: priceDiscountEndDate,
     timeNumbers: timeNumber,
     timeSliceUnit: timeSliceValue,
-    timeBookingNums: timeBooking,
-    timeBookingUnit: timeSelectBookingValue,
-    bookingAudits: bookingAuditCheck,
-    bookingCancels: bookingCancelCheck,
-    cancelDayNumber: dayNumber,
-    cancelTimeUnit: timeCancelSelectValue,
-    timeSettingCategory: timeSettingValue,
+    timeSettingCategory: "特定時間範圍，每日幾點到幾點",
     timeSettingBegintime: timeSelectBeginTime,
     timeSettingEndtime: timeSelectEndTime,
     timeSettingBegindate: timeSelectBeginDate,
     timeSettingEnddate: timeSelectEndDate,
-    depositChooses: depositChooseValue,
-    depositItems: depositItem,
-    totalDeposits: totalDeposit,
     membersData: membersData
   };
-
+  console.log(updateAllData)
   const token = csrfElement[0].defaultValue;
-  
+  update.style.display = "none";
+  updating.style.display = "block";
   fetch("/calendar/setting/", {
     method:"POST",
     headers:{
@@ -175,3 +139,10 @@ function get_members_info(){
   )
 }
 
+closeIcon.addEventListener("click", event => {
+  modalDialog.style.display = "none";
+})
+
+btnClose.addEventListener("click", event => {
+  modalDialog.style.display = "none";
+})

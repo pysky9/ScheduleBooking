@@ -10,10 +10,17 @@ let bookingTotalTime;
 let bookingPrice;
 let pathname = window.location.pathname;
 let queryName = pathname.split("/")[3];
+// 取得今天的日期
+const now = new Date();
+const year = now.getFullYear();
+const month = now.getMonth() + 1;
+const day = now.getDate();
+let today = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
 
 document.addEventListener('DOMContentLoaded', function() {
     const calendarEl = document.getElementById('calendar');
     let lastClickedDayEl = null;
+
     const calendar = new FullCalendar.Calendar(calendarEl, {
       themeSystem: 'bootstrap5',
       initialView: 'dayGridMonth',
@@ -31,18 +38,42 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         info.dayEl.style.backgroundColor = '#4EB3D3';
         lastClickedDayEl = info.dayEl;
+
+        // const selectDate = new Date(info.dateStr);
+        // let now = new Date();
+        // if (selectDate < now){
+        //   console.log(info)
+        //   // info.dayEl.setAttribute("onclick", "false");
+        //   // info.jsEvent.setAttribute("defaultPrevented", "true")
+        // }
+      },
+      // selectable: true,
+      // selectAllow: function(selectInfo) {
+      //   console.log(selectInfo)
+      //   const selectDate = new Date(selectInfo.startStr);
+      //   let now = new Date();
+      //   console.log(now)
+      //   if (selectDate < now) {
+      //     console.log("yesterday")
+          
+      //     return {selectable: false};
+      //   }
+      //   return {selectable: true};
+      // },
+      validRange: {
+        start: today
       }
     })
 
     calendar.render();
 
-    // 載入畫面渲染當日可用時段
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth() + 1;
-    const day = now.getDate();
-    get_time_slice_data(`${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`);
-
+    // // 載入畫面渲染當日可用時段
+    // const now = new Date();
+    // const year = now.getFullYear();
+    // const month = now.getMonth() + 1;
+    // const day = now.getDate();
+    // get_time_slice_data(`${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`);
+    get_time_slice_data(today);
     // 使用者點擊日期顯示可用時段
     let date;
 
