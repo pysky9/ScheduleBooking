@@ -6,7 +6,7 @@ const btnClose = document.querySelector("#close-btn");
 const launchDiscount = document.querySelector("#launch-discount");
 const closeDiscount = document.querySelector("#close-discount");
 const discountBlock = document.querySelector(".discount");
-
+const timeSliceInfo = document.querySelector(".time-slice-info")
 launchDiscount.addEventListener("click", event => {
   discountBlock.style.display = "block";
 })
@@ -26,6 +26,11 @@ let timeSliceValue;
 
 timeSliceElement.addEventListener("change", event => {
   timeSliceValue = event.target.value;
+  if (timeSliceValue === "分"){
+    timeSliceInfo.style.display = "block";
+  }else{
+    timeSliceInfo.style.display = "none";
+  }
 })
 
 const csrfElement = document.getElementsByName("csrfmiddlewaretoken");
@@ -50,8 +55,17 @@ update.addEventListener("click", event => {
   const timeSelectEndDateElement = document.querySelector(".time-select-enddate")
   let timeSelectBeginDate = timeSelectBeginDateElement.value;
   let timeSelectEndDate = timeSelectEndDateElement.value;
+  let beginDate = new Date(timeSelectBeginDate);
+  let endDate = new Date(timeSelectEndDate);
+
+  if (beginDate > endDate){
+    modalDialog.style.display = "block"
+    modalBody.textContent = "結束日期要大於開始日期";
+    return;
+  };
+
   // 必填欄位判斷
-  const alertMessage = document.createElement("span");
+ 
   if (!priceOrgin){
     modalDialog.style.display = "block"
     modalBody.textContent = "請填入原價";
@@ -85,6 +99,14 @@ update.addEventListener("click", event => {
       return;
     }
   };
+  
+  if (timeSliceValue === "分"){
+    if ( Number(timeNumber) % 30 != 0){
+      modalDialog.style.display = "block"
+      modalBody.textContent = "以30分鐘為單位進行設定";
+      return;
+    }
+  }
 
   let updateAllData = {
     orignPrice: priceOrgin,
@@ -100,7 +122,7 @@ update.addEventListener("click", event => {
     timeSettingEnddate: timeSelectEndDate,
     membersData: membersData
   };
-  console.log(updateAllData)
+
   const token = csrfElement[0].defaultValue;
   update.style.display = "none";
   updating.style.display = "block";

@@ -68,8 +68,8 @@ def get_line_data(request, username):
     db_data = Channel_data.objects.filter(username=username)
     data = {
         "clientID": db_data[0].channel_id,#從DB拿
-        # "redirect_uri": "http://localhost:8000/line/recieve/",#開發測試使用
-        "redirect_uri": "https://www.schedule-booking.com/line/recieve/",# 上線
+        "redirect_uri": "http://localhost:8000/line/recieve/",#開發測試使用
+        # "redirect_uri": "https://www.schedule-booking.com/line/recieve/",# 上線
         "state": random_state
     }
 
@@ -82,8 +82,6 @@ def recieve(request, username):
     db_data = Channel_data.objects.filter(username=username)
     code = request.GET.get("code")
     state = request.GET.get("state")
-    print(state)
-    print(random_state)
     # Verify the state parameter to prevent CSRF attacks
     if state != random_state:
         return HttpResponseBadRequest("Invalid state")
@@ -93,8 +91,8 @@ def recieve(request, username):
         data={
             "grant_type": "authorization_code",
             "code": code,
-            # "redirect_uri": f"http://localhost:8000/line/recieve/{username}",#測試開發
-            "redirect_uri":f"https://www.schedule-booking.com/line/recieve/{username}",# 上線
+            "redirect_uri": f"http://localhost:8000/line/recieve/{username}",#測試開發
+            # "redirect_uri":f"https://www.schedule-booking.com/line/recieve/{username}",# 上線
             "client_id": db_data[0].channel_id,
             "client_secret": db_data[0].channel_secret,
         },

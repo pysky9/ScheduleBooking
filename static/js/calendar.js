@@ -38,28 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         info.dayEl.style.backgroundColor = '#4EB3D3';
         lastClickedDayEl = info.dayEl;
-
-        // const selectDate = new Date(info.dateStr);
-        // let now = new Date();
-        // if (selectDate < now){
-        //   console.log(info)
-        //   // info.dayEl.setAttribute("onclick", "false");
-        //   // info.jsEvent.setAttribute("defaultPrevented", "true")
-        // }
       },
-      // selectable: true,
-      // selectAllow: function(selectInfo) {
-      //   console.log(selectInfo)
-      //   const selectDate = new Date(selectInfo.startStr);
-      //   let now = new Date();
-      //   console.log(now)
-      //   if (selectDate < now) {
-      //     console.log("yesterday")
-          
-      //     return {selectable: false};
-      //   }
-      //   return {selectable: true};
-      // },
       validRange: {
         start: today
       }
@@ -67,12 +46,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     calendar.render();
 
-    // // 載入畫面渲染當日可用時段
-    // const now = new Date();
-    // const year = now.getFullYear();
-    // const month = now.getMonth() + 1;
-    // const day = now.getDate();
-    // get_time_slice_data(`${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`);
     get_time_slice_data(today);
     // 使用者點擊日期顯示可用時段
     let date;
@@ -84,9 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (isTimeSlice){ isTimeSlice.remove(); };
       if (isExspenseUnit){ isExspenseUnit.remove(); };
       get_time_slice_data(date);
-   
     })
-    
   })
 
 
@@ -110,31 +81,54 @@ function get_time_slice_data(date){
       const year = now.getFullYear();
       const month = now.getMonth() + 1;
       const day = now.getDate();
-      let today = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
+      let today = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
       if (data.OK){
-        if (date === today){
-          const today_data = data.today;
-          let morning = today_data.morning_today;
-          let afternoon = today_data.afternoon_today;
-          let night = today_data.night_today;
-          render_time_slice(morning, afternoon, night ,date);
-          get_time_price(date);
-          getReservationTime(date);
-          bookingBtn.style.display = "block";
-        }else if (date != today && data.available_time){
-          let morning = data.morning;
-          let afternoon = data.afternoon;
-          let night = data.night;
-          render_time_slice(morning, afternoon, night, date);
-          getReservationTime(date);
-          get_time_price(date);
-          bookingBtn.style.display = "block";
-        }else{
-          render_time_slice();
-          get_time_price(date);
-          getReservationTime(date);
-          bookingBtn.style.display = "none";          
+        let timeSet = data.timeData;
+        if (!timeSet.length){
+          const loadingElement = document.querySelector("#loading");
+          const message = document.createElement("div");
+          message.textContent = "無可預約時段";
+          message.id = "time";
+          loadingElement.insertAdjacentElement("afterend", message)
+          bookingBtn.style.display = "none";  
+          const preButton = document.querySelector(".fc-prev-button");
+          const nextButton = document.querySelector(".fc-next-button");
+          const todayButton = document.querySelector(".fc-today-button");
+          todayButton.addEventListener("click", event => {
+            message.remove();
+          });
+          preButton.addEventListener("click", event => {
+            message.remove();
+          });
+          nextButton.addEventListener("click", event => {
+            message.remove();
+          });
         }
+        timeSet.forEach(time => {
+          if (date === today){
+            const today_data = time.today;
+            let morning = today_data.morning_today;
+            let afternoon = today_data.afternoon_today;
+            let night = today_data.night_today;
+            render_time_slice(morning, afternoon, night ,date);
+            get_time_price(date);
+            getReservationTime(date);
+            bookingBtn.style.display = "block";
+          }else if (date != today && time.available_time){
+            let morning = time.morning;
+            let afternoon = time.afternoon;
+            let night = time.night;
+            render_time_slice(morning, afternoon, night, date);
+            getReservationTime(date);
+            get_time_price(date);
+            bookingBtn.style.display = "block";
+          }else{
+            render_time_slice();
+            get_time_price(date);
+            getReservationTime(date);
+            bookingBtn.style.display = "none";          
+          }
+        })
       }
       setTimeout(() => {
         loading.style.display = "none";
@@ -191,9 +185,7 @@ container.addEventListener("click", event => {
 })
 
 function render_time_slice(morning=[], afternoon=[], night=[], date=""){
-  
-  const loadingElement = document.querySelector("#loading")
-  
+  const loadingElement = document.querySelector("#loading");
   // 大容器
   const containerElement = document.createElement("div");
   containerElement.className = "container";
@@ -302,6 +294,23 @@ function render_time_slice(morning=[], afternoon=[], night=[], date=""){
   });
   containerElement.appendChild(nightElement);
   loadingElement.insertAdjacentElement("afterend", containerElement);
+
+  // pre-button next-button
+  const preButton = document.querySelector(".fc-prev-button");
+  const nextButton = document.querySelector(".fc-next-button");
+  const todayButton = document.querySelector(".fc-today-button");
+  todayButton.addEventListener("click", event => {
+    bookingBtn.style.display = "none";
+    containerElement.remove();
+  });
+  preButton.addEventListener("click", event => {
+    bookingBtn.style.display = "none";
+    containerElement.remove();
+  });
+  nextButton.addEventListener("click", event => {
+    bookingBtn.style.display = "none";
+    containerElement.remove();
+  });
 }
 
 function get_time_price(date){
@@ -312,13 +321,11 @@ function get_time_price(date){
     response => (response.json())
   ).then(
     data => {
-   
       const timeElement = document.querySelector("#time");
+      const exspenseElement = document.createElement("div");
       bookingTotalTime = `${data.time_slice}${data.time_slice_unit}`;
       if (data.isDiscount){
-
         bookingPrice = `${data.discount_price}`;
-        const exspenseElement = document.createElement("div");
         exspenseElement.className = "container";
         exspenseElement.id = "exspense";
         const exspenseTitle = document.createElement("span");
@@ -341,11 +348,9 @@ function get_time_price(date){
         exspenseUnit.textContent = `- 每 ${data.time_slice} ${data.time_slice_unit}`;
         exspenseElement.appendChild(exspenseUnit);
         timeElement.insertAdjacentElement("afterend", exspenseElement);
-
       }else{
         bookingPrice = `${data.origin_price}`;
         const timeElement = document.querySelector("#time");
-        const exspenseElement = document.createElement("div");
         exspenseElement.className = "container";
         exspenseElement.id = "exspense";
         const exspenseTitle = document.createElement("span");
@@ -362,6 +367,20 @@ function get_time_price(date){
         exspenseElement.appendChild(exspenseUnit);
         timeElement.insertAdjacentElement("afterend", exspenseElement);
       }
+      // pre-button next-button
+      const preButton = document.querySelector(".fc-prev-button");
+      const nextButton = document.querySelector(".fc-next-button");
+      const todayButton = document.querySelector(".fc-today-button");
+      todayButton.addEventListener("click", event => {
+        exspenseElement.remove();
+      });
+      preButton.addEventListener("click", event => {
+        exspenseElement.remove();
+      });
+      nextButton.addEventListener("click", event => {
+        exspenseElement.remove();
+      });
     }
   )
 }
+

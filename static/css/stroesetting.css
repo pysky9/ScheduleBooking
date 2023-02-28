@@ -80,6 +80,12 @@ input.general {
     height: 29px;
 }
 
+.time-slice-info{
+    display: none;
+    width: 250px;
+    margin-top: 8px;
+}
+
 .time-select-1{
     display: block;
 }
