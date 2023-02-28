@@ -38,34 +38,36 @@ def time_setting_records(request, storename):
 def calendar_setting(request):
     if request.method == "POST":
         data = json.loads(request.body)
-        print(data)
         random_id = f"{data['membersData']['id']}{random.randint(100000, 999999)}"
         try:
-            time_setting.time_interval_category = data['timeSettingCategory']
-            time_setting.begin_time = data['timeSettingBegintime']
-            time_setting.end_time = data['timeSettingEndtime']
-            time_setting.begin_date = data['timeSettingBegindate']
-            time_setting.end_date = data['timeSettingEnddate']
-            time_setting.time_slice = data['timeNumbers']
-            time_setting.time_slice_unit = data['timeSliceUnit']
-            time_setting.time_id = random_id
-            time_setting.members = Members(data['membersData']['id'])
+            time_setting = Time_setting.objects.create(
+                time_interval_category = data['timeSettingCategory'],
+                begin_time = data['timeSettingBegintime'],
+                end_time = data['timeSettingEndtime'],
+                begin_date = data['timeSettingBegindate'],
+                end_date = data['timeSettingEnddate'],
+                time_slice = data['timeNumbers'],
+                time_slice_unit = data['timeSliceUnit'],
+                time_id = random_id,
+                members = Members(data['membersData']['id'])
+            )
             time_setting.save()
-
-
-            time_pricing.origin_price = data['orignPrice']
-            time_pricing.discount_price = data['discountPrice']
-            time_pricing.discount_begin_date = data['discountBeginDate']
-            time_pricing.discount_end_date = data['discountEndDate']
-            time_pricing.time_setting = Time_setting(random_id)
-            time_pricing.members = Members(data['membersData']['id'])
-            time_pricing.save()
-
-            return JsonResponse({"ok": True})
         except Exception as err:
-            print(err)
-            return JsonResponse({"ok": False})    
-    return JsonResponse({"ok": False})
+            return JsonResponse({"ok": False, "msg": f"{err}"}) 
+        try:
+            time_pricing = Time_pricing.objects.create(
+                origin_price = data['orignPrice'],
+                discount_price = data['discountPrice'],
+                discount_begin_date = data['discountBeginDate'],
+                discount_end_date = data['discountEndDate'],
+                time_setting = Time_setting(random_id),
+                members = Members(data['membersData']['id'])
+            )
+            time_pricing.save()
+        except Exception as err:
+            return JsonResponse({"ok": False, "msg": f"{err}"})  
+        return JsonResponse({"ok": True})  
+    return JsonResponse({"ok": False, "msg": "login first"})
 
 @csrf_exempt
 def response_time_period(request):
@@ -88,6 +90,7 @@ def response_time_period(request):
         
         # 商家設定日期
         query = Time_setting.objects.filter(members_id=id) 
+        print(query)
         if not query:
             return JsonResponse({"ok": False, "data": None}) 
         preordering_time = f"{query[0].pre_ordering_numbers}{query[0].pre_ordering_unit}"

@@ -24,8 +24,6 @@ def generate_random_string(length):
     result = ''.join(random.choice(letters_and_digits) for i in range(length))
     return result
 random_state = generate_random_string(6)
-# random_state = "389hxy"
-print("@28", random_state)
 
 def line_login(request, username):
     return render(request, 'linelogin.html')
@@ -70,8 +68,8 @@ def get_line_data(request, username):
     db_data = Channel_data.objects.filter(username=username)
     data = {
         "clientID": db_data[0].channel_id,#從DB拿
-        "redirect_uri": "http://localhost:8000/line/recieve/",#開發測試使用
-        # "redirect_uri": "https://www.schedule-booking.com/line/recieve/",# 上線
+        # "redirect_uri": "http://localhost:8000/line/recieve/",#開發測試使用
+        "redirect_uri": "https://www.schedule-booking.com/line/recieve/",# 上線
         "state": random_state
     }
 
@@ -95,8 +93,8 @@ def recieve(request, username):
         data={
             "grant_type": "authorization_code",
             "code": code,
-            "redirect_uri": f"http://localhost:8000/line/recieve/{username}",#測試開發
-            # "redirect_uri":f"https://www.schedule-booking.com/line/recieve/{username}",# 上線
+            # "redirect_uri": f"http://localhost:8000/line/recieve/{username}",#測試開發
+            "redirect_uri":f"https://www.schedule-booking.com/line/recieve/{username}",# 上線
             "client_id": db_data[0].channel_id,
             "client_secret": db_data[0].channel_secret,
         },
@@ -107,7 +105,6 @@ def recieve(request, username):
     id_token = response.json()["id_token"]
     # Use the access token to get the user's profile information
     headers = {
-        # "Authorization": "Bearer " + access_token,
         "Authorization": f"Bear {access_token}",
     }
     response = requests.get("https://api.line.me/v2/profile", headers=headers)
@@ -131,13 +128,21 @@ def recieve(request, username):
     # DB無消費者資料 存入DB
     query_db = Customers.objects.filter(email= profile["email"], members_id=query_store[0].id)
     if not query_db:
-        customer = Customers()
-        customer.members = Members(query_store[0].id)
-        customer.username = name
-        customer.email = email
-        customer.picture = picture
-        customer.save()
-    customer_id = query_db[0].id
+        try:
+            customer = Customers.objects.create(
+                members = Members(query_store[0].id),
+                username = name,
+                email = email,
+                picture = picture
+            )
+            customer.save()
+        except Exception as err:
+            print(err)
+            return JsonResponse({"msg": f"{err}"})
+    customer_data = Customers.objects.filter(email= profile["email"], members_id=query_store[0].id)
+
+    customer_id = customer_data[0].id
+
     # 登入後 消費者資訊存入JWT
     expiration_time = datetime.utcnow() + timedelta(weeks=1)
     payload = {
