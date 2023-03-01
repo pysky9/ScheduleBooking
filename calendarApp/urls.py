@@ -13,5 +13,7 @@ urlpatterns = [
     path('get_reservation_time/', views.get_reservation_time),
     path('get_consumer_data/', views.get_consumer_data),
     path('fetch_merchant_time_slots/', views.fetch_merchant_time_slots),
+    path('update_merchant_time_slots/', views.update_merchant_time_slots),
+    path('delete_merchant_time_slots/', views.delete_merchant_time_slots)
 ]
 

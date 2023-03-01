@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date, datetime, time
 import json
 import jwt
 import requests
@@ -48,6 +48,7 @@ def calendar_setting(request):
                 end_date = data['timeSettingEnddate'],
                 time_slice = data['timeNumbers'],
                 time_slice_unit = data['timeSliceUnit'],
+                status = "launch",
                 time_id = random_id,
                 members = Members(data['membersData']['id'])
             )
@@ -60,6 +61,7 @@ def calendar_setting(request):
                 discount_price = data['discountPrice'],
                 discount_begin_date = data['discountBeginDate'],
                 discount_end_date = data['discountEndDate'],
+                status = "launch",
                 time_setting = Time_setting(random_id),
                 members = Members(data['membersData']['id'])
             )
@@ -67,7 +69,7 @@ def calendar_setting(request):
         except Exception as err:
             return JsonResponse({"ok": False, "msg": f"{err}"})  
         return JsonResponse({"ok": True})  
-    return JsonResponse({"ok": False, "msg": "login first"})
+    return JsonResponse({"ok": False, "msg": "Wrong Method"})
 
 @csrf_exempt
 def response_time_period(request):
@@ -89,7 +91,7 @@ def response_time_period(request):
         id = query_member[0].id
         
         # 商家設定日期
-        query = Time_setting.objects.filter(members_id=id) 
+        query = Time_setting.objects.filter(members_id=id, status="launch") 
 
         if not query:
             return JsonResponse({"ok": False, "data": None}) 
@@ -246,7 +248,6 @@ def generate_time_slice(begin_time, end_time, time_slice, time_slice_unit,  requ
         begin_time_minutes = int(begin_time_minutes)
         end_time_hours = int(end_time_hours)
         end_time_minutes = int(end_time_minutes)
-
         while True:
             
             if begin_time_minutes >= 60:
@@ -323,7 +324,7 @@ def response_time_price(request):
         return JsonResponse({"ok": False, "data": None}) 
     id = query_member[0].id
 
-    query_time = Time_setting.objects.filter(members_id=id)
+    query_time = Time_setting.objects.filter(members_id=id, status="launch")
     for time_data in query_time:
         db_begin_date_split =  time_data.begin_date.split('-')
         db_begin_date_year = int(db_begin_date_split[0])
@@ -341,7 +342,7 @@ def response_time_price(request):
             time_slice = time_data.time_slice
             time_slice_unit = time_data.time_slice_unit
 
-            query = Time_pricing.objects.filter(time_setting_id = time_id)
+            query = Time_pricing.objects.filter(time_setting_id = time_id, status="launch")
             origin_price = query[0].origin_price
             discount_price = query[0].discount_price
     
@@ -452,5 +453,90 @@ def convert_to_datetime(date):
     return datetime(year, month, day)
 
 def fetch_merchant_time_slots(request):
-    pass
- 
+    get_cookie = request.COOKIES.get("jwt_token")
+    try:
+        payloads = jwt.decode(get_cookie, jwt_key, algorithms = "HS256")
+        time_setting = Time_setting.objects.filter(members_id = payloads["id"], status="launch")
+        time_pricing = Time_pricing.objects.filter(members_id = payloads["id"], status="launch")
+        if not (time_setting or time_pricing):
+            return JsonResponse({"ok":False, "data": []})
+        time_setting_list = []
+        time_pricing_list = []
+        for time in time_setting:
+            data = {
+                "time_setting_id": time.time_id,
+                "begin_date": time.begin_date,
+                "end_date": time.end_date,
+                "begin_time": time.begin_time,
+                "end_time": time.end_time,
+                "service_interval": f"{time.time_slice}{time.time_slice_unit}"
+            }
+            time_setting_list.append(data)
+        for price in time_pricing:
+            data = {
+                "origin_price": price.origin_price,
+                "discount_price": price.discount_price,
+                "discount_begin_date": price.discount_begin_date,
+                "discount_end_date": price.discount_end_date
+            }
+            time_pricing_list.append(data)
+        return JsonResponse({"ok":True, "time_setting":  time_setting_list, "time_pricing": time_pricing_list})
+    except:
+        return JsonResponse({"ok": False, "msg": "login first"})
+
+def update_merchant_time_slots(request):
+    if request.method == "POST":
+        get_cookie = request.COOKIES.get("jwt_token")
+        try:
+            payloads = jwt.decode(get_cookie, jwt_key, algorithms = "HS256")
+            data = json.loads(request.body)
+            timeId = data["timeId"]
+            try:
+                time_setting = Time_setting.objects.get(time_id = timeId)
+                time_setting.begin_time = data["timeSettingBegintime"]
+                time_setting.end_time = data["timeSettingEndtime"]
+                time_setting.begin_date = data["timeSettingBegindate"]
+                time_setting.end_date = data["timeSettingEnddate"]
+                time_setting.time_slice = data["timeNumbers"]
+                time_setting.time_slice_unit = data["timeSliceUnit"]
+                time_setting.save()
+            except:
+                return JsonResponse({"ok": False, "msg": "time data got wrong"})
+            try:
+                time_pricing = Time_pricing.objects.get(time_setting_id = timeId)
+                time_pricing.origin_price = data["orignPrice"]
+                time_pricing.discount_price = data["discountPrice"]
+                time_pricing.discount_begin_date = data["discountBeginDate"]
+                time_pricing.discount_end_date = data["discountEndDate"]
+                time_pricing.save()
+            except:
+                return JsonResponse({"ok": False, "msg": "price data got wrong"})
+            return JsonResponse({"ok": True})
+        except:
+            return JsonResponse({"ok": False, "msg": "login first"})
+    return JsonResponse({"ok": False, "msg": "Wrong HTTP Method"})
+
+@csrf_exempt
+def delete_merchant_time_slots(request):
+    if request.method == "POST":
+        get_cookie = request.COOKIES.get("jwt_token")
+        try:
+            payloads = jwt.decode(get_cookie, jwt_key, algorithms = "HS256")
+            data = json.loads(request.body)
+            timeId = data["timeId"]
+            try:
+                time_setting = Time_setting.objects.get(time_id = timeId)
+                time_setting.status = "deleted"
+                time_setting.save()
+            except:
+                return JsonResponse({"ok": False, "msg": "time data got wrong"})
+            try:
+                time_pricing = Time_pricing.objects.get(time_setting_id = timeId)
+                time_pricing.status = "deleted"
+                time_pricing.save()
+            except:
+                return JsonResponse({"ok": False, "msg": "price data got wrong"})
+            return JsonResponse({"ok": True})
+        except:
+            return JsonResponse({"ok": False, "msg": "login first"})
+    return JsonResponse({"ok": False, "msg": "Wrong HTTP Method"})

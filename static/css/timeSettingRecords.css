@@ -1,8 +1,60 @@
 #table-container{
     margin-top: 25px;
+    position: relative;
 }
 
-td {
+td{
     line-height: 54px;
 }
 
+tr{
+    text-align: center;
+}
+
+#loading{
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background-color: #f7f1f0;
+    z-index: 10;
+}
+
+#update-modal, #delete-modal{
+    display: none;
+}
+
+.booking-date, .booking-time, .service-interval, .origin-price, .discount-block, .discount{
+    margin-top: 8px;
+}
+
+.general{
+    margin-top: 8px;
+}
+
+.time-slice-info{
+    display: none;
+}
+
+#correct-color{
+    border: 1px solid gray;
+}
+
+.msg{
+    margin-left: 5px;
+}
+
+.background{
+    display: none;
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    z-index: 1060;
+}
+
+#changing, #deleting{
+    display: none;
+}

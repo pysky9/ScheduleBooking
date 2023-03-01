@@ -6,7 +6,8 @@ const btnClose = document.querySelector("#close-btn");
 const launchDiscount = document.querySelector("#launch-discount");
 const closeDiscount = document.querySelector("#close-discount");
 const discountBlock = document.querySelector(".discount");
-const timeSliceInfo = document.querySelector(".time-slice-info")
+const timeSliceInfo = document.querySelector(".time-slice-info");
+
 launchDiscount.addEventListener("click", event => {
   discountBlock.style.display = "block";
 })

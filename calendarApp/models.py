@@ -10,6 +10,7 @@ class Time_setting(models.Model):
     end_date = models.CharField(max_length=150)
     time_slice = models.CharField(max_length=50, null=False)
     time_slice_unit = models.CharField(max_length=10, null=False)
+    status = models.CharField(max_length=100)
     time_id = models.CharField(max_length=150)
     members = models.ForeignKey(Members, on_delete=models.CASCADE, related_name="time_setting")
 
@@ -21,5 +22,6 @@ class Time_pricing(models.Model):
     discount_price = models.CharField(max_length=100)
     discount_begin_date = models.CharField(max_length=100)
     discount_end_date = models.CharField(max_length=100)
+    status = models.CharField(max_length=100)
     members = models.ForeignKey(Members, on_delete=models.CASCADE, related_name="time_pricing")
     time_setting = models.ForeignKey(Time_setting, on_delete=models.CASCADE, related_name="time_pricing")
