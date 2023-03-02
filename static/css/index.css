@@ -2,6 +2,13 @@ body{
     background-color: #C3A6A0;
 }
 
+.navbar{
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+}
+
 .navbar-brand{
     font-family: "Microsoft Jhenghei";
     font-weight: bold;
@@ -14,6 +21,10 @@ body{
     display: flex;
     justify-content: center;
     margin-top: 10px;
+}
+
+#content{
+    margin-top: 100px;
 }
 
 .slogan{

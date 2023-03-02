@@ -68,8 +68,8 @@ def get_line_data(request, username):
     db_data = Channel_data.objects.filter(username=username)
     data = {
         "clientID": db_data[0].channel_id,#從DB拿
-        # "redirect_uri": "http://localhost:8000/line/recieve/",#開發測試使用
-        "redirect_uri": "https://www.schedule-booking.com/line/recieve/",# 上線
+        "redirect_uri": "http://localhost:8000/line/recieve/",#開發測試使用
+        # "redirect_uri": "https://www.schedule-booking.com/line/recieve/",# 上線
         "state": random_state
     }
 
@@ -91,8 +91,8 @@ def recieve(request, username):
         data={
             "grant_type": "authorization_code",
             "code": code,
-            # "redirect_uri": f"http://localhost:8000/line/recieve/{username}",#測試開發
-            "redirect_uri":f"https://www.schedule-booking.com/line/recieve/{username}",# 上線
+            "redirect_uri": f"http://localhost:8000/line/recieve/{username}",#測試開發
+            # "redirect_uri":f"https://www.schedule-booking.com/line/recieve/{username}",# 上線
             "client_id": db_data[0].channel_id,
             "client_secret": db_data[0].channel_secret,
         },
@@ -103,10 +103,10 @@ def recieve(request, username):
     id_token = response.json()["id_token"]
     # Use the access token to get the user's profile information
     headers = {
-        "Authorization": f"Bear {access_token}",
+        "Authorization": f"Bearer {access_token}",
     }
-    response = requests.get("https://api.line.me/v2/profile", headers=headers)
-    
+    responses = requests.get("https://api.line.me/v2/profile", headers=headers)
+    print("@110 ", responses.json())
     # # id_token
     url = "https://api.line.me/oauth2/v2.1/verify"
 
@@ -117,6 +117,7 @@ def recieve(request, username):
 
     response = requests.post(url, data=data)
     profile = response.json()
+    print("@120", profile)
     name = profile["name"]
     picture = profile["picture"]
     email = profile["email"]

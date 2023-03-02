@@ -67,6 +67,8 @@ body{
 #buttonContainer{
     position: relative;
     margin-top: 15px;
+    display: flex;
+    align-items: center;
 }
 
 .msg{

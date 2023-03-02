@@ -39,18 +39,21 @@ def store_setting(request, storename):
 def signup(request):
     if request.method == "POST":
         data = json.loads(request.body)
-
         if Members.objects.filter(username=data["username"]):
-            return JsonResponse({"ok": None, "error": "username已被註冊"})
+            return JsonResponse({"ok": False, "msg": "username已被註冊"})
         if Members.objects.filter(email=data["email"]):
-            return JsonResponse({"ok": None, "error": "email已被註冊"})
-        members = Members()
-        members.username = data["username"]
-        members.email = data["email"]
-        members.password = make_password(data["password"])
-        members.url = f"/calendar/views/{data['username']}"
-        members.save()
+            return JsonResponse({"ok": False, "msg": "email已被註冊"})
+        try:
+            members = Members()
+            members.username = data["username"]
+            members.email = data["email"]
+            members.password = make_password(data["password"])
+            members.url = f"/calendar/views/{data['username']}"
+            members.save()
+        except:
+            return JsonResponse({"ok": False, "msg": "Server got wrong"})
         return JsonResponse({"ok": True})
+    return JsonResponse({"ok": False, "msg": "HTTP Method got wrong"})
  
 def login(request):
     if request.method == "POST":
@@ -58,6 +61,8 @@ def login(request):
         email = data["email"]
         password = data["password"]
         query = Members.objects.filter(email=email)
+        if not query:
+            return JsonResponse({"ok": False, "msg": "Email 錯誤"})
         db_password = query[0].password
         is_valid_password = check_password(password, db_password)
         if is_valid_password:
@@ -75,7 +80,8 @@ def login(request):
             response.set_cookie(key="jwt_token", value=jwt_encode, expires=expiration_time)
             return response
         
-        return JsonResponse({"ok": False})
+        return JsonResponse({"ok": False, "msg": "Password 錯誤"})
+    return JsonResponse({"ok": False, "msg": "HTTP Method got wrong"})
 
 def logout(request):
     response = JsonResponse({"ok": True})

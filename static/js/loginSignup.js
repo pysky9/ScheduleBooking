@@ -45,10 +45,10 @@ signupBtn.addEventListener("click", event => {
         body:JSON.stringify(requestData)
     }).then(response => (response.json())).then(
         data => {
-
+            const msg = document.createElement("span");
+            msg.className = "msg";
             if (data.ok){
-                const msg = document.createElement("span");
-                msg.className = "msg";
+                msg.style.color = "#ADADAD";
                 msg.textContent = "註冊成功";
                 signupBtn.insertAdjacentElement("afterend", msg);
                 background.style.display = "block";
@@ -61,10 +61,18 @@ signupBtn.addEventListener("click", event => {
                     loginElement.style.display = "block";
                     signupElemnt.style.display = "none";
                 }, 1000);
+            }else{
+                msg.style.color = "#FF9797";
+                background.style.display = "block";
+                signupBtn.style.display = "block";
+                signupLoading.style.display = "none";
+                if (data.msg === "username已被註冊" || data.msg === "email已被註冊"){
+                    msg.textContent = `${data.msg}`;
+                    signupBtn.insertAdjacentElement("afterend", msg);
+                }
             }
         }
     )
-
 });
 
 
@@ -89,9 +97,10 @@ loginBtn.addEventListener("click", event => {
         body:JSON.stringify(requestData)
     }).then(response => (response.json())).then(
         data => {
+            const msg = document.createElement("span");
+            msg.className = "msg";
             if (data.ok){
-                const msg = document.createElement("span");
-                msg.className = "msg";
+                msg.style.color = "#ADADAD";
                 msg.textContent = "登入成功";
                 loginBtn.insertAdjacentElement("afterend", msg);
                 background.style.display = "block";
@@ -102,10 +111,15 @@ loginBtn.addEventListener("click", event => {
                     // location.href = `/members/member_page/${data.username}`;
                     location.href = `/members/sitemap/${data.username}`
                 }, 1000);
-                
-                
             }else{
-                location.href = "/"
+                background.style.display = "block";
+                loginBtn.style.display = "block";
+                loginLoading.style.display = "none";
+                msg.style.color = "#FF9797";
+                if (data.msg === "Email 錯誤" || data.msg === "Password 錯誤"){
+                    msg.textContent = `${data.msg}`;
+                    loginBtn.insertAdjacentElement("afterend", msg);
+                }
             }
             
         }
