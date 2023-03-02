@@ -11,6 +11,10 @@ let totalPrice = 0;
 let pathname = window.location.pathname;
 let orderId = pathname.split("/")[3];
 
+liff.init(
+    {liffId: "1657905932-Ly1jWqbp"}
+);
+
 get_order();
 
 function get_order(){
@@ -26,7 +30,7 @@ function get_order(){
         }
     )
 }
-
+ 
 orderDelete.addEventListener("click", event => {
     loading.style.display = "block";
     fetch("/order/delete_order/", {
@@ -266,6 +270,7 @@ function sentToServer(parameter){
             payButton.setAttribute("disabled", "disabled");
             
             if(paymentMessage === "付款成功"){
+                liffSendMessage();
                 location.replace(`/order/complete_order_payment/${responseData.data.data.number}`);
             }else{
                 errorMessageBox("付款失敗");
@@ -297,3 +302,17 @@ background.addEventListener("click", event => {
     message.remove();
     background.style.display = "none";
 })
+
+function liffSendMessage(){
+    liff.sendMessages([
+    {
+      type: "text",
+      text: "付款成功，您的預約訊息如下：",
+    },
+  ])  .then(() => {
+    console.log("message sent");
+  }).catch((err) => {
+    console.log("error", err);
+  });
+}
+

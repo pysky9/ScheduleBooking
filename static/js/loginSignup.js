@@ -12,16 +12,17 @@ const loginBtn = document.querySelector(".login");
 const background = document.querySelector(".background");
 const signupLoading = document.querySelector("#signup-loading");
 const loginLoading = document.querySelector("#login-loading");
+const returnHomePage = document.querySelector(".navbar-brand");
 
 changeToLogin.addEventListener("click", event =>{
     loginElement.style.display = "block";
     signupElemnt.style.display = "none";
-})
+});
 
 changeToSignup.addEventListener("click", event =>{
     loginElement.style.display = "none";
     signupElemnt.style.display = "block";
-})
+});
 
 signupBtn.addEventListener("click", event => {
     const username = document.querySelector(".username");
@@ -64,7 +65,7 @@ signupBtn.addEventListener("click", event => {
         }
     )
 
-})
+});
 
 
 loginBtn.addEventListener("click", event => {
@@ -109,12 +110,16 @@ loginBtn.addEventListener("click", event => {
             
         }
     )
-})
+});
 
 background.addEventListener("click", event => {
     const msg = document.querySelector(".msg");
     msg.remove();
     background.style.display = "none";
+});
+
+returnHomePage.addEventListener("click", event => {
+    location.href = "/";
 })
 
 function userDataNotValidation(emailValue, passwordValue, btn, formTitle, usernameValue = false){
@@ -147,4 +152,4 @@ function userDataNotValidation(emailValue, passwordValue, btn, formTitle, userna
         background.style.display = "block";
         return true;
     }
-}
+};

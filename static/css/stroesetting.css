@@ -114,7 +114,7 @@ input.general {
     display: none;
 }
 
-.update{
+#update{
     width: 120px;
     border: 1px;
     border-radius: 25px;

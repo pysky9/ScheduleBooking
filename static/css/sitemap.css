@@ -3,14 +3,14 @@ body{
 }
 
 .navbar-brand{
-    font-family: 'Noto Sans TC', sans-serif;
+    font-family: "Microsoft Jhenghei";
     font-weight: 900;
     padding-top: 5px;
     font-size: 30px;
 }
 
 .navbar{
-    font-family: 'Noto Sans TC', sans-serif;
+    font-family: "Microsoft Jhenghei";
     font-weight: 500;
     padding-top: 5px;
     font-size: 20px;
@@ -21,7 +21,7 @@ body{
     display: flex;
     flex-wrap: nowrap;
     justify-content: center;
-    font-family: 'Noto Sans TC', sans-serif;
+    font-family: "Microsoft Jhenghei";
     font-weight: 300;
     margin-top: 45px;
 }

@@ -3,14 +3,14 @@ body{
 }
 
 .navbar-brand{
-    font-family: 'Noto Sans TC', sans-serif;
+    font-family: "Microsoft Jhenghei";
     font-weight: 900;
     padding-top: 5px;
     font-size: 30px;
 }
 
 .navbar{
-    font-family: 'Noto Sans TC', sans-serif;
+    font-family: "Microsoft Jhenghei";
     font-weight: 500;
     padding-top: 5px;
     font-size: 20px;
@@ -23,7 +23,7 @@ body{
 
 #url{
     margin-top: 20px;
-    font-family: 'Noto Sans TC', sans-serif;
+    font-family: "Microsoft Jhenghei";
     font-weight: 500;
 }
 
@@ -81,7 +81,7 @@ input.general {
     cursor: pointer;
     /* background-color: #0d6efd; */
     background-color: #A15c38;
-    font-family: 'Noto Sans TC', sans-serif;
+    font-family: "Microsoft Jhenghei";
     font-weight: 500;
     font-size: 16px;
     text-align: center;
@@ -98,7 +98,7 @@ input.general {
     border-radius: 25px;
     margin-top:30px;
     cursor: pointer;
-    font-family: 'Noto Sans TC', sans-serif;
+    font-family: "Microsoft Jhenghei";
     font-weight: 500;
     font-size: 16px;
     color: white;
@@ -113,7 +113,7 @@ input.general {
     border-radius: 25px;
     margin-top:30px;
     cursor: pointer;
-    font-family: 'Noto Sans TC', sans-serif;
+    font-family: "Microsoft Jhenghei";
     font-weight: 500;
     font-size: 16px;
     color: white;

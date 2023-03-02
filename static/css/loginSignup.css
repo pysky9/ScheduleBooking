@@ -1,6 +1,20 @@
 body{
     /* background-color: #cfe2f3; */
-    background-color: #f9f7f0;
+    background-color: #C3A6A0;
+}
+
+.navbar-brand{
+    /* font-family: 'Noto Sans TC', sans-serif; */
+    font-family: "Microsoft Jhenghei";
+    font-weight: bold;
+    padding-top: 5px;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+#btn-literal{
+    font-family: "Microsoft Jhenghei";
+    font-size: 30px
 }
 
 .container{
@@ -72,4 +86,26 @@ body{
 /* loading */
 #signup-loading, #login-loading{
     display: none;
+}
+
+.footer{
+    display: flex;
+    height: 104px;
+    justify-content: center;
+    background: #A15C38;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+
+.footerContent{
+    flex: none;
+    line-height: 104px; 
+    font-family: "Microsoft Jhenghei";
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    color: #FFFFFF;
+    text-align: center;
 }

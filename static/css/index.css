@@ -1,0 +1,98 @@
+body{
+    background-color: #C3A6A0;
+}
+
+.navbar-brand{
+    font-family: "Microsoft Jhenghei";
+    font-weight: bold;
+    padding-top: 5px;
+    font-size: 30px;
+}
+
+
+.start-btn{
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.slogan{
+    font-family: "Microsoft Jhenghei";
+    font-weight: bold;
+    padding-top: 5px;
+    font-size: 40px;
+    text-align: center;
+}
+
+.line-icon{
+    width: 45px;
+    margin-left: 5px;
+    box-shadow: 8px 8px 5px rgb(0,0,0,0.2);
+}
+
+#btn-literal{
+    font-family: "Microsoft Jhenghei";
+    font-size: 30px
+}
+
+#line-description, #merchant-setting-info, #merchant-changing-info, #merchant-calendar-info, #merchant-order-info{
+    margin-top: 30px;
+    margin-bottom: 60px;
+    display: flex;
+}
+
+.line-info, .setting-info, .changing-info, .calendar-info, .order-info{
+    font-family: "Microsoft Jhenghei";
+    font-weight: bold;
+    padding-top: 5px;
+    font-size: 30px;
+    flex: none;
+    width: 50%;
+}
+
+.line-gif-container, .setting-img-container{
+    flex: none;
+    width: 50%;
+}
+
+.line-gif{
+    width: 150px;
+    border-radius: 5px;
+    box-shadow: 15px 15px 5px rgb(0,0,0,0.2);
+}
+
+.setting-img{
+    width: 650px;
+    border-radius: 5px;
+    box-shadow: 15px 15px 5px rgb(0,0,0,0.2);
+}
+
+.setting-subtitle, .changing-subtitle{
+    font-family: "Microsoft Jhenghei";
+    font-weight: 500;
+    padding-top: 5px;
+    font-size: 20px;
+}
+
+.changing-gif-container{
+    width: 650px;
+}
+
+.footer{
+    display: flex;
+    height: 104px;
+    justify-content: center;
+    background: #A15C38;
+    margin-top: 30px;
+}
+
+.footerContent{
+    flex: none;
+    line-height: 104px; 
+    font-family: "Microsoft Jhenghei";
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    color: #FFFFFF;
+    text-align: center;
+}

@@ -16,11 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls import include
-from membersApp.views import homepage, login_signup
+# from membersApp.views import homepage, login_signup
+from schedulebooking.views import homepage
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', login_signup),
+    # path('', login_signup),
+    path('', homepage),
     path('members/', include('membersApp.urls')), # 專案urls.py統一管理
     path('calendar/', include('calendarApp.urls')),
     path('cart/', include('cartApp.urls')),

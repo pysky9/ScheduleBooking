@@ -15,12 +15,9 @@ from lineApp.models import Customers
 from cartApp.models import Booking
 from orderApp.models import Order
 
-load_dotenv()
+load_dotenv() 
 
 jwt_key = os.getenv("jwt_key")
-
-def homepage(request):
-    return render(request, "index.html")
 
 def login_signup(request):
     return render(request, "loginSignup.html")

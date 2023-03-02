@@ -21,7 +21,7 @@ closeDiscount.addEventListener("click", event => {
 })
 
 // 資料更新
-const update = document.querySelector(".update");
+const update = document.querySelector("#update");
 const timeSliceElement = document.querySelector(".time-select-slice");
 let timeSliceValue;
 
