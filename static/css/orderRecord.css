@@ -1,5 +1,9 @@
 #table-container{
     margin-top: 25px;
+    margin-bottom: 25px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 td{
@@ -18,4 +22,12 @@ td{
     right: 0px;
     background-color: #f7f1f0;
     z-index: 10;
+}
+
+.btn-primary{
+    margin-top: 10px;
+}
+
+#loadmore{
+    display: none;
 }

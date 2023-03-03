@@ -1,3 +1,4 @@
+const bookingBtnContainer = document.querySelector("#booking-button");
 const bookingBtn = document.querySelector("#booking-btn");
 const payElement = document.querySelector("#pay");
 const totalExpense = document.querySelector(".total-expense");
@@ -90,7 +91,7 @@ function get_time_slice_data(date){
           message.textContent = "無可預約時段";
           message.id = "time";
           loadingElement.insertAdjacentElement("afterend", message)
-          bookingBtn.style.display = "none";  
+          bookingBtnContainer.style.display = "none";  
           const preButton = document.querySelector(".fc-prev-button");
           const nextButton = document.querySelector(".fc-next-button");
           const todayButton = document.querySelector(".fc-today-button");
@@ -110,6 +111,15 @@ function get_time_slice_data(date){
             let morning = today_data.morning_today;
             let afternoon = today_data.afternoon_today;
             let night = today_data.night_today;
+            if (!morning.length && !afternoon.kength && !night.length){
+              const loadingElement = document.querySelector("#loading");
+              const message = document.createElement("div");
+              message.textContent = "無可預約時段";
+              message.id = "time";
+              loadingElement.insertAdjacentElement("afterend", message)
+              bookingBtnContainer.style.display = "none"; 
+              return;
+            }
             render_time_slice(morning, afternoon, night ,date);
             get_time_price(date);
             getReservationTime(date);
@@ -129,6 +139,27 @@ function get_time_slice_data(date){
             bookingBtn.style.display = "none";          
           }
         })
+      }else{
+        if (!data.data){
+          const loadingElement = document.querySelector("#loading");
+          const message = document.createElement("div");
+          message.textContent = "無可預約時段";
+          message.id = "time";
+          loadingElement.insertAdjacentElement("afterend", message)
+          bookingBtnContainer.style.display = "none";  
+          const preButton = document.querySelector(".fc-prev-button");
+          const nextButton = document.querySelector(".fc-next-button");
+          const todayButton = document.querySelector(".fc-today-button");
+          todayButton.addEventListener("click", event => {
+            message.remove();
+          });
+          preButton.addEventListener("click", event => {
+            message.remove();
+          });
+          nextButton.addEventListener("click", event => {
+            message.remove();
+          });
+        }
       }
       setTimeout(() => {
         loading.style.display = "none";

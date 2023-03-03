@@ -70,7 +70,7 @@ def calendar_setting(request):
             return JsonResponse({"ok": False, "msg": f"{err}"})  
         return JsonResponse({"ok": True})  
     return JsonResponse({"ok": False, "msg": "Wrong Method"})
-
+ 
 @csrf_exempt
 def response_time_period(request):
     if request.method == "POST":

@@ -185,7 +185,6 @@ def get_unpaid_order(request):
                 return JsonResponse({"ok": True, "orderId": orderId})
             return JsonResponse({"ok": True, "orderId": None})
         except Exception as err:
-            print(err)
             return JsonResponse({"ok": False, "msg": "server went wrong"})
     except:
         return JsonResponse({"ok": False, "msg": "請先登入"})
@@ -207,7 +206,6 @@ def delete_order(request):
                     order.bookings.save()
                 return JsonResponse({"ok": True})
             except Exception as err:
-                print(err)
                 return JsonResponse({"ok": False, "msg": "server went wrong"})
         except:
             return JsonResponse({"ok": False, "msg": "請先登入"})
@@ -265,7 +263,6 @@ def tappay_payment(request):
             }
             send_tappay = requests.post(url, headers = header_content, json = data,)
             pay_result = send_tappay.json()
-            print(pay_result)
 
             if pay_result["status"] == 0:
 
@@ -311,43 +308,12 @@ def customer_booked_data(request):
     get_cookie = request.COOKIES.get("jwt_token")
     try:
         payloads = jwt.decode(get_cookie, jwt_key, algorithms = "HS256")
+        page = int(request.GET.get('page', 1))
         try:
-            orders_payed = Order.objects.filter(members_id=payloads["id"], order_status="payed")
-            orders_ordering = Order.objects.filter(members_id=payloads["id"], order_status="ordering")
-            orders_store_canceled = Order.objects.filter(members_id=payloads["id"], order_status="storecancel")
+            orders = Order.objects.filter(members_id=payloads["id"])[(page - 1) * 5:page * 5]
             order_data = []
-            if orders_payed:
-                for order in orders_payed:
-                    data = {
-                        "customerId": order.customers.id,
-                        "customerName": order.customers.username,
-                        "customerMail": order.customers.email,
-                        "orderId": order.order_id,
-                        "orderDate": order.order_date,
-                        "orderTime": order.order_time,
-                        "orderTotalTime": order.order_total_time,
-                        "orderPrice": order.order_price,
-                        "orderStatus": order.order_status,
-                        "bookingId": order.bookings.booking_id
-                    }
-                    order_data.append(data)
-            if orders_ordering:
-                for order in orders_ordering:
-                    data = {
-                        "customerId": order.customers.id,
-                        "customerName": order.customers.username,
-                        "customerMail": order.customers.email,
-                        "orderId": order.order_id,
-                        "orderDate": order.order_date,
-                        "orderTime": order.order_time,
-                        "orderTotalTime": order.order_total_time,
-                        "orderPrice": order.order_price,
-                        "orderStatus": order.order_status,
-                        "bookingId": order.bookings.booking_id
-                    }
-                    order_data.append(data)
-            if orders_store_canceled:
-                for order in orders_store_canceled:
+            if orders:
+                for order in orders:
                     data = {
                         "customerId": order.customers.id,
                         "customerName": order.customers.username,
