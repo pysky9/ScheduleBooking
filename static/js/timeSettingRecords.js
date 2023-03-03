@@ -198,6 +198,47 @@ saveModifiedWindow.addEventListener("click", event => {
         return;
         }
     };
+      // 判斷欄位是否為數字
+    const numberPattern = /^[0-9]+$/;
+    const timeNumberIsValidation = numberPattern.test(timeNumber);
+    const originPriceIsValidation = numberPattern.test(priceOrgin);
+    const discountPriceIsValidation = numberPattern.test(priceDiscount);
+    if (!timeNumberIsValidation){
+        timeNumberElement.style.border = "1px solid red";
+        timeNumberElement.style.color = "red";
+        const timeSliceInfo = document.querySelector(".time-slice-info");
+        const msg = document.createElement("label");
+        msg.className = "msg";
+        msg.style.color = "red";
+        msg.textContent = "請輸入數字";
+        timeSliceInfo.insertAdjacentElement("afterend", msg);
+        removeErrMsg.style.display = "block";
+        return;
+    };
+    if (!originPriceIsValidation){
+        priceOrginElement.style.border = "1px solid red";
+        priceOrginElement.style.color = "red";
+
+        const msg = document.createElement("label");
+        msg.className = "msg";
+        msg.style.color = "red";
+        msg.textContent = "請輸入數字";
+        priceOrginElement.insertAdjacentElement("afterend", msg);
+        removeErrMsg.style.display = "block";
+        return;
+    };
+    if (!discountPriceIsValidation){
+        priceDiscountElement.style.border = "1px solid red";
+        priceDiscountElement.style.color = "red";
+
+        const msg = document.createElement("label");
+        msg.className = "msg";
+        msg.style.color = "red";
+        msg.textContent = "請輸入數字";
+        priceDiscountElement.insertAdjacentElement("afterend", msg);
+        removeErrMsg.style.display = "block";
+        return;
+    }
 
     let updateAllData = {
         timeId: timeId,

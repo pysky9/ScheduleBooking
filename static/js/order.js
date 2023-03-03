@@ -237,12 +237,14 @@ function sentToServer(parameter){
     const nameElement = document.querySelector("#staticName");
     const mailElement = document.querySelector("#staticEmail");
     const prime = parameter;
+    const phoneRegex = /^09\d{8}$/
     let phone = phoneNumberElement.value;
     let name = nameElement.value;
     let mail = mailElement.value; 
-    
-    if (!phone){
-        errorMessageforPhone("請輸入電話，謝謝。");
+    let phoneIsValidation = phoneRegex.test(phone);
+
+    if (!phoneIsValidation){
+        errorMessageforPhone("請確認手機號碼的正確性，謝謝。");
         return;
     }
     requestData = {
@@ -283,6 +285,8 @@ function sentToServer(parameter){
 function errorMessageBox(message){
     const messageElement = document.createElement("div");
     messageElement.className = "mb-3 row message";
+    messageElement.style.marginLeft = "10px";
+    messageElement.style.color = "red";
     messageElement.textContent = `${message}`;
     cardBody.appendChild(messageElement);
     background.style.display = "block";
@@ -292,6 +296,8 @@ function errorMessageforPhone(message){
     const customer = document.querySelector("#customer");
     const messageElement = document.createElement("div");
     messageElement.className = "mb-3 row message";
+    messageElement.style.marginLeft = "10px";
+    messageElement.style.color = "red";
     messageElement.textContent = `${message}`;
     customer.appendChild(messageElement);
     background.style.display = "block";

@@ -23,15 +23,15 @@ body{
     justify-content: center;
     font-family: "Microsoft Jhenghei";
     font-weight: 300;
-    margin-top: 45px;
+    margin-top: 100px;
 }
 
 .card{
     width: 35rem;
-    margin-left: 10px;
-    /* background-color: #c3a6a0; */
+    margin-left: 50px;
+    margin-right: 30px;
     background-color: #FFA998;
-    box-shadow: 4px 4px 15px rgb(0,0,0,0.2);
+    box-shadow: 20px 15px 5px rgb(0,0,0,0.2);
 }
 
 .card:hover{
@@ -49,9 +49,10 @@ h6{
     font-size: 18px;
 }
 
-#redirect-store-setting, #link-to-line, #store-time-setting{
+#redirect-store-setting, #link-to-line, #store-time-setting, .redirect-schedule{
     cursor: pointer;
     text-decoration: underline;
+    font-weight: bold;
 }
 
 .redirect-schedule{

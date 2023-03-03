@@ -109,6 +109,27 @@ update.addEventListener("click", event => {
     }
   }
 
+  // 判斷欄位是否為數字
+  const numberPattern = /^[0-9]+$/;
+  const timeNumberIsValidation = numberPattern.test(timeNumber);
+  const originPriceIsValidation = numberPattern.test(priceOrgin);
+  const discountPriceIsValidation = numberPattern.test(priceDiscount);
+  if (!timeNumberIsValidation){
+    modalDialog.style.display = "block"
+    modalBody.textContent = "服務時長欄位請輸入數字";
+    return;
+  };
+  if (!originPriceIsValidation){
+    modalDialog.style.display = "block"
+    modalBody.textContent = "原價欄位請輸入數字";
+    return;
+  };
+  if (!discountPriceIsValidation){
+    modalDialog.style.display = "block"
+    modalBody.textContent = "折扣價欄位請輸入數字";
+    return;
+  }
+
   let updateAllData = {
     orignPrice: priceOrgin,
     discountPrice: priceDiscount,
