@@ -78,6 +78,7 @@ function get_time_slice_data(date){
     body:JSON.stringify({date: date, username: queryName})
   }).then(response => (response.json())).then(
     data => {
+      console.log(data)
       const now = new Date();
       const year = now.getFullYear();
       const month = now.getMonth() + 1;
@@ -85,6 +86,7 @@ function get_time_slice_data(date){
       let today = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
       if (data.OK){
         let timeSet = data.timeData;
+        console.log(timeSet)
         if (!timeSet.length){
           const loadingElement = document.querySelector("#loading");
           const message = document.createElement("div");
@@ -108,10 +110,12 @@ function get_time_slice_data(date){
         timeSet.forEach(time => {
           if (date === today){
             const today_data = time.today;
+            console.log(today_data)
             let morning = today_data.morning_today;
             let afternoon = today_data.afternoon_today;
             let night = today_data.night_today;
-            if (!morning.length && !afternoon.kength && !night.length){
+            if (!morning.length && !afternoon.length && !night.length){
+              console.log("118")
               const loadingElement = document.querySelector("#loading");
               const message = document.createElement("div");
               message.textContent = "無可預約時段";
