@@ -103,18 +103,24 @@ update.addEventListener("click", event => {
       modalDialog.style.display = "block"
       modalBody.textContent = "折扣價欄位請輸入數字";
       return;
-    }
+    };
   
   };
   
   if (timeSliceValue === "分"){
-    if ( Number(timeNumber) % 30 != 0){
+    if ( Number(timeNumber) % 30 != 0 || Number(timeNumber) > 60){
       modalDialog.style.display = "block"
-      modalBody.textContent = "以30分鐘為單位進行設定";
+      modalBody.textContent = "請輸入正確時間";
       return;
-    }
-  }
-
+    };
+  };
+  if (timeSliceValue === "小時"){
+    if (Number(timeNumber) > 24){
+      modalDialog.style.display = "block"
+      modalBody.textContent = "請輸入正確時間";
+      return;
+    };
+  };
   // 判斷欄位是否為數字
   const numberPattern = /^[0-9]+$/;
   const timeNumberIsValidation = numberPattern.test(timeNumber);

@@ -204,12 +204,21 @@ saveModifiedWindow.addEventListener("click", event => {
         }
     };
     if (timeSliceValue === "分"){
-        if ( Number(timeNumber) % 30 != 0){
+        if ( Number(timeNumber) % 30 != 0 || Number(timeNumber) > 60){
             timeNumberElement.style.border = "1px solid red";
             timeNumberElement.style.color = "red";
         return;
         }
     };
+
+    if (timeSliceValue === "小時"){
+        if (Number(timeNumber) > 24){
+            timeNumberElement.style.border = "1px solid red";
+            timeNumberElement.style.color = "red";
+            return;
+        };
+    };
+
       // 判斷欄位是否為數字
     const numberPattern = /^[0-9]+$/;
     const timeNumberIsValidation = numberPattern.test(timeNumber);
