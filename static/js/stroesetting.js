@@ -99,6 +99,12 @@ update.addEventListener("click", event => {
       modalBody.textContent = "請填入折扣價結束日期";
       return;
     }
+    if (!discountPriceIsValidation){
+      modalDialog.style.display = "block"
+      modalBody.textContent = "折扣價欄位請輸入數字";
+      return;
+    }
+  
   };
   
   if (timeSliceValue === "分"){
@@ -124,11 +130,6 @@ update.addEventListener("click", event => {
     modalBody.textContent = "原價欄位請輸入數字";
     return;
   };
-  if (!discountPriceIsValidation){
-    modalDialog.style.display = "block"
-    modalBody.textContent = "折扣價欄位請輸入數字";
-    return;
-  }
 
   let updateAllData = {
     orignPrice: priceOrgin,

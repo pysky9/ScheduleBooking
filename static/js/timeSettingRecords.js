@@ -190,6 +190,18 @@ saveModifiedWindow.addEventListener("click", event => {
             removeErrMsg.style.display = "block";
             return;
         }
+        if (!discountPriceIsValidation){
+            priceDiscountElement.style.border = "1px solid red";
+            priceDiscountElement.style.color = "red";
+    
+            const msg = document.createElement("label");
+            msg.className = "msg";
+            msg.style.color = "red";
+            msg.textContent = "請輸入數字";
+            priceDiscountElement.insertAdjacentElement("afterend", msg);
+            removeErrMsg.style.display = "block";
+            return;
+        }
     };
     if (timeSliceValue === "分"){
         if ( Number(timeNumber) % 30 != 0){
@@ -227,18 +239,7 @@ saveModifiedWindow.addEventListener("click", event => {
         removeErrMsg.style.display = "block";
         return;
     };
-    if (!discountPriceIsValidation){
-        priceDiscountElement.style.border = "1px solid red";
-        priceDiscountElement.style.color = "red";
 
-        const msg = document.createElement("label");
-        msg.className = "msg";
-        msg.style.color = "red";
-        msg.textContent = "請輸入數字";
-        priceDiscountElement.insertAdjacentElement("afterend", msg);
-        removeErrMsg.style.display = "block";
-        return;
-    }
 
     let updateAllData = {
         timeId: timeId,
