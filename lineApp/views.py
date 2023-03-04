@@ -78,7 +78,6 @@ def get_line_data(request, username):
 # 接收line登入 取得個人資訊
 @csrf_exempt
 def recieve(request, username):
-    # global random_state
     db_data = Channel_data.objects.filter(username=username)
     code = request.GET.get("code")
     state = request.GET.get("state")
@@ -106,9 +105,9 @@ def recieve(request, username):
         "Authorization": f"Bearer {access_token}",
     }
     responses = requests.get("https://api.line.me/v2/profile", headers=headers)
+    customer_user_id = responses.json()["userId"]
     # # id_token
     url = "https://api.line.me/oauth2/v2.1/verify"
-
     data = {
         'id_token': id_token,
         'client_id': db_data[0].channel_id
@@ -124,21 +123,21 @@ def recieve(request, username):
     query_store = Members.objects.filter(username=username)
     
     # DB無消費者資料 存入DB
-    query_db = Customers.objects.filter(email= profile["email"], members_id=query_store[0].id)
+    query_db = Customers.objects.filter(user_id = customer_user_id, members_id=query_store[0].id)
     if not query_db:
         try:
             customer = Customers.objects.create(
                 members = Members(query_store[0].id),
                 username = name,
                 email = email,
-                picture = picture
+                picture = picture,
+                user_id = customer_user_id
             )
             customer.save()
         except Exception as err:
             print(err)
             return JsonResponse({"msg": f"{err}"})
-    customer_data = Customers.objects.filter(email= profile["email"], members_id=query_store[0].id)
-
+    customer_data = Customers.objects.filter(user_id = customer_user_id, members_id=query_store[0].id)
     customer_id = customer_data[0].id
 
     # 登入後 消費者資訊存入JWT

@@ -16,6 +16,7 @@ class Customers(models.Model):
     username = models.CharField(max_length=100)
     email = models.CharField(max_length=100)
     picture = models.TextField()
+    user_id = models.CharField(max_length=250)
 
     def __str__(self):
         return self.username
