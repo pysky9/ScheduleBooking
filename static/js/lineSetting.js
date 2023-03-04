@@ -11,19 +11,6 @@ let queryName = pathname.split("/")[3];
 get_members_info();
 showChannelData();
 
-// logout.addEventListener("click", event => {
-//   fetch("/members/logout/").then(
-//     resp => (resp.json())
-//   ).then(
-//     data => {
-//       if (data.ok){
-//         location.href = "/" ;
-//       }
-//     }
-//   )
-// })
-
-
 function get_members_info(){
   fetch("/members/get_members_info/").then(
     resp => (resp.json())

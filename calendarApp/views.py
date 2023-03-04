@@ -245,7 +245,7 @@ def generate_time_slice(begin_time, end_time, time_slice, time_slice_unit,  requ
         begin_time_hours = int(begin_time_hours)
         begin_time_minutes = int(begin_time_minutes)
         while begin_time_hours < int(end_time_hours):
-            # begin_time_hours += time_slice
+
             time = time_slice_format(begin_time_hours, begin_time_minutes)
             time_slice_list.append(time)
             # 將時段分為早上、中午、晚上

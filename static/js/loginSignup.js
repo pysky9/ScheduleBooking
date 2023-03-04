@@ -108,7 +108,6 @@ loginBtn.addEventListener("click", event => {
                 loginBtn.setAttribute("disabled", "disabled");
                 loginLoading.style.display = "none";
                 setTimeout(() => {
-                    // location.href = `/members/member_page/${data.username}`;
                     location.href = `/members/sitemap/${data.username}`
                 }, 1000);
             }else{

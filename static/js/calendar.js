@@ -85,8 +85,6 @@ function get_time_slice_data(date){
       let today = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
       if (data.OK){
         let timeSet = data.timeData;
-        console.log("date is ", date)
-        console.log("today is ", today)
         if (!timeSet.length){
           const loadingElement = document.querySelector("#loading");
           const message = document.createElement("div");
@@ -110,12 +108,10 @@ function get_time_slice_data(date){
         timeSet.forEach(time => {
           if (date === today){
             const today_data = time.today;
-            console.log(today_data)
             let morning = today_data.morning_today;
             let afternoon = today_data.afternoon_today;
             let night = today_data.night_today;
             if (!morning.length && !afternoon.length && !night.length){
-              console.log("118")
               const loadingElement = document.querySelector("#loading");
               const message = document.createElement("div");
               message.textContent = "無可預約時段";
@@ -135,10 +131,8 @@ function get_time_slice_data(date){
             render_time_slice(morning, afternoon, night, date);
             getReservationTime(date);
             get_time_price(date);
-            console.log(bookingBtn)
             bookingBtnContainer.style.display = "block";
           }else{
-            console.log("141")
             render_time_slice();
             get_time_price(date);
             getReservationTime(date);
@@ -169,7 +163,7 @@ function get_time_slice_data(date){
       }
       setTimeout(() => {
         loading.style.display = "none";
-      }, 2500);
+      }, 2000);
       
     }
   )
@@ -199,10 +193,6 @@ function getReservationTime(date){
           if (timeDiv[0].textContent.substring(5) != "(已滿)"){
             timeDiv[0].textContent = `${date_time.substring(11)}(已滿)`;
           }
-          
-          // bookedElement.textContent = "(預約已滿)";
-          // bookedElement.className = "time-booked";
-          // timeDiv[0].insertAdjacentElement("afterend", bookedElement);
         })
       }
     }

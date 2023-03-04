@@ -1,10 +1,8 @@
 body{
-    /* background-color: #cfe2f3; */
     background-color: #C3A6A0;
 }
 
 .navbar-brand{
-    /* font-family: 'Noto Sans TC', sans-serif; */
     font-family: "Microsoft Jhenghei";
     font-weight: bold;
     padding-top: 5px;
@@ -59,10 +57,6 @@ body{
 #signup{
     display: none;
 }
-
-/* #login{
-    display: none;
-} */
 
 #buttonContainer{
     position: relative;

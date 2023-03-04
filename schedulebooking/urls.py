@@ -21,7 +21,6 @@ from schedulebooking.views import homepage
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('', login_signup),
     path('', homepage),
     path('members/', include('membersApp.urls')), # 專案urls.py統一管理
     path('calendar/', include('calendarApp.urls')),
