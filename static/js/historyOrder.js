@@ -8,6 +8,7 @@ function get_history_order(){
         response => (response.json())
     ).then(
         data => {
+            console.log(data)
             if (data.ok){
                 let historyOrders = data.order_data;
                 historyOrders.forEach(order => {
@@ -51,7 +52,13 @@ function render_order_record(orderid, date, time, total_time, price, orderStatus
 
     const orderStatusElement = document.createElement("div");
     orderStatusElement.className = "order-info";
-    orderStatusElement.textContent = `訂單狀態：${orderStatus}`;
+    if (orderStatus.includes("canceled")){
+        orderStatusElement.textContent = `訂單狀態：客戶取消`;
+    }else if (orderStatus.includes("storecancel")){
+        orderStatusElement.textContent = `訂單狀態：商家取消`;
+    }else {
+        orderStatusElement.textContent = `訂單狀態：已付款`;
+    }
     orderHistoryContainer.appendChild(orderStatusElement);
 
     historyTitle.appendChild(orderHistoryContainer);

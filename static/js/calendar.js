@@ -78,7 +78,6 @@ function get_time_slice_data(date){
     body:JSON.stringify({date: date, username: queryName})
   }).then(response => (response.json())).then(
     data => {
-      console.log(data)
       const now = new Date();
       const year = now.getFullYear();
       const month = now.getMonth() + 1;
@@ -86,7 +85,8 @@ function get_time_slice_data(date){
       let today = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
       if (data.OK){
         let timeSet = data.timeData;
-        console.log(timeSet)
+        console.log("date is ", date)
+        console.log("today is ", today)
         if (!timeSet.length){
           const loadingElement = document.querySelector("#loading");
           const message = document.createElement("div");
@@ -127,20 +127,22 @@ function get_time_slice_data(date){
             render_time_slice(morning, afternoon, night ,date);
             get_time_price(date);
             getReservationTime(date);
-            bookingBtn.style.display = "block";
-          }else if (date != today && time.available_time){
+            bookingBtnContainer.style.display = "block";
+          }else if (date !== today && time.available_time){
             let morning = time.morning;
             let afternoon = time.afternoon;
             let night = time.night;
             render_time_slice(morning, afternoon, night, date);
             getReservationTime(date);
             get_time_price(date);
-            bookingBtn.style.display = "block";
+            console.log(bookingBtn)
+            bookingBtnContainer.style.display = "block";
           }else{
+            console.log("141")
             render_time_slice();
             get_time_price(date);
             getReservationTime(date);
-            bookingBtn.style.display = "none";          
+            bookingBtnContainer.style.display = "none";          
           }
         })
       }else{
@@ -193,9 +195,14 @@ function getReservationTime(date){
           timeDiv[0].style.color = "#E0E0E0";
           timeDiv[0].style.pointerEvents = "none";
           timeDiv[0].style.backgroundColor = "#f7f1f0";
-          bookedElement.textContent = "(預約已滿)";
-          bookedElement.className = "time-booked";
-          timeDiv[0].insertAdjacentElement("afterend", bookedElement);
+          timeDiv[0].style.whiteSpace = "nowrap";
+          if (timeDiv[0].textContent.substring(5) != "(已滿)"){
+            timeDiv[0].textContent = `${date_time.substring(11)}(已滿)`;
+          }
+          
+          // bookedElement.textContent = "(預約已滿)";
+          // bookedElement.className = "time-booked";
+          // timeDiv[0].insertAdjacentElement("afterend", bookedElement);
         })
       }
     }
@@ -335,15 +342,15 @@ function render_time_slice(morning=[], afternoon=[], night=[], date=""){
   const nextButton = document.querySelector(".fc-next-button");
   const todayButton = document.querySelector(".fc-today-button");
   todayButton.addEventListener("click", event => {
-    bookingBtn.style.display = "none";
+    bookingBtnContainer.style.display = "none";
     containerElement.remove();
   });
   preButton.addEventListener("click", event => {
-    bookingBtn.style.display = "none";
+    bookingBtnContainer.style.display = "none";
     containerElement.remove();
   });
   nextButton.addEventListener("click", event => {
-    bookingBtn.style.display = "none";
+    bookingBtnContainer.style.display = "none";
     containerElement.remove();
   });
 }

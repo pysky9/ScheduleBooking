@@ -43,8 +43,9 @@ bookingBtn.addEventListener("click", event => {
             render_cart(bookingDate, bookingTime, bookingTotalTime, bookingPrice, bookingId);
             payElement.style.display = "block";
             totalExpense.textContent = `總費用：${totalPrice}`;
-            location.reload();           
-
+            // location.reload();
+            getReservationTime(bookingDate)           
+            loading.style.display = "none";
         }
       }
     )
@@ -118,7 +119,7 @@ function render_cart(date, time, totalTime, price, bookingId){
                     payElement.remove();
                     location.reload();
                   }
-                }, 3)
+                }, 1500)
             }
         }
       )

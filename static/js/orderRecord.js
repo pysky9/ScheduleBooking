@@ -85,22 +85,38 @@ function renderOrderRecords(orderData){
 
         const storeCancelElement = document.createElement("td");
         const cancelButton = document.createElement("button");
+        storeCancelElement.class = "store-cancel"
         cancelButton.setAttribute("type", "button");
         cancelButton.className = "btn btn-primary";
+        cancelButton.id = "cancel-button";
         cancelButton.textContent = "取消";
         storeCancelElement.appendChild(cancelButton);
         trContainer.appendChild(storeCancelElement);
         tableBody.appendChild(trContainer);
 
+        const loadingCancelBtn = document.createElement("button");
+        loadingCancelBtn.className = "btn btn-primary";
+        loadingCancelBtn.id = "loading-cancel";
+        loadingCancelBtn.setAttribute("type", "button");
+        loadingCancelBtn.setAttribute("disabled", "disabled");
+        loadingCancelBtn.textContent = "取消";
+        const spanElement = document.createElement("span");
+        spanElement.className = "spinner-border spinner-border-sm";
+        spanElement.setAttribute("role", "status");
+        spanElement.setAttribute("aria-hidden", "true");
+        loadingCancelBtn.appendChild(spanElement);
+        storeCancelElement.append(loadingCancelBtn);
+
         cancelButton.addEventListener("click", event => {
-            loading.style.display = "block";
+            // loading.style.display = "block";
+            loadingCancelBtn.style.display = "block";
             cancelButton.setAttribute("disabled", "disabled");
             storeCancelOrder(order.bookingId);
-            location.reload();
+            // location.reload();
         })
     })
     const orderStatusElement = document.querySelectorAll(".order-status");
-    const cancelButton = document.querySelectorAll(".btn");
+    const cancelButton = document.querySelectorAll("#cancel-button");
     for(let i=0; i < orderStatusElement.length; i++){
         if (orderStatusElement[i].textContent === "商家取消" || orderStatusElement[i].textContent === "客戶未付款取消"){
             cancelButton[i].setAttribute("disabled", "disabled");
@@ -119,6 +135,8 @@ function renderNoRecords(){
 
 function storeCancelOrder(bookingId){
     const orderStatusElement = document.querySelector(".order-status");
+    const cancelButton = document.querySelector("#cancel-button");
+    const loadingCancelBtn = document.querySelector("#loading-cancel");
     fetch("/order/store_cancel_order/", {
         method: "POST",
         body: JSON.stringify({booking_id: bookingId})
@@ -127,7 +145,10 @@ function storeCancelOrder(bookingId){
     ).then(
         data => {
             if (data.ok){
-                loading.style.display = "none";
+                cancelButton.setAttribute("disabled", "disabled");
+                orderStatusElement.textContent = "商家取消";
+                loadingCancelBtn.style.display = "none";
+                // loading.style.display = "none";
             }
             
         }

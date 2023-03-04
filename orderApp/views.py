@@ -142,6 +142,10 @@ def get_order_history(request):
         try:
             orders_payed = Order.objects.filter(customers_id = payloads["customer_id"], order_status = "payed")
             orders_canceled = Order.objects.filter(customers_id = payloads["customer_id"], order_status = "canceled")
+            orders_store_canceled = Order.objects.filter(customers_id = payloads["customer_id"], order_status = "storecancel")
+            print(f"已付款{orders_payed}")
+            print(f"客戶取消{orders_canceled}")
+            print(f"商家取消{orders_store_canceled}")
             history_order_list = []
             if orders_payed:
                 for order in orders_payed:
@@ -164,6 +168,18 @@ def get_order_history(request):
                         "order_price": order.order_price,
                         "order_status": order.order_status
                     }
+                    history_order_list.append(data)
+            if orders_store_canceled:
+                for order in orders_store_canceled:
+                    data = {
+                        "order_id": order.order_id,
+                        "order_date": order.order_date,
+                        "order_time": order.order_time,
+                        "order_total_time": order.order_total_time,
+                        "order_price": order.order_price,
+                        "order_status": order.order_status
+                    }
+                    history_order_list.append(data)
             return JsonResponse({"ok": True, "order_data": history_order_list})
         except:
             return JsonResponse({"ok": False, "msg": "server went wrong"})
@@ -371,7 +387,7 @@ def get_appointment_time(request):
                     }
                     appointment_list.append(data)
                 return JsonResponse({"ok": True, "appointment_time": appointment_list})
-            return JsonResponse({"ok": True, "appointment_time": None})
+            return JsonResponse({"ok": True, "appointment_time": appointment_list})
         except:
             return JsonResponse({"ok": False, "msg": "server got wrong"})
     except:

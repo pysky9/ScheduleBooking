@@ -106,6 +106,7 @@ def recieve(request, username):
     }
     responses = requests.get("https://api.line.me/v2/profile", headers=headers)
     customer_user_id = responses.json()["userId"]
+    
     # # id_token
     url = "https://api.line.me/oauth2/v2.1/verify"
     data = {
@@ -135,7 +136,6 @@ def recieve(request, username):
             )
             customer.save()
         except Exception as err:
-            print(err)
             return JsonResponse({"msg": f"{err}"})
     customer_data = Customers.objects.filter(user_id = customer_user_id, members_id=query_store[0].id)
     customer_id = customer_data[0].id
