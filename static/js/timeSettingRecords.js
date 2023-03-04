@@ -72,6 +72,10 @@ saveModifiedWindow.addEventListener("click", event => {
     let timeSelectEndDate = timeSelectEndDateElement.value;
     let beginDate = new Date(timeSelectBeginDate);
     let endDate = new Date(timeSelectEndDate);
+    const numberPattern = /^[0-9]+$/;
+    const timeNumberIsValidation = numberPattern.test(timeNumber);
+    const originPriceIsValidation = numberPattern.test(priceOrgin);
+    const discountPriceIsValidation = numberPattern.test(priceDiscount);
 
     if (beginDate > endDate){
         timeSelectEndDateElement.style.border = "1px solid red";
@@ -80,7 +84,7 @@ saveModifiedWindow.addEventListener("click", event => {
         msg.className = "msg";
         msg.style.color = "red";
         msg.textContent = "結束日期要大於開始日期";
-        timeSelectEndDateElement.insertAdjacentElement("afterend", msg);
+        saveModifiedWindow.insertAdjacentElement("beforebegin", msg);
         removeErrMsg.style.display = "block";
         return;
     };
@@ -91,7 +95,7 @@ saveModifiedWindow.addEventListener("click", event => {
         msg.className = "msg";
         msg.style.color = "red";
         msg.textContent = "必填";
-        timeSelectEndDateElement.insertAdjacentElement("afterend", msg);
+        saveModifiedWindow.insertAdjacentElement("beforebegin", msg);
         removeErrMsg.style.display = "block";
         return;
     };
@@ -103,7 +107,7 @@ saveModifiedWindow.addEventListener("click", event => {
         msg.className = "msg";
         msg.style.color = "red";
         msg.textContent = "必填";
-        timeSelectEndDateElement.insertAdjacentElement("afterend", msg);
+        saveModifiedWindow.insertAdjacentElement("beforebegin", msg);
         removeErrMsg.style.display = "block";
         return;
     };
@@ -204,9 +208,15 @@ saveModifiedWindow.addEventListener("click", event => {
         }
     };
     if (timeSliceValue === "分"){
-        if ( Number(timeNumber) % 30 != 0 || Number(timeNumber) > 60){
+        if ( Number(timeNumber) % 30 != 0 || Number(timeNumber) > 1440){
             timeNumberElement.style.border = "1px solid red";
             timeNumberElement.style.color = "red";
+            const msg = document.createElement("label");
+            msg.className = "msg";
+            msg.style.color = "red";
+            msg.textContent = "請輸入正確時間";
+            saveModifiedWindow.insertAdjacentElement("beforebegin", msg);
+            removeErrMsg.style.display = "block";
         return;
         }
     };
@@ -215,15 +225,32 @@ saveModifiedWindow.addEventListener("click", event => {
         if (Number(timeNumber) > 24){
             timeNumberElement.style.border = "1px solid red";
             timeNumberElement.style.color = "red";
+            const msg = document.createElement("label");
+            msg.className = "msg";
+            msg.style.color = "red";
+            msg.textContent = "請輸入正確時間";
+            saveModifiedWindow.insertAdjacentElement("beforebegin", msg);
+            removeErrMsg.style.display = "block";
+            return;
+        };
+    };
+
+    if (timeSliceValue === "日"){
+        if (Number(timeNumber) > 24){
+            timeNumberElement.style.border = "1px solid red";
+            timeNumberElement.style.color = "red";
+            const msg = document.createElement("label");
+            msg.className = "msg";
+            msg.style.color = "red";
+            msg.textContent = "請輸入正確時間";
+            saveModifiedWindow.insertAdjacentElement("beforebegin", msg);
+            removeErrMsg.style.display = "block";
             return;
         };
     };
 
       // 判斷欄位是否為數字
-    const numberPattern = /^[0-9]+$/;
-    const timeNumberIsValidation = numberPattern.test(timeNumber);
-    const originPriceIsValidation = numberPattern.test(priceOrgin);
-    const discountPriceIsValidation = numberPattern.test(priceDiscount);
+
     if (!timeNumberIsValidation){
         timeNumberElement.style.border = "1px solid red";
         timeNumberElement.style.color = "red";
@@ -279,6 +306,17 @@ saveModifiedWindow.addEventListener("click", event => {
                 changing.style.display = "none";
                 modifiedDialogWindow.style.display = "none";
                 location.reload();
+            }else{
+                if (data.msg === "日期重複"){
+                    const msg = document.createElement("label");
+                    msg.className = "msg";
+                    msg.style.color = "red";
+                    msg.textContent = "起訖日期和已設定的預約日期重疊，請重新設定";
+                    saveModifiedWindow.insertAdjacentElement("beforebegin", msg);
+                    removeErrMsg.style.display = "block";
+                    saveModifiedWindow.style.display = "block";
+                    changing.style.display = "none";
+                }
             }
         }
     )

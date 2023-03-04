@@ -95,10 +95,11 @@ body{
     height: 104px;
     justify-content: center;
     background: #A15C38;
-    position: absolute;
+    position: fixed;
     bottom: 0;
     right: 0;
     left: 0;
+    margin-top: 150px;
 }
 
 .footerContent{

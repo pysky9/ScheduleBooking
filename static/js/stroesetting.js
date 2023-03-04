@@ -58,6 +58,11 @@ update.addEventListener("click", event => {
   let timeSelectEndDate = timeSelectEndDateElement.value;
   let beginDate = new Date(timeSelectBeginDate);
   let endDate = new Date(timeSelectEndDate);
+  // 判斷欄位是否為數字
+  const numberPattern = /^[0-9]+$/;
+  const timeNumberIsValidation = numberPattern.test(timeNumber);
+  const originPriceIsValidation = numberPattern.test(priceOrgin);
+  const discountPriceIsValidation = numberPattern.test(priceDiscount);
 
   if (beginDate > endDate){
     modalDialog.style.display = "block"
@@ -108,7 +113,7 @@ update.addEventListener("click", event => {
   };
   
   if (timeSliceValue === "分"){
-    if ( Number(timeNumber) % 30 != 0 || Number(timeNumber) > 60){
+    if ( Number(timeNumber) % 30 != 0 || Number(timeNumber) > 1440){
       modalDialog.style.display = "block"
       modalBody.textContent = "請輸入正確時間";
       return;
@@ -121,11 +126,14 @@ update.addEventListener("click", event => {
       return;
     };
   };
-  // 判斷欄位是否為數字
-  const numberPattern = /^[0-9]+$/;
-  const timeNumberIsValidation = numberPattern.test(timeNumber);
-  const originPriceIsValidation = numberPattern.test(priceOrgin);
-  const discountPriceIsValidation = numberPattern.test(priceDiscount);
+  if (timeSliceValue === "日"){
+    if (Number(timeNumber) > 1){
+      modalDialog.style.display = "block"
+      modalBody.textContent = "請輸入正確時間";
+      return;
+    };
+  };
+
   if (!timeNumberIsValidation){
     modalDialog.style.display = "block"
     modalBody.textContent = "服務時長欄位請輸入數字";
@@ -167,6 +175,13 @@ update.addEventListener("click", event => {
         update.style.display = "block";
         updating.style.display = "none";
         location.reload();
+      }else{
+        if (data.msg === "日期重複"){
+          modalDialog.style.display = "block"
+          modalBody.textContent = "起訖日期和已設定的預約日期重疊，請重新設定";
+          update.style.display = "block";
+          updating.style.display = "none";
+        }
       }
     }
   )

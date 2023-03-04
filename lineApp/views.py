@@ -106,7 +106,6 @@ def recieve(request, username):
         "Authorization": f"Bearer {access_token}",
     }
     responses = requests.get("https://api.line.me/v2/profile", headers=headers)
-    print("@110 ", responses.json())
     # # id_token
     url = "https://api.line.me/oauth2/v2.1/verify"
 
@@ -117,7 +116,7 @@ def recieve(request, username):
 
     response = requests.post(url, data=data)
     profile = response.json()
-    print("@120", profile)
+
     name = profile["name"]
     picture = profile["picture"]
     email = profile["email"]

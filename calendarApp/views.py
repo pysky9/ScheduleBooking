@@ -34,41 +34,67 @@ def booked_calendar(request, storename):
 def time_setting_records(request, storename):
     return render(request, "timeSettingRecords.html")
 
+def convert_date_to_datetime(date):
+    date_split = date.split("-")
+    year = int(date_split[0])
+    month = int(date_split[1])
+    day = int(date_split[2])
+    datetime_format = datetime(year, month, day)
+    return datetime_format
+
+def check_overlap(start1, end1, start2, end2):
+    """檢查兩個日期區間是否重疊"""
+    return not (end1 <= start2 or end2 <= start1)
 
 def calendar_setting(request):
     if request.method == "POST":
-        data = json.loads(request.body)
-        random_id = f"{data['membersData']['id']}{random.randint(100000, 999999)}"
+        get_cookie = request.COOKIES.get("jwt_token")
         try:
-            time_setting = Time_setting.objects.create(
-                time_interval_category = data['timeSettingCategory'],
-                begin_time = data['timeSettingBegintime'],
-                end_time = data['timeSettingEndtime'],
-                begin_date = data['timeSettingBegindate'],
-                end_date = data['timeSettingEnddate'],
-                time_slice = data['timeNumbers'],
-                time_slice_unit = data['timeSliceUnit'],
-                status = "launch",
-                time_id = random_id,
-                members = Members(data['membersData']['id'])
-            )
-            time_setting.save()
-        except Exception as err:
-            return JsonResponse({"ok": False, "msg": f"{err}"}) 
-        try:
-            time_pricing = Time_pricing.objects.create(
-                origin_price = data['orignPrice'],
-                discount_price = data['discountPrice'],
-                discount_begin_date = data['discountBeginDate'],
-                discount_end_date = data['discountEndDate'],
-                status = "launch",
-                time_setting = Time_setting(random_id),
-                members = Members(data['membersData']['id'])
-            )
-            time_pricing.save()
-        except Exception as err:
-            return JsonResponse({"ok": False, "msg": f"{err}"})  
-        return JsonResponse({"ok": True})  
+            payloads = jwt.decode(get_cookie, jwt_key, algorithms = "HS256")
+            data = json.loads(request.body)
+            request_begin_date = convert_date_to_datetime(data['timeSettingBegindate'])
+            request_end_date = convert_date_to_datetime(data['timeSettingEnddate'])
+            time_settings = Time_setting.objects.filter(members_id=payloads["id"],status="launch")
+            if time_settings:
+                for time_setting in time_settings:
+                    db_begin_date = convert_date_to_datetime(time_setting.begin_date)
+                    db_end_date = convert_date_to_datetime(time_setting.end_date)
+                    if check_overlap(request_begin_date, request_end_date, db_begin_date, db_end_date):
+                        return JsonResponse({"ok": False, "msg": "日期重複"})
+
+            random_id = f"{data['membersData']['id']}{random.randint(100000, 999999)}"
+            try:
+                time_setting = Time_setting.objects.create(
+                    time_interval_category = data['timeSettingCategory'],
+                    begin_time = data['timeSettingBegintime'],
+                    end_time = data['timeSettingEndtime'],
+                    begin_date = data['timeSettingBegindate'],
+                    end_date = data['timeSettingEnddate'],
+                    time_slice = data['timeNumbers'],
+                    time_slice_unit = data['timeSliceUnit'],
+                    status = "launch",
+                    time_id = random_id,
+                    members = Members(data['membersData']['id'])
+                )
+                time_setting.save()
+            except Exception as err:
+                return JsonResponse({"ok": False, "msg": f"{err}"}) 
+            try:
+                time_pricing = Time_pricing.objects.create(
+                    origin_price = data['orignPrice'],
+                    discount_price = data['discountPrice'],
+                    discount_begin_date = data['discountBeginDate'],
+                    discount_end_date = data['discountEndDate'],
+                    status = "launch",
+                    time_setting = Time_setting(random_id),
+                    members = Members(data['membersData']['id'])
+                )
+                time_pricing.save()
+            except Exception as err:
+                return JsonResponse({"ok": False, "msg": f"{err}"})  
+            return JsonResponse({"ok": True})  
+        except:
+            return JsonResponse({"ok": False, "msg": "login first"})
     return JsonResponse({"ok": False, "msg": "Wrong Method"})
  
 @csrf_exempt
@@ -490,6 +516,15 @@ def update_merchant_time_slots(request):
         try:
             payloads = jwt.decode(get_cookie, jwt_key, algorithms = "HS256")
             data = json.loads(request.body)
+            request_begin_date = convert_date_to_datetime(data['timeSettingBegindate'])
+            request_end_date = convert_date_to_datetime(data['timeSettingEnddate'])
+            time_settings = Time_setting.objects.filter(members_id=payloads["id"],status="launch")
+            if time_settings:
+                for time_setting in time_settings:
+                    db_begin_date = convert_date_to_datetime(time_setting.begin_date)
+                    db_end_date = convert_date_to_datetime(time_setting.end_date)
+                    if check_overlap(request_begin_date, request_end_date, db_begin_date, db_end_date):
+                        return JsonResponse({"ok": False, "msg": "日期重複"})
             timeId = data["timeId"]
             try:
                 time_setting = Time_setting.objects.get(time_id = timeId)
@@ -540,3 +575,4 @@ def delete_merchant_time_slots(request):
         except:
             return JsonResponse({"ok": False, "msg": "login first"})
     return JsonResponse({"ok": False, "msg": "Wrong HTTP Method"})
+
