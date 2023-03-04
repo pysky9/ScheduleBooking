@@ -242,11 +242,16 @@ function sentToServer(parameter){
     let name = nameElement.value;
     let mail = mailElement.value; 
     let phoneIsValidation = phoneRegex.test(phone);
-
+    let emailRegrex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    let emailIsValid = emailRegrex.test(mail);
+    if (!emailIsValid){
+        errorMessageforPhone("請確認E-mail的正確性，謝謝。");
+        return;
+    };
     if (!phoneIsValidation){
         errorMessageforPhone("請確認手機號碼的正確性，謝謝。");
         return;
-    }
+    };
     requestData = {
         "prime": prime,
         "order": {
