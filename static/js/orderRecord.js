@@ -38,6 +38,7 @@ function customerBookedData(){
 }
 
 function renderOrderRecords(orderData){
+    console.log(orderData)
     orderData.forEach(order => {
         const trContainer = document.createElement("tr");
 
@@ -76,8 +77,10 @@ function renderOrderRecords(orderData){
         }else if (order.orderStatus === "ordering"){
             orderStatusElement.textContent = "尚未付款";
             orderStatusElement.style.color = "red";
-        }else if (order.orderStatus === "storecancel"){
-            orderStatusElement.textContent = "商家取消";
+        }else if (order.orderStatus === "unpaid_storeCanceled"){
+            orderStatusElement.textContent = "未付款-商家取消";
+        }else if (order.orderStatus === "paid_storeCanceled"){
+            orderStatusElement.textContent = "已付款-商家取消";
         }else{
             orderStatusElement.textContent = "客戶未付款取消";
         }
@@ -109,16 +112,24 @@ function renderOrderRecords(orderData){
 
         cancelButton.addEventListener("click", event => {
             // loading.style.display = "block";
+            let orderStatus;
             loadingCancelBtn.style.display = "block";
+            cancelButton.style.display = "none"
             cancelButton.setAttribute("disabled", "disabled");
-            storeCancelOrder(order.bookingId);
+            if (orderStatusElement.textContent === "已付款"){
+                orderStatus = "paid_storeCanceled";
+            }else if (orderStatusElement.textContent === "尚未付款"){
+                orderStatus = "unpaid_storeCanceled";
+            }
+            storeCancelOrder(order.bookingId, orderStatus, loadingCancelBtn, cancelButton, orderStatusElement);
             // location.reload();
         })
     })
     const orderStatusElement = document.querySelectorAll(".order-status");
     const cancelButton = document.querySelectorAll("#cancel-button");
     for(let i=0; i < orderStatusElement.length; i++){
-        if (orderStatusElement[i].textContent === "商家取消" || orderStatusElement[i].textContent === "客戶未付款取消"){
+        const statusText = orderStatusElement[i].textContent;
+        if (["客戶未付款取消", "已付款-商家取消", "未付款-商家取消"].includes(statusText)){
             cancelButton[i].setAttribute("disabled", "disabled");
         }
     }
@@ -133,24 +144,27 @@ function renderNoRecords(){
     tableBody.appendChild(trElement);
 }
 
-function storeCancelOrder(bookingId){
-    const orderStatusElement = document.querySelector(".order-status");
-    const cancelButton = document.querySelector("#cancel-button");
-    const loadingCancelBtn = document.querySelector("#loading-cancel");
+function storeCancelOrder(bookingId, orderStatus, loadingCancelBtn, cancelButton, orderStatusElement){
     fetch("/order/store_cancel_order/", {
         method: "POST",
-        body: JSON.stringify({booking_id: bookingId})
+        body: JSON.stringify({booking_id: bookingId, order_status: orderStatus})
     }).then(
         response => (response.json())
     ).then(
         data => {
+            console.log(data)
             if (data.ok){
                 cancelButton.setAttribute("disabled", "disabled");
-                orderStatusElement.textContent = "商家取消";
                 loadingCancelBtn.style.display = "none";
-                // loading.style.display = "none";
+                cancelButton.style.display = "block";
+                orderStatusElement.style.color = "black";
+                if (orderStatus === "paid_storeCanceled"){
+                    orderStatusElement.textContent = "已付款-商家取消";
+                }else if (orderStatus === "unpaid_storeCanceled"){
+                    orderStatusElement.textContent = "未付款-商家取消";
+                }
+                
             }
-            
         }
     )
 }

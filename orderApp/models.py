@@ -12,4 +12,4 @@ class Order(models.Model):
     order_time = models.CharField(max_length=50, null=False)
     order_total_time = models.CharField(max_length=50, null=False)
     order_price = models.CharField(max_length=50, null=False)
-    order_status = models.CharField(max_length=15)
+    order_status = models.CharField(max_length=100)

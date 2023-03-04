@@ -11,4 +11,4 @@ class Booking(models.Model):
     booking_time = models.CharField(max_length=50, null=False)
     booking_total_time = models.CharField(max_length=50, null=False)
     booking_price = models.CharField(max_length=50, null=False)
-    booking_status = models.CharField(max_length=15)
+    booking_status = models.CharField(max_length=100)

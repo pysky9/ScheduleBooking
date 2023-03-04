@@ -38,9 +38,8 @@ td{
 
 #loading-cancel{
     display: none;
-    width: 30rem;
-    margin-top: 10px;
-    margin-bottom: 20px;
-    border: 0;
+    /* margin-top: 10px;
+    margin-bottom: 20px; */
+    /* border: 0; */
     font-family: 'Noto Sans TC', sans-serif;
 }

@@ -142,10 +142,8 @@ def get_order_history(request):
         try:
             orders_payed = Order.objects.filter(customers_id = payloads["customer_id"], order_status = "payed")
             orders_canceled = Order.objects.filter(customers_id = payloads["customer_id"], order_status = "canceled")
-            orders_store_canceled = Order.objects.filter(customers_id = payloads["customer_id"], order_status = "storecancel")
-            print(f"已付款{orders_payed}")
-            print(f"客戶取消{orders_canceled}")
-            print(f"商家取消{orders_store_canceled}")
+            orders_store_paid_canceled = Order.objects.filter(customers_id = payloads["customer_id"], order_status = "paid_storeCanceled")
+            orders_store_unpaid_canceled = Order.objects.filter(customers_id = payloads["customer_id"], order_status = "unpaid_storeCanceled")
             history_order_list = []
             if orders_payed:
                 for order in orders_payed:
@@ -169,8 +167,19 @@ def get_order_history(request):
                         "order_status": order.order_status
                     }
                     history_order_list.append(data)
-            if orders_store_canceled:
-                for order in orders_store_canceled:
+            if orders_store_paid_canceled:
+                for order in orders_store_paid_canceled:
+                    data = {
+                        "order_id": order.order_id,
+                        "order_date": order.order_date,
+                        "order_time": order.order_time,
+                        "order_total_time": order.order_total_time,
+                        "order_price": order.order_price,
+                        "order_status": order.order_status
+                    }
+                    history_order_list.append(data)
+            if orders_store_unpaid_canceled:
+                for order in orders_store_unpaid_canceled:
                     data = {
                         "order_id": order.order_id,
                         "order_date": order.order_date,
@@ -199,7 +208,7 @@ def get_unpaid_order(request):
                     orderIds.add(order.order_id)
                 orderId = [id for id in orderIds]
                 return JsonResponse({"ok": True, "orderId": orderId})
-            return JsonResponse({"ok": True, "orderId": None})
+            return JsonResponse({"ok": True, "orderId": False})
         except Exception as err:
             return JsonResponse({"ok": False, "msg": "server went wrong"})
     except:
@@ -356,11 +365,13 @@ def store_cancel_order(request):
         try:
             payloads = jwt.decode(get_cookie, jwt_key, algorithms = "HS256")
             request_data = json.loads(request.body)
+            order_status = request_data["order_status"]
             booking_id = request_data["booking_id"]
+
             try:
                 order = Order.objects.get(members_id = payloads["id"], bookings_id = booking_id)
-                order.order_status = "storecancel"
-                order.bookings.booking_status = "storecancel"
+                order.order_status = order_status
+                order.bookings.booking_status = order_status
                 order.bookings.save()
                 order.save()
                 return JsonResponse({"ok": True})

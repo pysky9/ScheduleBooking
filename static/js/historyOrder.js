@@ -52,10 +52,12 @@ function render_order_record(orderid, date, time, total_time, price, orderStatus
 
     const orderStatusElement = document.createElement("div");
     orderStatusElement.className = "order-info";
-    if (orderStatus.includes("canceled")){
+    if (orderStatus=== "canceled"){
         orderStatusElement.textContent = `訂單狀態：客戶取消`;
-    }else if (orderStatus.includes("storecancel")){
-        orderStatusElement.textContent = `訂單狀態：商家取消`;
+    }else if (orderStatus === "paid_storeCanceled"){
+        orderStatusElement.textContent = "訂單狀態：已付款-商家取消";
+    }else if (orderStatus === "unpaid_storeCanceled"){
+        orderStatusElement.textContent = "訂單狀態：未付款-商家取消";
     }else {
         orderStatusElement.textContent = `訂單狀態：已付款`;
     }
