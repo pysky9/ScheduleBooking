@@ -1,5 +1,13 @@
-body{
+/* body{
     background-color: #C3A6A0;
+} */
+
+#slogan-container, #line-description, #merchant-changing-info, #merchant-calendar-info{
+    background-color: #C3A6A0;
+}
+
+#merchant-setting-info, #merchant-order-info{
+    background-color:#D0B9B4;
 }
 
 .navbar{
@@ -23,14 +31,11 @@ body{
     margin-top: 10px;
 }
 
-#content{
-    margin-top: 100px;
-}
 
 .slogan{
     font-family: "Microsoft Jhenghei";
     font-weight: bold;
-    padding-top: 5px;
+    padding-top: 130px;
     font-size: 40px;
     text-align: center;
 }
@@ -47,15 +52,17 @@ body{
 }
 
 #line-description, #merchant-setting-info, #merchant-changing-info, #merchant-calendar-info, #merchant-order-info{
-    margin-top: 30px;
-    margin-bottom: 60px;
+    padding-top: 60px;
+    padding-bottom: 60px;
     display: flex;
+    height: 524px;
 }
 
 .line-info, .setting-info, .changing-info, .calendar-info, .order-info{
     font-family: "Microsoft Jhenghei";
     font-weight: bold;
-    padding-top: 5px;
+    padding-top: 50px;
+    padding-left: 60px;
     font-size: 30px;
     flex: none;
     width: 50%;
@@ -93,8 +100,7 @@ body{
     display: flex;
     height: 104px;
     justify-content: center;
-    background: #A15C38;
-    margin-top: 30px;
+    background-color: #AA7052;
 }
 
 .footerContent{
@@ -102,8 +108,7 @@ body{
     line-height: 104px; 
     font-family: "Microsoft Jhenghei";
     font-style: normal;
-    font-weight: 700;
-    font-size: 16px;
-    color: #FFFFFF;
+    font-weight: bold;
+    font-size: 22px;
     text-align: center;
 }

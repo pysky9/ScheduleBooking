@@ -5,9 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
         <title>吉時約</title>
-        <!-- {% load static %}
-        <link href="{% static 'css/index.css' %}" rel="stylesheet" type="text/css" /> -->
-        <link href="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/css/index.css" rel="stylesheet" type="text/css" />
+        {% load static %}
+        <link href="{% static 'css/index.css' %}" rel="stylesheet" type="text/css" />
+        <!-- <link href="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/css/index.css" rel="stylesheet" type="text/css" /> -->
     </head>
     <body>
         <nav class="navbar navbar-light bg-light">
@@ -16,45 +16,48 @@
               <button type="button" class="btn btn-outline-primary" id="btn-literal">Let's Start</button>
             </div>
         </nav>
-        <div class="container" id="content">
-            <div class="container" id="slogan-container">
-              <div class="slogan">消費者LINE預約<img src="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/images/LINE.png" class="line-icon"><br>商家省時又省心</div>
-              <div class="start-btn"><button type="button" class="btn btn-outline-primary" id="btn-literal">Let's Start</button></div>
-            </div>
-            <div class="container" id="line-description">
-              <div class="line-info">預約、購物、付款，LINE官方帳號等你來</div>
-              <div class="line-gif-container">
-                <img src="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/images/OAbooking.PNG" class="line-gif">
-                <img src="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/images/arrow.png">
-                <img src="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/images/OAbooking.gif" class="line-gif">
-              </div>
-            </div>
-            <div class="container" id="merchant-setting-info">
-              <div class="setting-info">
-                商家自由設定預約時段，<br>讓您依照自身時間輕鬆安排服務<br>
-                <span class="setting-subtitle">設定服務日期與時段、每次服務時間、服務價錢、是否啟動折扣</span>
-              </div>
-              <div class="setting-img-container"><img src="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/images/timeSetting.PNG" class="setting-img"></div>
-            </div>
-            <div class="container" id="merchant-changing-info">
-              <div class="changing-info">商家隨時調整預約時段，彈性安排工作時間</div>
-              <div class="changing-gif-container"><img src="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/images/changeDelete.gif" class="setting-img"></div>
-            </div>
-            <div class="container" id="merchant-order-info">
-              <div class="order-info">隨時查看客戶訂單，即刻掌握付款進度</div>
-              <div class="changing-gif-container"><img src="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/images/order.PNG" class="setting-img"></div>
-            </div>
-            <div class="container" id="merchant-calendar-info">
-              <div class="calendar-info">客戶預約即時顯示於網站行事曆，<br>讓您無時無刻掌握工作進度</div>
-              <div class="changing-gif-container"><img src="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/images/calendar.PNG" class="setting-img"></div>
-            </div>
+        <div id="slogan-container">
+          <div class="slogan">消費者LINE預約<img src="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/images/LINE.png" class="line-icon"><br>商家省時又省心</div>
+          <div class="start-btn"><button type="button" class="btn btn-outline-primary" id="btn-literal">Let's Start</button></div>
+        </div>
+        <div id="line-description">
+          <div class="line-info">消費者預約、購物、付款，LINE官方帳號等你來</div>
+          <div class="line-gif-container">
+            <img src="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/images/OAbooking.PNG" class="line-gif">
+            <img src="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/images/arrow.png">
+            <img src="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/images/OAbooking.gif" class="line-gif">
+          </div>
+        </div>
+        <div id="merchant-setting-info">
+          <div class="setting-info">
+            商家彈性設定預約時段<br>
+            <span class="setting-subtitle">輕鬆安排服務服務日期與時段、每次服務時間、服務價錢、是否啟動折扣</span><br>
+            <span class="setting-subtitle">設定後立即顯示於LINE官方帳號預約系統</span>
+          </div>
+          <div class="setting-img-container"><img src="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/images/timeSetting.PNG" class="setting-img"></div>
+        </div>
+        <div id="merchant-changing-info">
+          <div class="changing-info">商家隨時調整預約時段，彈性安排工作時間</div>
+          <div class="changing-gif-container"><img src="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/images/changeDelete.gif" class="setting-img"></div>
+        </div>
+        <div id="merchant-order-info">
+          <div class="order-info">
+            隨時查看客戶訂單，即刻掌握付款進度<br>
+            <span class="setting-subtitle">完美紀錄，讓您交易無後顧之憂。</span>
+          </div>
+          
+          <div class="changing-gif-container"><img src="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/images/order.PNG" class="setting-img"></div>
+        </div>
+        <div id="merchant-calendar-info">
+          <div class="calendar-info">客戶預約即時顯示於網站行事曆，<br>讓您無時無刻掌握工作進度</div>
+          <div class="changing-gif-container"><img src="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/images/calendar.PNG" class="setting-img"></div>
         </div>
         <div class="footer"><div class="footerContent">COPYRIGHT @ 2023 吉時約 </div></div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofN4zfuZxLkoj1gXtW8ANNCe9d5Y3eG5eD" crossorigin="anonymous"></script>
-        <!-- <script src="{% static 'js/index.js' %}"></script> -->
-        <script src="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/js/index.js"></script>
+        <script src="{% static 'js/index.js' %}"></script>
+        <!-- <script src="https://messagespic.s3.us-west-2.amazonaws.com/schedulebooking/static/js/index.js"></script> -->
     </body>
 </html> 

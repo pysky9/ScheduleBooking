@@ -11,10 +11,6 @@ let totalPrice = 0;
 let pathname = window.location.pathname;
 let orderId = pathname.split("/")[3];
 
-liff.init(
-    {liffId: "1657905932-Ly1jWqbp"}
-);
-
 get_order();
 
 function get_order(){
@@ -313,17 +309,4 @@ background.addEventListener("click", event => {
     message.remove();
     background.style.display = "none";
 })
-
-function liffSendMessage(){
-    liff.sendMessages([
-    {
-      type: "text",
-      text: "付款成功，您的預約訊息如下：",
-    },
-  ])  .then(() => {
-    console.log("message sent");
-  }).catch((err) => {
-    console.log("error", err);
-  });
-}
 

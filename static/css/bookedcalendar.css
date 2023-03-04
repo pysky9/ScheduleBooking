@@ -20,8 +20,3 @@
     color: black;
     text-decoration: none;
 }
-
-/* 更改事件高度 */
-.fc-timegrid-event-harness{
-    height: 25px;
-}

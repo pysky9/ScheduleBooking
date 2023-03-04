@@ -8,7 +8,6 @@ function get_history_order(){
         response => (response.json())
     ).then(
         data => {
-            console.log(data)
             if (data.ok){
                 let historyOrders = data.order_data;
                 historyOrders.forEach(order => {

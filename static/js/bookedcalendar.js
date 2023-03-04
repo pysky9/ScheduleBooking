@@ -22,7 +22,6 @@ document.addEventListener('DOMContentLoaded', function() {
         response => (response.json())
     ).then(
         data => {
-            console.log(data)
             if (data.ok){
                 appointmentList = data.appointment_time;
                 if (! appointmentList.length){
@@ -39,23 +38,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // 依商家服務時間的總長設定每個預約時段的結束時間
                     let endDate;
-                    console.log("開始", startDate)
-                    
                     if (appointment.appointmentTotalTime.includes("小時")){
-                        console.log("小時")
-                        let hour = Number(appointment.appointmentTotalTime[0]);
+                        let hour = Number(parseInt(appointment.appointmentTotalTime, 10));
                         endDate = moment(startDate).add(hour, 'hours').format('YYYY-MM-DDTHH:mm');
                     }else if (appointment.appointmentTotalTime.includes("分")){
-                        console.log("分")
-                        let minute = Number(appointment.appointmentTotalTime[0]);
+                        let minute = Number(parseInt(appointment.appointmentTotalTime, 10));
                         endDate = moment(startDate).add(minute, 'minutes').format('YYYY-MM-DDTHH:mm');
                     }else{
-                        console.log("日")
-                        let day = Number(appointment.appointmentTotalTime[0]);
+                        let day = Number(parseInt(appointment.appointmentTotalTime, 10));
                         endDate = moment(startDate).add(day, 'days').format('YYYY-MM-DDTHH:mm');
                     }
-
-                    console.log("結束", endDate)
                     // 新建一個事件對象
                     let newEvent = {
                         title: `${appointment.consumerName}`,

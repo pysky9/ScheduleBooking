@@ -15,7 +15,6 @@ function customerBookedData(){
         response => (response.json())
     ).then(
         data => {
-            console.log(data);
             if (data.ok){
                 if (data.orderData){
                     renderOrderRecords(data.orderData);
@@ -38,7 +37,6 @@ function customerBookedData(){
 }
 
 function renderOrderRecords(orderData){
-    console.log(orderData)
     orderData.forEach(order => {
         const trContainer = document.createElement("tr");
 
@@ -152,7 +150,6 @@ function storeCancelOrder(bookingId, orderStatus, loadingCancelBtn, cancelButton
         response => (response.json())
     ).then(
         data => {
-            console.log(data)
             if (data.ok){
                 cancelButton.setAttribute("disabled", "disabled");
                 loadingCancelBtn.style.display = "none";
